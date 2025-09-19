@@ -1,0 +1,67 @@
+<%- include('partials/header-simple', { title: 'Peminjaman Buku - SiBuDi' }) %>
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="container">
+    <section class="page-header">
+      <h1 class="page-title">Peminjaman Buku</h1>
+      <p class="page-description">Daftar buku yang tersedia untuk dipinjam</p>
+    </section>
+
+    <section class="book-search">
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Cari buku berdasarkan judul, penulis, atau ISBN..."
+        />
+        <button class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </section>
+
+    <section class="book-grid">
+      <div class="book-card">
+        <div class="book-cover">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="book-info">
+          <h3 class="book-title">Pemrograman Web Modern</h3>
+          <p class="book-author">John Doe</p>
+          <p class="book-isbn">ISBN: 978-1234567890</p>
+          <div class="book-status available">Tersedia</div>
+        </div>
+        <button class="borrow-btn">Pinjam</button>
+      </div>
+
+      <div class="book-card">
+        <div class="book-cover">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="book-info">
+          <h3 class="book-title">Database Management</h3>
+          <p class="book-author">Jane Smith</p>
+          <p class="book-isbn">ISBN: 978-0987654321</p>
+          <div class="book-status available">Tersedia</div>
+        </div>
+        <button class="borrow-btn">Pinjam</button>
+      </div>
+
+      <div class="book-card">
+        <div class="book-cover">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="book-info">
+          <h3 class="book-title">Algoritma dan Struktur Data</h3>
+          <p class="book-author">Bob Johnson</p>
+          <p class="book-isbn">ISBN: 978-1122334455</p>
+          <div class="book-status borrowed">Dipinjam</div>
+        </div>
+        <button class="borrow-btn" disabled>Dipinjam</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<%- include('partials/footer-simple') %>

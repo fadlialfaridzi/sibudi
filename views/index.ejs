@@ -1,11 +1,122 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+<%- include('partials/header-simple', { title: 'SiBuDi - Sistem Informasi Perpanjangan Peminjaman Buku Mandiri' }) %>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="dots-pattern"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Sistem Informasi Perpanjangan Peminjaman Buku Mandiri UPT Perpustakaan
+        Universitas Andalas
+      </h1>
+      <p class="hero-description">
+        Sistem Informasi Perpanjangan Peminjaman Buku Mandiri (SiBuDi)
+        Universitas Andalas difokuskan untuk mendukung layanan perpanjangan dan
+        pengelolaan denda yang terintegrasi dengan sistem SLIM.
+      </p>
+      <div class="chat-section">
+        <div class="chat-bubble">
+          <p class="chat-text">
+            Balasan umumnya akan dikirim dalam beberapa menit
+          </p>
+          <p class="chat-source">UPT Perpustakaan UNAND</p>
+        </div>
+        <button class="live-chat-btn">Live Chat</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="container">
+    <!-- Perpanjang Buku dari Rumah Section -->
+    <section class="extend-section">
+      <div class="extend-content">
+        <h2 class="section-title">Perpanjang Buku dari Rumah</h2>
+        <p class="section-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat.
+        </p>
+        <div class="profile-card">
+          <div class="profile-image"></div>
+          <div class="profile-info">
+            <h4>apt. Yori Yuliandra, M.Farm, Ph.D</h4>
+            <p>Kepala Perpustakaan</p>
+          </div>
+        </div>
+      </div>
+      <div class="chat-bubbles">
+        <div class="chat-bubble-small bubble-1">
+          <p>Sudah berapa buku yang kamu baca hari ini?</p>
+        </div>
+        <div class="chat-bubble-small bubble-2">
+          <p>Hi</p>
+          <p>Jangan lupa untuk membaca buku!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lokasi UPT Perpustakaan Section -->
+    <section class="location-section">
+      <div class="location-maps">
+        <!-- Maps akan ditampilkan di sini -->
+      </div>
+      <div class="location-content">
+        <h2 class="section-title">Lokasi UPT Perpustakaan</h2>
+        <p class="location-text">
+          Gedung Perpustakaan Unand beralamat di Kampus Unand Limau Manis, Kec.
+          Pauh Kota Padang Sumatera Barat. Terletak di tengah-tengah kampus
+          Unand Limau Manis, dan dikelilingi oleh gedung perkuliahan. Gedung
+          Perpustakaan Unand terdiri dari 6 lantai, yang merupakan gedung
+          tertinggi di lingkungan kampus Unand.
+        </p>
+      </div>
+    </section>
+
+    <!-- Layanan Perpanjangan Section -->
+    <section class="services-section">
+      <h2 class="section-title">Layanan Perpanjangan Peminjaman Online</h2>
+      <p class="services-description">
+        Layanan Perpanjangan online merupakan layanan yang diberikan kepada
+        anggota perpustakaan yang masih ingin memanfaatkan buku yang sedang
+        dipinjam.
+      </p>
+      <div class="services-grid">
+        <div class="service-item">
+          <div class="service-number">01</div>
+          <div class="service-content">
+            <h3>Cari Buku</h3>
+            <p>Pilih layanan</p>
+          </div>
+          <i class="fas fa-arrow-right service-arrow"></i>
+        </div>
+        <div class="service-item">
+          <div class="service-number">02</div>
+          <div class="service-content">
+            <h3>Daftar Peminjaman</h3>
+            <p>Pilih layanan</p>
+          </div>
+          <i class="fas fa-arrow-right service-arrow"></i>
+        </div>
+        <div class="service-item">
+          <div class="service-number">03</div>
+          <div class="service-content">
+            <h3>Cek Denda</h3>
+            <p>Pilih layanan</p>
+          </div>
+          <i class="fas fa-arrow-right service-arrow"></i>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<%- include('partials/footer-simple') %>
