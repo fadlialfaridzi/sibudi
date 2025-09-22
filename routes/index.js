@@ -11,4 +11,9 @@ router.get("/peminjaman", function (req, res, next) {
   res.render("peminjaman", { title: "Peminjaman Buku" });
 });
 
+/* GET peminjaman page. */
+router.get("/testing", function (req, res, next) {
+  res.render("error", { title: "Testing Peminjaman Buku" });
+});
+
 module.exports = router;
