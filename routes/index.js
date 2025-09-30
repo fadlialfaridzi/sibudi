@@ -16,4 +16,9 @@ router.get("/testing", function (req, res, next) {
   res.render("error", { title: "Testing Peminjaman Buku" });
 });
 
+// GET login page
+router.get("/login", function (req, res) {
+  res.render("login");
+});
+
 module.exports = router;
