@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beranda - SiBuDi</title>
+
+    <!-- Tailwind & Preline -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/preline@latest/dist/preline.min.js"
+    ></script>
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Efek hover interaktif untuk layanan */
+      .service-item {
+        transition: all 0.3s ease;
+      }
+      .service-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(47, 122, 51, 0.15);
+        background-color: #f8fff8;
+      }
+      .service-number {
+        background-color: #2f7a33;
+      }
+      .service-item:hover .service-number {
+        background-color: #ffd700;
+        color: #2f7a33;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-gray-800 font-[Inter]">
+    <!-- ✅ Navbar dengan activeNav -->
+    <%- include('partials/navbarHome', { activeNav: 'Home' }) %>
+
+    <!-- HERO SECTION -->
+    <section
+      class="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-yellow-50 pt-24"
+    >
+      <div class="max-w-7xl mx-auto px-6 py-24 lg:py-32 text-center">
+        <h1
+          class="text-3xl md:text-5xl font-bold leading-tight text-gray-800 mb-6"
+        >
+          Sistem Informasi Perpanjangan Peminjaman Buku Mandiri <br />
+          <span class="text-[#2F7A33]"
+            >UPT Perpustakaan Universitas Andalas</span
+          >
+        </h1>
+        <p class="max-w-3xl mx-auto text-gray-600 text-lg mb-8">
+          SiBuDi (Sistem Informasi Buku Digital) adalah platform inovatif untuk
+          mendukung layanan
+          <strong
+            >perpanjangan, peminjaman, dan pengelolaan denda</strong
+          >
+          buku secara mandiri dan terintegrasi dengan sistem SLiMS.
+        </p>
+        <a
+          href="/login"
+          class="inline-block px-8 py-3 bg-[#2F7A33] text-white font-medium rounded-lg hover:bg-[#256328] transition-all"
+        >
+          Mulai Sekarang
+        </a>
+      </div>
+    </section>
+
+    <!-- PERPANJANG BUKU DARI RUMAH -->
+    <section
+      class="py-20 bg-gradient-to-br from-yellow-50 via-white to-green-50 relative"
+    >
+      <div
+        class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center"
+      >
+        <div>
+          <h2 class="text-3xl font-semibold mb-4 text-gray-800">
+            Perpanjang Buku dari Rumah
+          </h2>
+          <p class="text-gray-600 mb-6">
+            Kini kamu bisa memperpanjang buku kapan saja, di mana saja. Tanpa
+            antrean, tanpa repot — semua bisa dilakukan secara online melalui
+            SiBuDi.
+          </p>
+          <div
+            class="flex items-center gap-4 bg-white shadow-sm p-4 rounded-xl"
+          >
+            <img
+              src="/images/Perpustakaan Unand.jpg"
+              alt="Kepala Perpustakaan"
+              class="w-16 h-16 rounded-full object-cover"
+            />
+            <div>
+              <h4 class="font-semibold text-gray-800">
+                apt. Yori Yuliandra, M.Farm, Ph.D
+              </h4>
+              <p class="text-gray-500 text-sm">Kepala Perpustakaan</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center md:text-right space-y-4">
+          <div
+            class="inline-block bg-[#2F7A33] text-white px-4 py-2 rounded-2xl text-sm shadow-md"
+          >
+            “Sudah berapa buku yang kamu baca hari ini?”
+          </div>
+          <div
+            class="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded-2xl text-sm shadow-md"
+          >
+            “Hi! Jangan lupa untuk membaca buku!”
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOKASI PERPUSTAKAAN -->
+    <section class="py-20 bg-white">
+      <div
+        class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center"
+      >
+        <div
+          class="aspect-video bg-gray-100 rounded-xl flex items-center justify-center"
+        >
+          <iframe
+            class="w-full h-full rounded-xl"
+            src="https://www.google.com/maps?q=UPT+Perpustakaan+Universitas+Andalas&output=embed"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div>
+          <h2 class="text-3xl font-semibold mb-4 text-gray-800">
+            Lokasi UPT Perpustakaan
+          </h2>
+          <p class="text-gray-600 leading-relaxed">
+            Gedung Perpustakaan Universitas Andalas berlokasi di Kampus Unand
+            Limau Manis, Padang, Sumatera Barat. Terletak di jantung kampus,
+            dikelilingi oleh gedung perkuliahan dengan pemandangan indah
+            perbukitan.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAYANAN SIBUDI -->
+    <section id="layanan" class="py-20 bg-[#F8FFF8] border-t border-green-100">
+      <div class="max-w-6xl mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6 text-[#2F7A33]">
+          Layanan Perpanjangan Peminjaman Online
+        </h2>
+        <p class="max-w-3xl mx-auto text-gray-600 mb-10">
+          Layanan perpanjangan online diberikan kepada anggota perpustakaan yang
+          ingin memperpanjang masa pinjam buku dengan mudah dan cepat.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Service Item -->
+          <div
+            class="service-item bg-white p-6 rounded-2xl border border-green-100"
+          >
+            <div
+              class="service-number text-white w-12 h-12 flex justify-center items-center rounded-full mx-auto mb-4 text-lg font-bold"
+            >
+              01
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-gray-800">
+              Detail Peminjaman
+            </h3>
+            <p class="text-gray-600 mb-4">
+              Lihat daftar buku yang sedang kamu pinjam secara real-time dan
+              pantau tanggal pengembalianmu.
+            </p>
+            <a
+              href="/login"
+              class="inline-block px-4 py-2 bg-[#2F7A33] text-white rounded-md hover:bg-[#256328] transition"
+            >
+              Lihat Detail
+            </a>
+          </div>
+
+          <div
+            class="service-item bg-white p-6 rounded-2xl border border-green-100"
+          >
+            <div
+              class="service-number text-white w-12 h-12 flex justify-center items-center rounded-full mx-auto mb-4 text-lg font-bold"
+            >
+              02
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-gray-800">
+              Perpanjang Peminjaman
+            </h3>
+            <p class="text-gray-600 mb-4">
+              Ajukan perpanjangan buku secara online tanpa perlu datang ke
+              pustaka.
+            </p>
+            <a
+              href="/login"
+              class="inline-block px-4 py-2 bg-[#2F7A33] text-white rounded-md hover:bg-[#256328] transition"
+            >
+              Perpanjang Sekarang
+            </a>
+          </div>
+
+          <div
+            class="service-item bg-white p-6 rounded-2xl border border-green-100"
+          >
+            <div
+              class="service-number text-white w-12 h-12 flex justify-center items-center rounded-full mx-auto mb-4 text-lg font-bold"
+            >
+              03
+            </div>
+            <h3 class="text-xl font-semibold mb-2 text-gray-800">Cek Denda</h3>
+            <p class="text-gray-600 mb-4">
+              Ketahui jumlah denda yang sedang kamu miliki agar bisa segera
+              menyelesaikannya dengan mudah.
+            </p>
+            <a
+              href="/login"
+              class="inline-block px-4 py-2 bg-[#2F7A33] text-white rounded-md hover:bg-[#256328] transition"
+            >
+              Cek Sekarang
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <%- include('partials/footer-simple') %>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panduan Pengguna - SiBuDi</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      .step-card {
+        transition: all 0.3s ease;
+      }
+      .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(47, 122, 51, 0.2);
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-gray-800 font-[Inter]">
+    <!-- Navbar -->
+    <%- include('../partials/navbarHome', { activeNav: 'Panduan' }) %>
+
+    <!-- HEADER -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-yellow-50 via-white to-green-50 text-center">
+      <h1 class="text-4xl font-bold text-[#2F7A33] mb-4">Panduan Penggunaan SiBuDi</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Ikuti langkah-langkah berikut untuk menggunakan layanan perpanjangan buku,
+        pengecekan denda, dan melihat status peminjaman di SiBuDi.
+      </p>
+    </section>
+
+    <!-- LANGKAH-LANGKAH -->
+    <section class="py-20 bg-white">
+      <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+        <div class="step-card bg-[#F8FFF8] p-6 rounded-2xl text-center border border-green-100">
+          <div class="text-[#2F7A33] text-4xl font-bold mb-4">1</div>
+          <h3 class="font-semibold text-xl mb-2">Login ke Sistem</h3>
+          <p class="text-gray-600">
+            Masuk menggunakan akun mahasiswa yang sudah terdaftar di sistem perpustakaan.
+          </p>
+        </div>
+        <div class="step-card bg-[#F8FFF8] p-6 rounded-2xl text-center border border-green-100">
+          <div class="text-[#2F7A33] text-4xl font-bold mb-4">2</div>
+          <h3 class="font-semibold text-xl mb-2">Lihat Daftar Buku</h3>
+          <p class="text-gray-600">
+            Akses daftar buku yang sedang kamu pinjam dan lihat tanggal pengembalian.
+          </p>
+        </div>
+        <div class="step-card bg-[#F8FFF8] p-6 rounded-2xl text-center border border-green-100">
+          <div class="text-[#2F7A33] text-4xl font-bold mb-4">3</div>
+          <h3 class="font-semibold text-xl mb-2">Ajukan Perpanjangan</h3>
+          <p class="text-gray-600">
+            Tekan tombol “Perpanjang” untuk mengajukan perpanjangan masa pinjam buku secara online.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="py-20 bg-[#F8FFF8] border-t border-green-100">
+      <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-8 text-[#2F7A33]">
+          Pertanyaan yang Sering Diajukan (FAQ)
+        </h2>
+        <div class="space-y-6">
+          <div>
+            <h3 class="font-semibold text-lg text-gray-800">Apakah semua mahasiswa bisa menggunakan SiBuDi?</h3>
+            <p class="text-gray-600">Ya, selama terdaftar sebagai anggota UPT Perpustakaan Universitas Andalas.</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg text-gray-800">Bagaimana jika lupa password?</h3>
+            <p class="text-gray-600">Hubungi pustakawan atau admin perpustakaan untuk melakukan reset password.</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg text-gray-800">Apakah SiBuDi bisa digunakan lewat HP?</h3>
+            <p class="text-gray-600">Bisa! SiBuDi responsif dan dapat digunakan melalui smartphone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <%- include('../partials/footer-simple') %>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+<!-- views/partials/navbarOutside.ejs -->
+<!-- Navbar untuk role member (peminjam). 
+     Include di halaman member/dashboard atau layout member: <%- include('partials/navbarOutside') %>
+     Menggunakan res.locals.user (harus diset di middleware session). -->
+
+     <nav class="bg-white border-b shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="flex justify-between items-center h-16">
+            <!-- Brand -->
+            <div class="flex items-center">
+              <a href="/" class="flex items-center gap-3">
+                <img src="/images/Perpustakaan Unand.jpg" alt="SiBuDi" class="w-10 h-10 rounded" />
+                <span class="text-xl font-semibold">SiBuDi</span>
+              </a>
+            </div>
+      
+            <!-- Links -->
+            <div class="hidden md:flex items-center space-x-6">
+              <a href="/peminjaman" class="text-gray-600 hover:text-gray-900">Detail Peminjaman</a>
+              <a href="/perpanjangan" class="text-gray-600 hover:text-gray-900">Perpanjangan</a>
+              <a href="/denda" class="text-gray-600 hover:text-gray-900">Detail Denda</a>
+            </div>
+      
+            <!-- Profile / Logout -->
+            <div class="hidden md:flex items-center space-x-4">
+              <% if (typeof user !== 'undefined' && user) { %>
+                <span class="text-gray-700">Hai, <strong><%= user.member_name || user.member_id || user.username %></strong></span>
+                <a href="/logout" class="px-3 py-1 border rounded text-sm hover:bg-gray-50">Logout</a>
+              <% } else { %>
+                <a href="/login" class="px-3 py-1 bg-indigo-600 text-white rounded">Login</a>
+              <% } %>
+            </div>
+      
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center">
+              <button id="nav-outside-toggle" aria-label="Toggle menu" class="p-2 rounded-md focus:outline-none focus:ring">
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Mobile menu -->
+        <div id="nav-outside-menu" class="hidden md:hidden border-t">
+          <div class="px-4 py-3 space-y-2">
+            <a href="/peminjaman" class="block">Detail Peminjaman</a>
+            <a href="/perpanjangan" class="block">Perpanjangan</a>
+            <a href="/denda" class="block">Detail Denda</a>
+            <div class="pt-2 border-t">
+              <% if (typeof user !== 'undefined' && user) { %>
+                <div class="py-2">Hai, <strong><%= user.member_name || user.member_id || user.username %></strong></div>
+                <a href="/logout" class="block px-3 py-2 bg-red-600 text-white rounded-md text-center">Logout</a>
+              <% } else { %>
+                <a href="/login" class="block px-3 py-2 bg-indigo-600 text-white rounded-md text-center">Login</a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      
+        <script>
+          (function(){
+            const btn = document.getElementById('nav-outside-toggle');
+            const menu = document.getElementById('nav-outside-menu');
+            if (!btn) return;
+            btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+          })();
+        </script>
+      </nav>
+      

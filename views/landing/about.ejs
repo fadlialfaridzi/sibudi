@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tentang SiBuDi</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      html { scroll-behavior: smooth; }
+      .fade-in {
+        animation: fadeIn 0.8s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-gray-800 font-[Inter]">
+    <!-- Navbar -->
+    <%- include('../partials/navbarHome', { activeNav: 'about' }) %>
+
+    <!-- ABOUT SECTION -->
+    <section class="pt-24 pb-16 bg-gradient-to-br from-green-50 via-white to-yellow-50 fade-in">
+      <div class="max-w-5xl mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold text-[#2F7A33] mb-4">Tentang SiBuDi</h1>
+        <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
+          <strong>SiBuDi (Sistem Informasi Buku Digital)</strong> merupakan sistem berbasis web
+          yang dikembangkan untuk mendukung digitalisasi layanan di UPT
+          Perpustakaan Universitas Andalas. Sistem ini memudahkan mahasiswa dalam
+          <span class="font-semibold text-[#2F7A33]">melakukan perpanjangan, pengecekan denda, dan melihat status peminjaman buku</span>
+          secara mandiri.
+        </p>
+      </div>
+    </section>
+
+    <!-- VISI & MISI -->
+    <section class="py-20 bg-white border-t border-green-100">
+      <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 class="text-2xl font-bold text-[#2F7A33] mb-4">Visi</h2>
+          <p class="text-gray-700 leading-relaxed">
+            Menjadi sistem informasi perpustakaan modern yang efisien, inklusif,
+            dan mendukung kegiatan literasi di lingkungan akademik Universitas Andalas.
+          </p>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-[#2F7A33] mb-4">Misi</h2>
+          <ul class="text-gray-700 space-y-2 list-disc pl-5">
+            <li>Meningkatkan aksesibilitas layanan perpustakaan.</li>
+            <li>Mendukung integrasi dengan sistem SLiMS.</li>
+            <li>Memberikan pengalaman pengguna yang cepat dan mudah.</li>
+            <li>Mendorong budaya literasi digital kampus.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIM PENGEMBANG -->
+    <section class="py-20 bg-[#F8FFF8] border-t border-green-100">
+      <div class="max-w-6xl mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold text-[#2F7A33] mb-10">Tim Pengembang</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <% const team = [
+              { nama: "Ridho Dwi Syahputra", peran: "Project Manager" },
+              { nama: "Rizky Aditya", peran: "Backend Developer" },
+              { nama: "Maya Putri", peran: "Frontend Designer" },
+              { nama: "Fauzan Rahman", peran: "Database Engineer" }
+            ];
+          team.forEach(member => { %>
+          <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+            <div class="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center text-2xl font-bold text-[#2F7A33]">
+              <%= member.nama.charAt(0) %>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800"><%= member.nama %></h3>
+            <p class="text-gray-500 text-sm"><%= member.peran %></p>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <%- include('../partials/footer-simple') %>
+  </body>
+</html>
