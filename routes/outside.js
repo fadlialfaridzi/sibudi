@@ -2,24 +2,41 @@ const express = require('express');
 const router = express.Router();
 
 // Import controller untuk halaman luar (peminjam)
-const detailPinjamController = require('../controllers/outside/detailPinjamController');
 const perpanjanganController = require('../controllers/outside/perpanjanganController');
 const dendaController = require('../controllers/outside/dendaController');
+
+// Middleware (opsional, jika sudah ada di project-mu)
+const { requireLogin, requireRole } = require('../middleware/sessionCheck');
 
 // =====================================================
 // ROUTES untuk ROLE: Member / Peminjam (Outside)
 // =====================================================
 
-// Detail buku yang sedang dipinjam
-router.get('/detailPinjam', detailPinjamController.renderDetailPinjam);
+// Halaman Dasbor Peminjaman & Perpanjangan
+router.get(
+  '/perpanjangan',
+  requireLogin,
+  requireRole('member'),
+  perpanjanganController.renderPerpanjangan
+);
 
-// Perpanjangan buku
-router.get('/perpanjangan', perpanjanganController.renderPerpanjangan);
+// Endpoint AJAX untuk proses perpanjangan
+router.post(
+  '/extend',
+  requireLogin,
+  requireRole('member'),
+  perpanjanganController.extendLoan
+);
 
-// Denda
-router.get('/denda', dendaController.renderDenda);
+// Halaman Denda
+router.get(
+  '/denda',
+  requireLogin,
+  requireRole('member'),
+  dendaController.renderDenda
+);
 
-// Halaman about (publik, tapi untuk member area)
+// Halaman About (opsional, masih bagian area member)
 router.get('/about', (req, res) => {
   res.render('outside/about', { title: 'Tentang SiBuDi (Member)' });
 });

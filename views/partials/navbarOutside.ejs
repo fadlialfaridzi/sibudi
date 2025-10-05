@@ -25,18 +25,11 @@
       <!-- Desktop Menu -->
       <div class="hidden md:flex items-center space-x-8">
         <a
-          href="/outside/detailPinjam"
-          class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition"
-          data-name="Detail"
-        >
-          Detail Peminjaman
-        </a>
-        <a
           href="/outside/perpanjangan"
           class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition"
           data-name="Perpanjangan"
         >
-          Perpanjangan
+          Detail Peminjaman
         </a>
         <a
           href="/outside/denda"
@@ -44,6 +37,13 @@
           data-name="Denda"
         >
           Detail Denda
+        </a>
+        <a
+          href="/outside/about"
+          class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition"
+          data-name="About"
+        >
+          Tentang
         </a>
       </div>
 
@@ -118,9 +118,9 @@
         </div>
 
         <div class="flex flex-col space-y-4 mt-8">
-          <a href="/outside/detailPinjam" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Detail">Detail Peminjaman</a>
-          <a href="/outside/perpanjangan" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Perpanjangan">Perpanjangan</a>
+          <a href="/outside/perpanjangan" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Perpanjangan">Detail Peminjaman</a>
           <a href="/outside/denda" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Denda">Detail Denda</a>
+          <a href="/outside/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">Tentang</a>
         </div>
       </div>
 
@@ -148,7 +148,6 @@
   </div>
 
   <style>
-    /* Highlight aktif navbar */
     .nav-active {
       color: #2f7a33 !important;
       font-weight: 600;
@@ -168,20 +167,13 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Sidebar mobile toggle
       const toggleBtn = document.getElementById("nav-outside-toggle");
       const closeBtn = document.getElementById("nav-outside-close");
       const menu = document.getElementById("nav-outside-menu");
 
-      toggleBtn?.addEventListener("click", () => {
-        menu.classList.remove("translate-x-full");
-      });
+      toggleBtn?.addEventListener("click", () => menu.classList.remove("translate-x-full"));
+      closeBtn?.addEventListener("click", () => menu.classList.add("translate-x-full"));
 
-      closeBtn?.addEventListener("click", () => {
-        menu.classList.add("translate-x-full");
-      });
-
-      // Highlight aktif link
       const activeName = "<%= typeof activeNav !== 'undefined' ? activeNav : '' %>";
       document.querySelectorAll(".nav-link, .nav-link-mobile").forEach((link) => {
         const name = link.dataset.name;
