@@ -1,0 +1,62 @@
+<% if (typeof popup !== "undefined" && popup && popup.message) { %>
+  <!-- =======================
+       MODAL POPUP (center)
+  ======================== -->
+  <div
+    id="popup"
+    class="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-[1000] animate-fadeIn"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6 text-center relative"
+    >
+      <!-- Icon -->
+      <% if (popup.type === "success") { %>
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+          <i class="fa-solid fa-check text-green-600 text-3xl"></i>
+        </div>
+      <% } else if (popup.type === "error") { %>
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+          <i class="fa-solid fa-xmark text-red-600 text-3xl"></i>
+        </div>
+      <% } else if (popup.type === "warning") { %>
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
+          <i class="fa-solid fa-exclamation text-yellow-600 text-3xl"></i>
+        </div>
+      <% } else { %>
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+          <i class="fa-solid fa-info text-blue-600 text-3xl"></i>
+        </div>
+      <% } %>
+
+      <!-- Message -->
+      <h2 class="text-lg font-semibold text-gray-800 mb-2"><%= popup.title || (popup.type === "success" ? "Berhasil" : popup.type === "error" ? "Gagal" : "Informasi") %></h2>
+      <p class="text-gray-600 mb-6"><%= popup.message %></p>
+
+      <!-- Tombol -->
+      <button
+        type="button"
+        data-popup-close
+        class="popup-close w-full rounded-full bg-green-700 text-white font-semibold py-3 hover:bg-green-800 transition active:scale-[0.97]"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+
+  <!-- Animasi -->
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-out;
+    }
+  </style>
+<% } %>

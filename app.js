@@ -1,40 +1,46 @@
 // =====================================================
-// 1. Import Modules
+// app.js - Konfigurasi Utama Aplikasi SiBuDi (Final)
 // =====================================================
-require('dotenv').config(); // Load variabel dari .env
 
+// 1️⃣ IMPORT MODULES & ENVIRONMENT
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
-// =====================================================
-// 2. Import Custom Modules & Routes
-// =====================================================
+// 2️⃣ IMPORT CUSTOM MODULES & ROUTES
 const db = require('./config/db'); // koneksi database
+const security = require('./middleware/security'); // helmet + CSP + limiter
 
-// Routes utama
-const indexRouter = require('./routes/index');   // sementara untuk testing
+// routes utama
+const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
-// Routes sistem
+// routes sistem inti
+const authRouter = require('./routes/auth');       // login/logout
 const landingRouter = require('./routes/landing'); // halaman publik
-const insideRouter = require('./routes/inside');   // admin/pustakawan (dalam pustaka)
-const outsideRouter = require('./routes/outside'); // peminjam (luar pustaka)
+const insideRouter = require('./routes/inside');   // pustakawan
+const outsideRouter = require('./routes/outside'); // peminjam
 
-// =====================================================
-// 3. Inisialisasi Aplikasi
-// =====================================================
+// 3️⃣ INISIALISASI APP EXPRESS
 const app = express();
 
 // =====================================================
-// 4. Setup View Engine (EJS)
+// 4️⃣ MIDDLEWARE KEAMANAN (Helmet, CSP, Rate Limiter)
 // =====================================================
-// tambahkan beberapa path supaya include('partials/...') bisa dibaca dari mana pun
+security(app); // aktifkan modul keamanan
+
+// =====================================================
+// 5️⃣ KONFIGURASI VIEW ENGINE (EJS)
+// =====================================================
 app.set('views', [
   path.join(__dirname, 'views'),
   path.join(__dirname, 'views/partials'),
+  path.join(__dirname, 'views/auth'),
   path.join(__dirname, 'views/landing'),
   path.join(__dirname, 'views/inside'),
   path.join(__dirname, 'views/outside'),
@@ -42,54 +48,91 @@ app.set('views', [
 app.set('view engine', 'ejs');
 
 // =====================================================
-// 5. Middleware Umum
+// 6️⃣ MIDDLEWARE SESSION (MySQL Session Store)
+// =====================================================
+const sessionStore = new MySQLStore({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  clearExpired: true,
+  checkExpirationInterval: 900000, // 15 menit
+  expiration: 1000 * 60 * 60 * 8, // 8 jam
+});
+
+app.use(
+  session({
+    key: 'sibudi_session_id',
+    secret: process.env.SESSION_SECRET || 'sibudi_secret',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 8, // 8 jam
+      httpOnly: true,
+      secure: false, // ganti true kalau sudah pakai HTTPS
+    },
+  })
+);
+
+// =====================================================
+// 7️⃣ MIDDLEWARE UMUM
 // =====================================================
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-// Serving file statis (CSS, JS, gambar)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // =====================================================
-// 6. Routing
+// 8️⃣ SET GLOBAL VARIABLE UNTUK VIEW
+// =====================================================
+// (memudahkan akses info user di semua halaman ejs)
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
+
+// =====================================================
+// 9️⃣ ROUTING
 // =====================================================
 
-// Landing page publik (home, about, panduan, login)
+// Autentikasi (login & logout)
+app.use('/', authRouter);
+
+// Halaman publik (Home, About, Panduan)
 app.use('/', landingRouter);
 
-// Route lama (index.ejs) — tetap aktif untuk perbandingan
+// Rute testing (legacy)
 app.use('/legacy', indexRouter);
 
-// Route user umum (testing atau manajemen user)
+// Rute user management (admin/testing)
 app.use('/users', usersRouter);
 
-// Role: pustakawan (akses komputer perpustakaan)
+// Rute pustakawan (Mode Kios / Inside)
 app.use('/inside', insideRouter);
 
-// Role: anggota/peminjam (akses luar pustaka)
+// Rute peminjam (Dashboard Member / Outside)
 app.use('/outside', outsideRouter);
 
 // =====================================================
-// 7. Error Handling
+// 🔟 ERROR HANDLING
 // =====================================================
 
-// Catch 404 dan teruskan ke handler error
+// Handle 404 - jika route tidak ditemukan
 app.use((req, res, next) => {
   next(createError(404));
 });
 
-// Error handler
+// Error handler umum
 app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   res.status(err.status || 500);
   res.render('error');
 });
 
 // =====================================================
-// 8. Export App
+// 🔚 EXPORT APP
 // =====================================================
 module.exports = app;

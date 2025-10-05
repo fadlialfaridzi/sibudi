@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - SiBuDi</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome (no integrity to avoid SRI mismatch) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Preline -->
+    <script defer src="https://cdn.jsdelivr.net/npm/preline@latest/dist/preline.min.js"></script>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-green-300 to-green-700 font-[Inter]">
+    <div class="w-full max-w-5xl bg-white/70 backdrop-blur-lg shadow-2xl rounded-[30px] overflow-hidden grid grid-cols-1 md:grid-cols-2">
+      <div class="p-10 md:p-12 flex flex-col justify-center">
+        <div class="mb-10 text-center md:text-left">
+          <h1 class="text-6xl md:text-7xl font-extrabold text-green-800 tracking-widest">SiBuDi</h1>
+          <p class="text-gray-700 mt-2 text-lg font-medium">Sistem peminjaman Buku manDiri Unand</p>
+        </div>
+
+        <form action="/login" method="post" class="space-y-6">
+          <div>
+            <label for="nim" class="sr-only">NIM</label>
+            <input id="nim" name="nim" type="text" placeholder="Masukkan NIM"
+              class="w-full rounded-full border border-gray-300 bg-white/95 px-6 py-4 text-base text-gray-800 shadow focus:ring-2 focus:ring-green-600/40 focus:outline-none transition" required />
+          </div>
+
+          <div>
+            <div class="relative">
+              <label for="password" class="sr-only">Password</label>
+              <input id="password" name="password" type="password" placeholder="Masukkan Password"
+                class="w-full rounded-full border border-gray-300 bg-white/95 px-6 py-4 pr-12 text-base text-gray-800 shadow focus:ring-2 focus:ring-green-600/40 focus:outline-none transition"
+                required />
+              <button type="button" id="togglePassword"
+                class="absolute inset-y-0 right-4 flex items-center justify-center text-gray-600 hover:text-green-700 focus:outline-none">
+                <i id="eyeIcon" class="fa-solid fa-eye text-lg"></i>
+              </button>
+            </div>
+            <div class="mt-2 text-right">
+              <a href="#" class="text-sm text-gray-600 hover:text-green-700 transition">Lupa Kata Sandi?</a>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full rounded-full bg-green-700 text-white font-semibold tracking-wide py-3.5 hover:bg-green-800 active:scale-[0.98] transition duration-200">LOGIN</button>
+        </form>
+      </div>
+
+      <div class="hidden md:block relative">
+        <div class="absolute inset-0 bg-gradient-to-t from-green-700/30 to-transparent z-10"></div>
+        <img src="/images/Perpustakaan Unand.jpg" alt="Universitas Andalas" class="w-full h-full object-cover" />
+      </div>
+    </div>
+
+    <!-- include popup partial (partial berada di views/partials/popup.ejs) -->
+    <%- include('partials/popup') %>
+
+    <!-- scripts -->
+    <script src="/js/main.js"></script>
+    <script src="/js/popup.js"></script>
+  </body>
+</html>
