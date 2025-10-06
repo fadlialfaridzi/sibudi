@@ -13,32 +13,17 @@ const { requireLogin, requireRole } = require('../middleware/sessionCheck');
 // =====================================================
 
 // Halaman Dasbor Peminjaman & Perpanjangan
-router.get(
-  '/perpanjangan',
-  requireLogin,
-  requireRole('member'),
-  perpanjanganController.renderPerpanjangan
-);
+router.get('/perpanjangan', requireLogin, requireRole('member'), perpanjanganController.renderPerpanjangan);
 
 // Endpoint AJAX untuk proses perpanjangan
-router.post(
-  '/extend',
-  requireLogin,
-  requireRole('member'),
-  perpanjanganController.extendLoan
-);
+router.post('/extend', requireLogin, requireRole('member'), perpanjanganController.extendLoan);
 
 // Halaman Denda
-router.get(
-  '/denda',
-  requireLogin,
-  requireRole('member'),
-  dendaController.renderDenda
-);
+router.get('/denda', requireLogin, requireRole('member'), dendaController.renderDenda);
 
 // Halaman About (opsional, masih bagian area member)
 router.get('/about', (req, res) => {
-  res.render('outside/about', { title: 'Tentang SiBuDi (Member)' });
+    res.render('outside/about', { title: 'Tentang SiBuDi (Member)' });
 });
 
 module.exports = router;
