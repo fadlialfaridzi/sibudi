@@ -47,6 +47,12 @@ exports.renderPerpanjangan = async (req, res) => {
       [memberId]
     );
 
+    // Ganti semua gambar null/undefined dengan /images/buku.png
+    const loans = loanRows.map((b) => ({
+      ...b,
+      image: b.image || '/images/buku.png',
+    }));
+
     // =============================
     // 3️⃣ Total Denda Aktif (belum lunas)
     // =============================
@@ -62,7 +68,7 @@ exports.renderPerpanjangan = async (req, res) => {
     res.render('outside/perpanjangan', {
       title: 'Detail & Perpanjangan Peminjaman',
       member,
-      loans: loanRows,
+      loans,
       totalDenda,
       popup: null,
       activeNav: 'Perpanjangan',
@@ -96,6 +102,14 @@ exports.extendLoan = async (req, res) => {
     const { loan_id } = req.body;
     const memberId = req.session.user.id;
 
+    if (!loan_id) {
+      return res.status(400).json({
+        success: false,
+        type: 'error',
+        message: 'ID pinjaman tidak valid.',
+      });
+    }
+
     // Validasi ID Pinjaman
     const [loanRows] = await db.query(
       `SELECT loan_id, loan_date, due_date, renewed 
@@ -103,9 +117,11 @@ exports.extendLoan = async (req, res) => {
       [loan_id, memberId]
     );
     if (loanRows.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'Data pinjaman tidak ditemukan.' });
+      return res.status(404).json({
+        success: false,
+        type: 'error',
+        message: 'Data pinjaman tidak ditemukan.',
+      });
     }
 
     const loan = loanRows[0];
@@ -135,11 +151,17 @@ exports.extendLoan = async (req, res) => {
       });
     }
 
-    // Proses perpanjangan (tambah 7 hari dari due_date)
-    const newDueDate = dayjs(loan.due_date)
-      .add(7, 'day')
-      .format('YYYY-MM-DD');
+    // ✅ Hitung due_date baru +7 hari (skip hari Minggu)
+    let newDue = dayjs(loan.due_date);
+    let daysAdded = 0;
+    while (daysAdded < 7) {
+      newDue = newDue.add(1, 'day');
+      // Jika bukan hari Minggu (0 = Minggu)
+      if (newDue.day() !== 0) daysAdded++;
+    }
+    const newDueDate = newDue.format('YYYY-MM-DD');
 
+    // Proses perpanjangan
     await db.query(
       `UPDATE loan 
        SET due_date = ?, renewed = renewed + 1 
