@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= title %></title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="/css/output.css" />
+        <script src="https://unpkg.com/preline/dist/preline.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f9fafb;
+            }
+        </style>
+    </head>
+
+    <body class="min-h-screen flex flex-col">
+        <%- include('../partials/navbarOutside', { title: 'Profil Member - SiBuDi' }) %>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow pt-24 pb-16 bg-gray-50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mb-8">
+                    <h1 class="text-2xl font-bold text-[#2F7A33]">Profil Member</h1>
+                    <p class="text-sm text-gray-500 mt-1">Informasi akun dan data keanggotaan Anda</p>
+                </div>
+
+                <!-- Konten -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Foto Profil -->
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 text-center">
+                        <div class="relative inline-block">
+                            <img
+                                src="<%= member.member_image ? '/uploads/' + member.member_image : '/images/profile-avatar.jpg' %>"
+                                alt="Foto Profil"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-[#2F7A33] shadow-md mx-auto" />
+                        </div>
+
+                        <h2 class="mt-4 text-xl font-semibold text-gray-800"><%= member.member_name %></h2>
+                        <p class="text-sm text-gray-500"><%= member.member_id %></p>
+                        <p class="mt-2 text-xs text-gray-400 italic">Masa aktif hingga <%= member.expire_date ? new Date(member.expire_date).toLocaleDateString('id-ID') : '-' %></p>
+
+                        <!-- Tombol Edit Profil -->
+                        <div class="mt-4">
+                            <a
+                                href="/outside/editProfile"
+                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-[#FFD700] text-[#2F7A33] hover:bg-yellow-400 transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2F7A33]/30">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Edit Profil
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Detail Profil -->
+                    <div class="md:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-8">
+                        <!-- Informasi Pribadi -->
+                        <section>
+                            <h3 class="text-lg font-semibold text-[#2F7A33] mb-4 flex items-center gap-2"><i class="fa-solid fa-user text-[#FFD700]"></i> Informasi Pribadi</h3>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <!-- Nama Lengkap -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Nama Lengkap</label>
+                                    <input type="text" value="<%= member.member_name || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <!-- Jenis Kelamin -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Jenis Kelamin</label>
+                                    <input type="text" value="<%= member.gender_text || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <!-- Tanggal Lahir -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Tanggal Lahir</label>
+                                    <input
+                                        type="text"
+                                        value="<%= member.birth_date ? new Date(member.birth_date).toLocaleDateString('id-ID') : '-' %>"
+                                        readonly
+                                        class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <!-- Nomor Telepon -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Nomor Telepon</label>
+                                    <input type="text" value="<%= member.member_phone || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <!-- Email -->
+                                <div class="sm:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                                    <input type="email" value="<%= member.member_email || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <!-- Alamat -->
+                                <div class="sm:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Alamat</label>
+                                    <textarea readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700] resize-none"><%= member.member_address || '-' %></textarea>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Informasi Akademik -->
+                        <section>
+                            <h3 class="text-lg font-semibold text-[#2F7A33] mb-4 flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-[#FFD700]"></i> Informasi Akademik</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">PIN / Jurusan</label>
+                                    <input type="text" value="<%= member.pin || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Status Akun -->
+                        <section>
+                            <h3 class="text-lg font-semibold text-[#2F7A33] mb-4 flex items-center gap-2"><i class="fa-solid fa-id-card text-[#FFD700]"></i> Status Akun</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Tanggal Bergabung</label>
+                                    <input
+                                        type="text"
+                                        value="<%= member.member_since_date ? new Date(member.member_since_date).toLocaleDateString('id-ID') : '-' %>"
+                                        readonly
+                                        class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Tanggal Registrasi</label>
+                                    <input
+                                        type="text"
+                                        value="<%= member.register_date ? new Date(member.register_date).toLocaleDateString('id-ID') : '-' %>"
+                                        readonly
+                                        class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Tanggal Kadaluarsa</label>
+                                    <input
+                                        type="text"
+                                        value="<%= member.expire_date ? new Date(member.expire_date).toLocaleDateString('id-ID') : '-' %>"
+                                        readonly
+                                        class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Status Akun</label>
+                                    <input
+                                        type="text"
+                                        value="<%= member.is_pending === 1 ? 'Menunggu Verifikasi' : 'Aktif' %>"
+                                        readonly
+                                        class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Terakhir Login</label>
+                                    <input
+                                        type="text"
+                                        value="<%= member.last_login ? new Date(member.last_login).toLocaleString('id-ID') : '-' %>"
+                                        readonly
+                                        class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../partials/footer-simple') %>
+    </body>
+</html>

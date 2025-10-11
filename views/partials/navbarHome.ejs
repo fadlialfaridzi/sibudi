@@ -1,173 +1,109 @@
-<%# =========================================================
-  Navbar Home (Landing Page) - SiBuDi
-  Tema: Hijau Unand (#2F7A33), Kuning (#FFD700), Putih (#F8FFF8)
-  Efek mobile: slide kanan saat toggle ditekan
-  Parameter aktif: activeNav => "Home" | "About" | "Panduan"
-========================================================= %>
+<%# ========================================================= Navbar Home (Landing Page) - SiBuDi Tema: Hijau Unand (#2F7A33), Kuning (#FFD700), Putih (#F8FFF8) Efek mobile: slide kanan saat toggle ditekan Parameter aktif: activeNav =>
+"Home" | "About" | "Panduan" ========================================================= %>
 
 <nav class="fixed top-0 left-0 w-full bg-[#F8FFF8] shadow-sm z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <!-- Brand -->
-        <div class="flex items-center">
-          <a href="/" class="flex items-center gap-3">
-            <img
-              src="/images/Perpustakaan Unand.jpg"
-              alt="SiBuDi Logo"
-              class="w-10 h-10 rounded"
-            />
-            <span class="text-2xl font-bold text-[#2F7A33] tracking-tight">
-              SIBUDI
-            </span>
-          </a>
+        <div class="flex justify-between items-center h-16">
+            <!-- Brand -->
+            <div class="flex items-center">
+                <a href="/" class="flex items-center gap-3">
+                    <img src="/images/Perpustakaan Unand.jpg" alt="SiBuDi Logo" class="w-10 h-10 rounded" />
+                    <span class="text-2xl font-bold text-[#2F7A33] tracking-tight"> SIBUDI </span>
+                </a>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="/" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="Home"> Home </a>
+                <a href="/about" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="About"> About </a>
+                <a href="/panduan" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="Panduan"> Panduan Pengguna </a>
+            </div>
+
+            <!-- Login Button -->
+            <div class="hidden md:flex">
+                <a href="/login" class="px-4 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition"> Login </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="md:hidden flex items-center">
+                <button id="nav-toggle" aria-label="Toggle menu" class="p-2 rounded-md text-[#2F7A33] focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
+                    <svg id="menu-icon" class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
         </div>
-  
-        <!-- Desktop Menu -->
-        <div class="hidden md:flex items-center space-x-8">
-          <a
-            href="/"
-            class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition"
-            data-name="Home"
-          >
-            Home
-          </a>
-          <a
-            href="/about"
-            class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition"
-            data-name="About"
-          >
-            About
-          </a>
-          <a
-            href="/panduan"
-            class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition"
-            data-name="Panduan"
-          >
-            Panduan Pengguna
-          </a>
-        </div>
-  
-        <!-- Login Button -->
-        <div class="hidden md:flex">
-          <a
-            href="/login"
-            class="px-4 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition"
-          >
-            Login
-          </a>
-        </div>
-  
-        <!-- Mobile Menu Toggle -->
-        <div class="md:hidden flex items-center">
-          <button
-            id="nav-toggle"
-            aria-label="Toggle menu"
-            class="p-2 rounded-md text-[#2F7A33] focus:outline-none focus:ring-2 focus:ring-[#FFD700]"
-          >
-            <svg
-              id="menu-icon"
-              class="w-7 h-7"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
     </div>
-  
+
     <!-- Mobile Sidebar Menu -->
-    <div
-      id="mobile-menu"
-      class="fixed top-0 right-0 h-full w-3/4 bg-[#F8FFF8] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden"
-    >
-      <div class="flex flex-col h-full justify-between">
-        <div class="p-6 space-y-6">
-          <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-[#2F7A33]">SIBUDI</h2>
-            <button id="close-menu" class="text-[#2F7A33] focus:outline-none">
-              <svg
-                class="w-7 h-7"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-  
-          <div class="flex flex-col space-y-4 mt-8">
-            <a href="/" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Home">Home</a>
-            <a href="/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">About</a>
-            <a href="/panduan" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Panduan">Panduan Pengguna</a>
-          </div>
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-3/4 bg-[#F8FFF8] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="flex flex-col h-full justify-between">
+            <div class="p-6 space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-[#2F7A33]">SIBUDI</h2>
+                    <button id="close-menu" class="text-[#2F7A33] focus:outline-none">
+                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex flex-col space-y-4 mt-8">
+                    <a href="/" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Home">Home</a>
+                    <a href="/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">About</a>
+                    <a href="/panduan" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Panduan">Panduan Pengguna</a>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <a href="/login" class="block w-full text-center py-2 bg-[#FFD700] text-[#2F7A33] font-bold rounded-lg hover:bg-yellow-400 transition"> Login </a>
+            </div>
         </div>
-  
-        <div class="p-6">
-          <a
-            href="/login"
-            class="block w-full text-center py-2 bg-[#FFD700] text-[#2F7A33] font-bold rounded-lg hover:bg-yellow-400 transition"
-          >
-            Login
-          </a>
-        </div>
-      </div>
     </div>
-  
+
     <style>
-      /* Highlight aktif navbar */
-      .nav-active {
-        color: #2f7a33 !important;
-        font-weight: 600;
-        position: relative;
-      }
-      .nav-active::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background-color: #ffd700;
-        border-radius: 2px;
-      }
+        /* Highlight aktif navbar */
+        .nav-active {
+            color: #2f7a33 !important;
+            font-weight: 600;
+            position: relative;
+        }
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ffd700;
+            border-radius: 2px;
+        }
     </style>
-  
+
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // Mobile toggle logic
-        const toggleBtn = document.getElementById("nav-toggle");
-        const closeBtn = document.getElementById("close-menu");
-        const mobileMenu = document.getElementById("mobile-menu");
-  
-        toggleBtn.addEventListener("click", () => {
-          mobileMenu.classList.remove("translate-x-full");
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile toggle logic
+            const toggleBtn = document.getElementById('nav-toggle');
+            const closeBtn = document.getElementById('close-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            toggleBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-full');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+
+            // Active nav highlighting
+            const activeName = "<%= typeof activeNav !== 'undefined' ? activeNav : '' %>";
+
+            document.querySelectorAll('.nav-link, .nav-link-mobile').forEach((link) => {
+                const name = link.dataset.name;
+                if (name.toLowerCase() === activeName.toLowerCase()) {
+                    link.classList.add('nav-active');
+                }
+            });
         });
-  
-        closeBtn.addEventListener("click", () => {
-          mobileMenu.classList.add("translate-x-full");
-        });
-  
-        // Active nav highlighting
-        const activeName = "<%= typeof activeNav !== 'undefined' ? activeNav : '' %>";
-  
-        document.querySelectorAll(".nav-link, .nav-link-mobile").forEach((link) => {
-          const name = link.dataset.name;
-          if (name.toLowerCase() === activeName.toLowerCase()) {
-            link.classList.add("nav-active");
-          }
-        });
-      });
     </script>
-  </nav>
-  
+</nav>
