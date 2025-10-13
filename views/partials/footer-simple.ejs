@@ -1,48 +1,69 @@
-    <!-- Footer Section -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-section">
-                    <div class="logo">
-                        <div class="logo-icon"></div>
-                        <span class="logo-text">SiBuDi</span>
-                    </div>
-                    <p class="footer-description">
-                        Sistem Informasi Perpanjangan Peminjaman Buku Mandiri - 
-                        Solusi modern untuk manajemen perpustakaan digital.
-                    </p>
-                </div>
-                <div class="footer-section">
-                    <h3 class="footer-title">Layanan</h3>
-                    <div class="footer-links">
-                        <a href="/peminjaman">Peminjaman Buku</a>
-                        <a href="/perpanjangan">Perpanjangan</a>
-                        <a href="/denda">Cek Denda</a>
-                        <a href="/katalog">Katalog Buku</a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3 class="footer-title">Informasi</h3>
-                    <div class="footer-links">
-                        <a href="/tentang">Tentang Kami</a>
-                        <a href="/kontak">Kontak</a>
-                        <a href="/bantuan">Bantuan</a>
-                        <a href="/kebijakan">Kebijakan Privasi</a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3 class="footer-title">Kontak</h3>
-                    <div class="contact-info">
-                        <p><i class="fas fa-map-marker-alt"></i> Jl. Perpustakaan No. 123</p>
-                        <p><i class="fas fa-phone"></i> (021) 1234-5678</p>
-                        <p><i class="fas fa-envelope"></i> info@sibudi.ac.id</p>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 SiBuDi. Semua hak dilindungi.</p>
-            </div>
+<%- include('partials/header-simple') %>
+
+  <!-- Footer -->
+  <footer class="bg-gray-50 border-t border-gray-200 mt-16">
+    <div class="max-w-screen-xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        
+        <!-- Logo dan deskripsi -->
+        <div>
+          <div class="flex items-center mb-3">
+            <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center text-white font-bold">S</div>
+            <a href="/" class="flex items-center gap-3">
+                <img src="/images/Perpustakaan Unand.jpg" alt="SiBuDi Logo" class="w-10 h-10 rounded" />
+                <span class="text-2xl font-bold text-[#2F7A33] tracking-tight"> SIBUDI </span>
+            </a>
+          </div>
+          <p class="text-sm text-gray-600">
+            Sistem Informasi Perpanjangan Peminjaman Buku Mandiri — solusi modern untuk manajemen perpustakaan digital.
+          </p>
         </div>
-    </footer>
-</body>
-</html>
+
+        <!-- Layanan -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Layanan</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/peminjaman" class="hover:text-primary transition">Peminjaman Buku</a></li>
+            <li><a href="/perpanjangan" class="hover:text-primary transition">Perpanjangan</a></li>
+            <li><a href="/denda" class="hover:text-primary transition">Cek Denda</a></li>
+            <li><a href="/katalog" class="hover:text-primary transition">Katalog Buku</a></li>
+          </ul>
+        </div>
+
+        <!-- Informasi -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Informasi</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/tentang" class="hover:text-primary transition">Tentang Kami</a></li>
+            <li><a href="/kontak" class="hover:text-primary transition">Kontak</a></li>
+            <li><a href="/bantuan" class="hover:text-primary transition">Bantuan</a></li>
+            <li><a href="/kebijakan" class="hover:text-primary transition">Kebijakan Privasi</a></li>
+          </ul>
+        </div>
+
+        <!-- Kontak -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Kontak</h3>
+          <ul class="space-y-2 text-sm">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt w-5 text-primary mt-0.5"></i>
+              <span>Jl. Perpustakaan No. 123</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-phone w-5 text-primary mt-0.5"></i>
+              <span>(021) 1234-5678</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-envelope w-5 text-primary mt-0.5"></i>
+              <span>info@sibudi.ac.id</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer bottom -->
+      <div class="border-t border-gray-200 mt-10 pt-6 text-center text-sm text-gray-500">
+        &copy; 2025 SiBuDi. Semua hak dilindungi.
+      </div>
+    </div>
+  </footer>

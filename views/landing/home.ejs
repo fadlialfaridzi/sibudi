@@ -1,45 +1,5 @@
-<!DOCTYPE html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Beranda - SiBuDi</title>
 
-    <!-- Tailwind & Preline -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/preline@latest/dist/preline.min.js"
-    ></script>
-
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-
-      /* Efek hover interaktif untuk layanan */
-      .service-item {
-        transition: all 0.3s ease;
-      }
-      .service-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(47, 122, 51, 0.15);
-        background-color: #f8fff8;
-      }
-      .service-number {
-        background-color: #2f7a33;
-      }
-      .service-item:hover .service-number {
-        background-color: #ffd700;
-        color: #2f7a33;
-      }
-    </style>
-  </head>
-
+  <%- include('partials/header-simple') %>
   <body class="bg-gray-50 text-gray-800 font-[Inter]">
     <!-- ✅ Navbar dengan activeNav -->
     <%- include('partials/navbarHome', { activeNav: 'Home' }) %>

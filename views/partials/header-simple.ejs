@@ -2,46 +2,34 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
+    <title><%= title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      <%= typeof title !== 'undefined' ? title : 'SiBuDi - Sistem Informasi Perpanjangan Peminjaman Buku Mandiri' %>
-    </title>
-    <link rel="stylesheet" href="/css/output.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-
+        <!-- Font Awesome (no integrity to avoid SRI mismatch) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <!-- Preline UI CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/preline@1.0.0/dist/preline.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/preline@1.0.0/dist/preline.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <!-- Header Section -->
-  <header class="header">
-    <div class="container flex justify-between items-center py-4">
-      <div class="nav-brand flex items-center gap-2">
-        <div class="logo-icon"></div>
-        <span class="logo-text font-bold text-xl">SIBUDI</span>
-      </div>
-      <nav class="nav-menu flex gap-6">
-        <a href="/" class="nav-link hover:underline">Home</a>
-        <a href="/peminjaman" class="nav-link hover:underline">Daftar Buku</a>
-        <a href="/perpanjangan" class="nav-link hover:underline"
-          >Perpanjang Peminjaman</a
-        >
-        <a href="/denda" class="nav-link hover:underline">Total Denda</a>
-      </nav>
-      <button class="login-btn bg-blue-600 text-white px-4 py-2 rounded" onclick="window.location.href='/login'">
-        Login
-      </button>
-    </div>
-  </header>
+  <style>
+
+     /* Efek hover interaktif untuk layanan */
+      .service-item {
+        transition: all 0.3s ease;
+      }
+      .service-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(47, 122, 51, 0.15);
+        background-color: #f8fff8;
+      }
+      .service-number {
+        background-color: #2f7a33;
+      }
+      .service-item:hover .service-number {
+        background-color: #ffd700;
+        color: #2f7a33;
+      }
+  </style>
 </html>

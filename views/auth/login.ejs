@@ -1,71 +1,92 @@
-<!DOCTYPE html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - SiBuDi</title>
+<!-- Preline sudah kamu load di <head> lewat partial -->
+<%- include('partials/header-simple', { title: 'SIBUDI - Login' }) %>
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-    <!-- Font Awesome (no integrity to avoid SRI mismatch) -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <!-- Preline -->
-    <script defer src="https://cdn.jsdelivr.net/npm/preline@latest/dist/preline.min.js"></script>
-  </head>
-
-  <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-green-300 to-green-700 font-[Inter]">
-    <div class="w-full max-w-5xl bg-white/70 backdrop-blur-lg shadow-2xl rounded-[30px] overflow-hidden grid grid-cols-1 md:grid-cols-2">
-      <div class="p-10 md:p-12 flex flex-col justify-center">
+<body class="min-h-screen bg-white">
+  <!-- Wrapper: center content -->
+  <main class="flex min-h-screen items-center justify-center px-4 py-10">
+    <!-- Card -->
+    <div class="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl bg-white/80 backdrop-blur-lg ring-1 ring-black/5">
+      <!-- Left: form -->
+      <section class="p-8 md:p-12">
+        <!-- Brand -->
         <div class="mb-10 text-center md:text-left">
-          <h1 class="text-6xl md:text-7xl font-extrabold text-green-800 tracking-widest">SiBuDi</h1>
-          <p class="text-gray-700 mt-2 text-lg font-medium">Sistem peminjaman Buku manDiri Unand</p>
+          <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-green-800">
+            SIBUDI
+          </h1>
+          <p class="mt-2 text-base md:text-lg text-gray-700">
+            Sistem Peminjaman dan Perpanjangan Buku Mandiri Unand
+          </p>
         </div>
 
+        <!-- Form -->
         <form action="/login" method="post" class="space-y-6">
-          <div>
-            <label for="nim" class="sr-only">NIM</label>
-            <input id="nim" name="nim" type="text" placeholder="Masukkan NIM"
-              class="w-full rounded-full border border-gray-300 bg-white/95 px-6 py-4 text-base text-gray-800 shadow focus:ring-2 focus:ring-green-600/40 focus:outline-none transition" required />
+          <!-- NIM -->
+          <div class="space-y-2">
+            <label for="nim" class="block text-sm font-medium text-gray-800">NIM</label>
+            <input
+              id="nim"
+              name="nim"
+              type="text"
+              placeholder="Masukkan NIM"
+              required
+              class="hs-input w-full rounded-full border-gray-300 px-6 py-3.5 text-gray-900 placeholder:text-gray-400 focus:border-green-600 focus:ring-green-600/40"
+            />
           </div>
 
-          <div>
-            <div class="relative">
-              <label for="password" class="sr-only">Password</label>
-              <input id="password" name="password" type="password" placeholder="Masukkan Password"
-                class="w-full rounded-full border border-gray-300 bg-white/95 px-6 py-4 pr-12 text-base text-gray-800 shadow focus:ring-2 focus:ring-green-600/40 focus:outline-none transition"
-                required />
-              <button type="button" id="togglePassword"
-                class="absolute inset-y-0 right-4 flex items-center justify-center text-gray-600 hover:text-green-700 focus:outline-none">
-                <i id="eyeIcon" class="fa-solid fa-eye text-lg"></i>
+          <!-- Password (Preline toggle) -->
+          <div class="space-y-2">
+            <label for="password" class="block text-sm font-medium text-gray-800">Password</label>
+            <div class="relative"
+                 data-hs-toggle-password='{"target":"#password","defaultClass":"fa-eye","showClass":"fa-eye-slash"}'>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Masukkan Password"
+                required
+                class="hs-input w-full rounded-full border-gray-300 px-6 py-3.5 pr-12 text-gray-900 placeholder:text-gray-400 focus:border-green-600 focus:ring-green-600/40"
+              />
+              <button
+                type="button"
+                class="hs-toggle-password absolute inset-y-0 right-4 my-auto inline-flex size-9 items-center justify-center rounded-full text-gray-600 hover:text-green-700 focus:outline-none"
+                aria-label="Tampilkan/Sembunyikan Password">
+                <i class="fa-solid fa-eye text-lg"></i>
               </button>
             </div>
-            <div class="mt-2 text-right">
-              <a href="#" class="text-sm text-gray-600 hover:text-green-700 transition">Lupa Kata Sandi?</a>
+
+            <div class="mt-1 text-right">
+              <a href="#" class="text-sm text-gray-600 hover:text-green-800 transition-colors">Lupa Kata Sandi?</a>
             </div>
           </div>
 
-          <button type="submit" class="w-full rounded-full bg-green-700 text-white font-semibold tracking-wide py-3.5 hover:bg-green-800 active:scale-[0.98] transition duration-200">LOGIN</button>
+          <!-- Submit -->
+          <button
+            type="submit"
+            class="w-full inline-flex items-center justify-center rounded-full bg-green-700 px-6 py-3.5 text-white text-sm font-semibold tracking-wide hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 active:scale-[0.98] transition">
+            LOGIN
+          </button>
         </form>
-      </div>
+      </section>
 
-      <div class="hidden md:block relative">
-        <div class="absolute inset-0 bg-gradient-to-t from-green-700/30 to-transparent z-10"></div>
-        <img src="/images/Perpustakaan Unand.jpg" alt="Universitas Andalas" class="w-full h-full object-cover" />
-      </div>
+      <!-- Right: image -->
+      <aside class="relative hidden md:block md:min-h-[520px]">
+        <img
+          src="/images/Perpustakaan Unand.jpg"
+          alt="Universitas Andalas"
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-green-800/30 to-transparent"></div>
+      </aside>
     </div>
+  </main>
 
-    <!-- include popup partial (partial berada di views/partials/popup.ejs) -->
-    <%- include('partials/popup') %>
+  <!-- Popup partial -->
+  <%- include('partials/popup') %>
 
-    <!-- scripts -->
-    <script src="/js/main.js"></script>
-    <script src="/js/popup.js"></script>
-  </body>
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/popup.js"></script>
+</body>
 </html>

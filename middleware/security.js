@@ -123,7 +123,7 @@ module.exports = (app) => {
   // =====================================================
   const loginLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 menit
-    max: 10,
+    max: 100,
     message:
       "⚠️ Terlalu banyak percobaan login dari IP ini. Coba lagi nanti.",
     standardHeaders: true,
