@@ -10,50 +10,32 @@ exports.login = async (req, res) => {
   try {
     const { nim, password } = req.body;
 
-    // basic validation
+    // ===============================
+    // 🔍 Validasi input kosong
+    // ===============================
     if (!nim || !password) {
       return res.status(400).render('auth/login', {
         popup: {
           type: 'warning',
           title: 'Form Tidak Lengkap',
-          message: 'Mohon isi NIM dan Password terlebih dahulu.',
+          message: 'Mohon isi Username/NIM dan Password terlebih dahulu.',
         },
       });
     }
 
-    // ==========================================
-    // 🔍 Cari Member (peminjam)
-    // ==========================================
-    const [memberRows] = await db.query(
-      'SELECT * FROM member WHERE member_id = ?',
+    // =====================================================
+    // 1️⃣ Coba login sebagai pustakawan/admin (tabel user)
+    // =====================================================
+    const [userRows] = await db.query(
+      'SELECT * FROM user WHERE username = ?',
       [nim]
     );
 
-    if (memberRows.length === 0) {
-      // ==========================================
-      // 🔍 Jika bukan member → cek pustakawan
-      // ==========================================
-      const [userRows] = await db.query(
-        'SELECT * FROM user WHERE username = ?',
-        [nim]
-      );
-
-      if (userRows.length === 0) {
-        return res.status(404).render('auth/login', {
-          popup: {
-            type: 'error',
-            title: 'Akun Tidak Ditemukan',
-            message:
-              'Akun dengan NIM atau Username tersebut belum terdaftar.',
-          },
-        });
-      }
-
-      // found user (pustakawan)
+    if (userRows.length > 0) {
       const user = userRows[0];
       let isMatch = false;
 
-      // cek hash bcrypt
+      // Cek hash bcrypt
       if (
         typeof user.passwd === 'string' &&
         (user.passwd.startsWith('$2a$') ||
@@ -75,23 +57,41 @@ exports.login = async (req, res) => {
         });
       }
 
-      // sukses pustakawan
+      // ✅ Login berhasil → set session pustakawan/admin
       req.session.user = {
         id: user.username,
         role: 'pustakawan',
-        email: user.email,
+        email: user.email || '-',
         realname: user.realname || user.username,
       };
 
-      return res.status(200).redirect('/inside/peminjaman');
+      console.log(`✅ ${user.username} berhasil login sebagai pustakawan/admin`);
+      return res.redirect('/inside/peminjaman');
     }
 
-    // ==========================================
-    // ✅ Login Member
-    // ==========================================
+    // =====================================================
+    // 2️⃣ Jika tidak ditemukan di user → cek member
+    // =====================================================
+    const [memberRows] = await db.query(
+      'SELECT * FROM member WHERE member_id = ?',
+      [nim]
+    );
+
+    if (memberRows.length === 0) {
+      return res.status(404).render('auth/login', {
+        popup: {
+          type: 'error',
+          title: 'Akun Tidak Ditemukan',
+          message:
+            'Akun dengan NIM atau Username tersebut belum terdaftar.',
+        },
+      });
+    }
+
     const member = memberRows[0];
     let isPasswordCorrect = false;
 
+    // Cek password member (bcrypt atau plaintext)
     if (
       typeof member.mpasswd === 'string' &&
       (member.mpasswd.startsWith('$2a$') ||
@@ -113,7 +113,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Cek expire date
+    // Cek keanggotaan expired
     const today = dayjs().format('YYYY-MM-DD');
     if (member.expire_date && dayjs(member.expire_date).isBefore(today)) {
       return res.status(403).render('auth/login', {
@@ -126,7 +126,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // sukses member → simpan session
+    // ✅ Login berhasil → set session member
     req.session.user = {
       id: member.member_id,
       role: 'member',
@@ -134,8 +134,8 @@ exports.login = async (req, res) => {
       member_name: member.member_name,
     };
 
-    // 🔁 arahkan ke dashboard peminjaman baru
-    return res.status(200).redirect('/outside/perpanjangan');
+    console.log(`✅ ${member.member_name} login sebagai member`);
+    return res.redirect('/outside/perpanjangan');
   } catch (err) {
     console.error('❌ Error saat proses login:', err);
     return res.status(500).render('auth/login', {

@@ -1,34 +1,209 @@
-<%- include('../partials/header', { title }) %>
-<%- include('../partials/navbar') %>
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title || 'Kios Peminjaman Buku' %></title>
 
-<div class="max-w-2xl mx-auto bg-white shadow-md rounded-2xl p-6 mt-8">
-  <h2 class="text-2xl font-semibold text-green-700 mb-4">Peminjaman Buku</h2>
+    <!-- Tailwind & Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
 
-  <form action="/peminjaman/find" method="POST" class="flex gap-2 mb-4">
-    <input type="text" name="item_code" placeholder="Masukkan atau scan kode buku"
-           class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 outline-none"
-           required />
-    <button class="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 transition">Cari</button>
-  </form>
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navbar Kios -->
+    <%- include('../partials/navbarInside', { user, activeNav }) %>
 
-  <% if (book) { %>
-  <div class="border-t pt-4">
-    <h3 class="text-xl font-semibold text-gray-800 mb-2"><%= book.title %></h3>
-    <p class="text-gray-600"><b>Penulis:</b> <%= book.author %></p>
-    <p class="text-gray-600 mb-4"><b>Penerbit:</b> <%= book.publisher %></p>
+    <!-- ======================
+         KONTEN UTAMA
+    ======================= -->
+    <main class="flex flex-col items-center justify-start pt-24 px-4 flex-1">
+      <div class="w-full max-w-3xl bg-white shadow-md rounded-2xl p-6">
+        <h2 class="text-2xl font-semibold text-green-700 mb-4">
+          Mode Kios - Peminjaman Buku
+        </h2>
 
-    <form action="/peminjaman/borrow" method="POST" class="space-y-3">
-      <input type="hidden" name="item_code" value="<%= book.item_code %>" />
-      <input type="text" name="nim" placeholder="Masukkan NIM"
-             class="w-full border px-3 py-2 rounded-lg" required />
-      <input type="password" name="password" placeholder="Masukkan Password"
-             class="w-full border px-3 py-2 rounded-lg" required />
-      <button class="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition">
-        Pinjam Buku
-      </button>
-    </form>
-  </div>
-  <% } %>
-</div>
+        <!-- Form Scan/Input -->
+        <div class="flex gap-2 mb-4">
+          <input
+            id="item_code"
+            type="text"
+            placeholder="Masukkan atau scan kode buku"
+            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 outline-none"
+          />
+          <button
+            id="findBookBtn"
+            class="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 transition"
+          >
+            Cari
+          </button>
+        </div>
 
-<%- include('../outside/popup', { popup }) %>
+        <!-- Informasi Buku -->
+        <div
+          id="book-info"
+          class="hidden border-t pt-4"
+        >
+          <h3
+            class="text-xl font-semibold text-gray-800 mb-2"
+            id="book-title"
+          ></h3>
+          <p class="text-gray-600">
+            <b>Penulis:</b> <span id="book-author"></span>
+          </p>
+          <p class="text-gray-600 mb-4">
+            <b>Tahun Terbit:</b> <span id="book-year"></span>
+          </p>
+
+          <button
+            id="borrowBtn"
+            class="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition"
+          >
+            Lanjutkan ke Autentikasi Peminjam
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ======================
+         MODAL AUTENTIKASI
+    ======================= -->
+    <div
+      id="authModal"
+      class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]"
+    >
+      <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+          Autentikasi Peminjam
+        </h3>
+        <input
+          type="text"
+          id="borrower_nim"
+          placeholder="Masukkan NIM"
+          class="w-full border px-3 py-2 rounded-lg mb-3"
+        />
+        <input
+          type="password"
+          id="borrower_password"
+          placeholder="Masukkan Password"
+          class="w-full border px-3 py-2 rounded-lg mb-4"
+        />
+
+        <div class="flex justify-end gap-2">
+          <button
+            id="cancelAuth"
+            class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition"
+          >
+            Batal
+          </button>
+          <button
+            id="confirmBorrow"
+            class="px-4 py-2 rounded-lg bg-green-700 text-white hover:bg-green-800 transition"
+          >
+            Pinjam Buku
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================
+         SCRIPT LOGIKA
+    ======================= -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const findBookBtn = document.getElementById('findBookBtn');
+        const bookInfo = document.getElementById('book-info');
+        const bookTitle = document.getElementById('book-title');
+        const bookAuthor = document.getElementById('book-author');
+        const bookYear = document.getElementById('book-year');
+        const borrowBtn = document.getElementById('borrowBtn');
+        const authModal = document.getElementById('authModal');
+
+        let currentItemCode = null;
+
+        // =====================
+        // 🔍 Cari Buku
+        // =====================
+        findBookBtn.addEventListener('click', async () => {
+          const code = document.getElementById('item_code').value.trim();
+          if (!code) return alert('Masukkan kode buku terlebih dahulu.');
+
+          try {
+            const res = await fetch('/inside/peminjaman/find', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ item_code: code }),
+            });
+
+            if (!res.ok) {
+              const err = await res.text();
+              return alert('❌ Gagal mencari buku: ' + err);
+            }
+
+            const data = await res.json();
+            // TODO: update tampilan sesuai hasil pencarian
+          } catch (err) {
+            console.error(err);
+            alert('Terjadi kesalahan saat mencari buku.');
+          }
+        });
+
+        // =====================
+        // 🧾 Autentikasi Peminjam
+        // =====================
+        borrowBtn.addEventListener('click', () => {
+          authModal.classList.remove('hidden');
+        });
+
+        document
+          .getElementById('cancelAuth')
+          .addEventListener('click', () => {
+            authModal.classList.add('hidden');
+          });
+
+        // =====================
+        // ✅ Konfirmasi Peminjaman
+        // =====================
+        document
+          .getElementById('confirmBorrow')
+          .addEventListener('click', async () => {
+            const nim = document.getElementById('borrower_nim').value.trim();
+            const password = document
+              .getElementById('borrower_password')
+              .value.trim();
+
+            if (!nim || !password || !currentItemCode)
+              return alert('Lengkapi semua data terlebih dahulu.');
+
+            const res = await fetch('/api/kiosk/borrow', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                item_code: currentItemCode,
+                borrower_nim: nim,
+                borrower_password: password,
+              }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) return alert(data.message);
+
+            alert(
+              '✅ ' +
+                data.message +
+                '\\n\\nPeminjam: ' +
+                data.receipt.member_name +
+                '\\nJudul: ' +
+                data.receipt.book_title +
+                '\\nDeadline: ' +
+                data.receipt.due_date
+            );
+            location.reload();
+          });
+      });
+    </script>
+  </body>
+</html>
