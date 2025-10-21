@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Struk Peminjaman Buku</title>
+
+    <!-- Tailwind & Preline -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/preline@1.0.0/dist/preline.min.css" rel="stylesheet"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+      body {
+        background-color: #F0F8F0;
+        font-family: 'Inter', sans-serif;
+      }
+
+      .bg-primary { background-color: #2E7D32; }
+      .text-primary { color: #2E7D32; }
+      .border-primary { border-color: #2E7D32; }
+
+      .bg-secondary { background-color: #FFD700; }
+      .text-secondary { color: #FFD700; }
+
+      .hover-primary:hover { background-color: #256828; }
+      .hover-secondary:hover { background-color: #e6c200; }
+
+      /* Efek hover interaktif */
+      .service-item {
+        transition: all 0.3s ease;
+      }
+      .service-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(47, 122, 51, 0.15);
+        background-color: #f8fff8;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+        button {
+          display: none !important;
+        }
+        .shadow-2xl {
+          box-shadow: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden service-item">
+
+      <!-- Header -->
+      <div class="bg-primary text-white p-8 text-center">
+        <div class="mb-4">
+          <i class="fas fa-book-reader text-6xl opacity-90"></i>
+        </div>
+        <h1 class="text-3xl font-bold mb-2">Struk Peminjaman Buku</h1>
+        <p class="text-green-100">Perpustakaan Universitas Andalas</p>
+      </div>
+
+      <!-- Content -->
+      <div class="p-8">
+        <!-- Status Badge -->
+        <div class="text-center mb-8">
+          <div class="inline-block bg-green-100 text-green-800 px-6 py-3 rounded-full">
+            <i class="fas fa-check-circle mr-2 text-primary"></i>
+            <span class="font-bold text-lg">Peminjaman Berhasil</span>
+          </div>
+        </div>
+
+        <!-- Book & Member Info -->
+        <div class="flex flex-col md:flex-row gap-8 mb-8">
+          <!-- Book Cover -->
+          <div class="flex-shrink-0 mx-auto md:mx-0">
+            <div class="relative">
+              <img 
+                src="<%= receipt.cover %>" 
+                alt="Cover Buku" 
+                class="w-48 h-64 object-cover rounded-lg shadow-xl border-4 border-gray-200"
+              >
+              <div class="absolute -bottom-3 -right-3 bg-secondary text-primary rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+                <i class="fas fa-book text-2xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Details -->
+          <div class="flex-1">
+            <div class="mb-6">
+              <h2 class="text-3xl font-bold text-primary mb-3 leading-tight">
+                <%= receipt.book_title %>
+              </h2>
+              <p class="text-gray-700 text-lg">
+                <i class="fas fa-user-edit mr-2 text-primary"></i>
+                <strong>Penulis:</strong> <%= receipt.author %>
+              </p>
+            </div>
+
+            <!-- Member Info Card -->
+            <div class="bg-green-50 rounded-lg p-6 border-2 border-primary mb-6">
+              <h3 class="text-lg font-bold text-primary mb-3 flex items-center gap-2">
+                <i class="fas fa-user-circle"></i>
+                Informasi Peminjam
+              </h3>
+              <div class="space-y-2 text-gray-700">
+                <div class="flex items-center">
+                  <span class="font-semibold w-32">Nama:</span>
+                  <span class="text-lg"><%= receipt.member_name %></span>
+                </div>
+                <div class="flex items-center">
+                  <span class="font-semibold w-32">NIM:</span>
+                  <span class="text-lg font-mono"><%= receipt.member_id %></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Librarian Info -->
+            <div class="bg-[#F0F8F0] rounded-lg p-4 border border-green-200">
+              <p class="text-sm text-gray-700">
+                <i class="fas fa-user-tie mr-2 text-primary"></i>
+                <strong>Diproses oleh:</strong> <%= receipt.librarian_name %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- Loan Date -->
+          <div class="bg-green-50 rounded-lg p-6 border-2 border-green-300">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <h4 class="font-bold text-primary">Tanggal Pinjam</h4>
+            </div>
+            <p class="text-2xl font-bold text-primary ml-1">
+              <%= new Date(receipt.loan_date).toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) %>
+            </p>
+          </div>
+
+          <!-- Due Date -->
+          <div class="bg-yellow-50 rounded-lg p-6 border-2 border-yellow-300">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="bg-secondary text-primary rounded-full w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-calendar-times"></i>
+              </div>
+              <h4 class="font-bold text-primary">Jatuh Tempo</h4>
+            </div>
+            <p class="text-2xl font-bold text-red-700 ml-1">
+              <%= new Date(receipt.due_date).toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="bg-[#FFFBEA] border-l-4 border-yellow-400 rounded-lg p-6 mb-8">
+          <h4 class="font-bold text-yellow-800 mb-3 flex items-center gap-2">
+            <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+            Perhatian Penting
+          </h4>
+          <ul class="space-y-2 text-sm text-gray-800">
+            <li class="flex items-start gap-2">
+              <i class="fas fa-check-circle mt-1 text-primary"></i>
+              <span>Harap kembalikan buku tepat waktu sesuai tanggal jatuh tempo.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fas fa-check-circle mt-1 text-primary"></i>
+              <span>Keterlambatan pengembalian akan dikenakan sanksi sesuai peraturan.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fas fa-check-circle mt-1 text-primary"></i>
+              <span>Jaga buku dengan baik, hindari kerusakan atau kehilangan.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center pt-6 border-t border-gray-200">
+          <p class="text-gray-600 mb-4">Terima kasih telah menggunakan layanan <strong class="text-primary">SiBuDi</strong></p>
+          <button 
+            onclick="window.print()" 
+            class="bg-primary hover-primary text-white px-8 py-3 rounded-lg font-semibold transition duration-200 inline-flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          >
+            <i class="fas fa-print"></i>
+            Cetak Struk
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preline Script -->
+    <script src="https://cdn.jsdelivr.net/npm/preline@1.0.0/dist/preline.min.js"></script>
+  </body>
+</html>
