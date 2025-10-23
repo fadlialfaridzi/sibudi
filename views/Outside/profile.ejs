@@ -45,12 +45,20 @@
                         <p class="mt-2 text-xs text-gray-400 italic">Masa aktif hingga <%= member.expire_date ? new Date(member.expire_date).toLocaleDateString('id-ID') : '-' %></p>
 
                         <!-- Tombol Edit Profil -->
-                        <div class="mt-4">
+                        <div class="mt-4 flex flex-col gap-3">
                             <a
                                 href="/outside/editProfile"
-                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-[#FFD700] text-[#2F7A33] hover:bg-yellow-400 transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2F7A33]/30">
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-[#FFD700] text-[#2F7A33] hover:bg-yellow-400 transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2F7A33]/30">
                                 <i class="fa-solid fa-pen-to-square"></i>
                                 Edit Profil
+                            </a>
+
+                            <!-- Tombol Ganti Password -->
+                            <a
+                                href="/outside/changePassword"
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-[#2F7A33] text-white hover:bg-[#256928] transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700]/30">
+                                <i class="fa-solid fa-key"></i>
+                                Ganti Password
                             </a>
                         </div>
                     </div>
@@ -62,19 +70,16 @@
                             <h3 class="text-lg font-semibold text-[#2F7A33] mb-4 flex items-center gap-2"><i class="fa-solid fa-user text-[#FFD700]"></i> Informasi Pribadi</h3>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <!-- Nama Lengkap -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-600 mb-1">Nama Lengkap</label>
                                     <input type="text" value="<%= member.member_name || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
                                 </div>
 
-                                <!-- Jenis Kelamin -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-600 mb-1">Jenis Kelamin</label>
                                     <input type="text" value="<%= member.gender_text || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
                                 </div>
 
-                                <!-- Tanggal Lahir -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-600 mb-1">Tanggal Lahir</label>
                                     <input
@@ -84,19 +89,16 @@
                                         class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
                                 </div>
 
-                                <!-- Nomor Telepon -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-600 mb-1">Nomor Telepon</label>
                                     <input type="text" value="<%= member.member_phone || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
                                 </div>
 
-                                <!-- Email -->
                                 <div class="sm:col-span-2">
                                     <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
                                     <input type="email" value="<%= member.member_email || '-' %>" readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
                                 </div>
 
-                                <!-- Alamat -->
                                 <div class="sm:col-span-2">
                                     <label class="block text-sm font-medium text-gray-600 mb-1">Alamat</label>
                                     <textarea readonly class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700] resize-none"><%= member.member_address || '-' %></textarea>
@@ -151,15 +153,6 @@
                                     <input
                                         type="text"
                                         value="<%= member.is_pending === 1 ? 'Menunggu Verifikasi' : 'Aktif' %>"
-                                        readonly
-                                        class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-600 mb-1">Terakhir Login</label>
-                                    <input
-                                        type="text"
-                                        value="<%= member.last_login ? new Date(member.last_login).toLocaleString('id-ID') : '-' %>"
                                         readonly
                                         class="block w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-[#FFD700]" />
                                 </div>

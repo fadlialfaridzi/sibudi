@@ -5,6 +5,7 @@ const router = express.Router();
 const profileController = require('../controllers/outside/profileController');
 const perpanjanganController = require('../controllers/outside/perpanjanganController');
 const dendaController = require('../controllers/outside/dendaController');
+const changePasswordController = require('../controllers/outside/changePasswordController');
 
 // Middleware (opsional, jika sudah ada di project-mu)
 const { requireLogin, requireRole } = require('../middleware/sessionCheck');
@@ -15,6 +16,12 @@ const { requireLogin, requireRole } = require('../middleware/sessionCheck');
 
 // Halaman Profile
 router.get('/profile', requireLogin, requireRole('member'), profileController.renderProfile);
+router.get('/editProfile', requireLogin, requireRole('member'), profileController.renderEditProfile);
+router.post('/updateProfile', requireLogin, requireRole('member'), profileController.updateProfile);
+
+// Halaman Ubah Password
+router.get('/changePassword', requireLogin, requireRole('member'), changePasswordController.renderChangePassword);
+router.post('/changePassword', requireLogin, requireRole('member'), changePasswordController.updatePassword);
 
 // Halaman Dasbor Peminjaman & Perpanjangan
 router.get('/perpanjangan', requireLogin, requireRole('member'), perpanjanganController.renderPerpanjangan);

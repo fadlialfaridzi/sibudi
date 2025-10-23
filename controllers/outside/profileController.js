@@ -64,3 +64,62 @@ exports.renderProfile = async (req, res) => {
         });
     }
 };
+
+// --- Halaman Edit Profil ---
+exports.renderEditProfile = async (req, res) => {
+    try {
+        const member = req.session.user;
+        if (!member) {
+            return res.redirect('/login');
+        }
+
+        const [rows] = await db.query('SELECT * FROM member WHERE member_id = ?', [member.id]);
+        if (rows.length === 0) {
+            return res.redirect('/outside/profile');
+        }
+
+        const memberData = rows[0];
+        memberData.gender_text = memberData.gender === 1 ? 'Laki-laki' : 'Perempuan';
+
+        res.render('outside/editProfile', {
+            title: 'Edit Profil Member',
+            member: memberData,
+        });
+    } catch (err) {
+        console.error('❌ Error renderEditProfile:', err);
+        res.status(500).send('Terjadi kesalahan saat memuat halaman edit profil.');
+    }
+};
+
+// --- Proses Update Profil ---
+exports.updateProfile = async (req, res) => {
+    try {
+        const member = req.session.user;
+        if (!member) {
+            return res.redirect('/login');
+        }
+
+        const { member_name, gender_text, member_phone, member_email, member_address } = req.body;
+
+        // Convert gender text ke numeric (sesuai struktur tabel lu)
+        const gender = gender_text === 'Laki-laki' ? 1 : 2;
+
+        await db.query(
+            `UPDATE member 
+             SET member_name = ?, 
+                 gender = ?, 
+                 member_phone = ?, 
+                 member_email = ?, 
+                 member_address = ?, 
+                 last_update = NOW()
+             WHERE member_id = ?`,
+            [member_name, gender, member_phone, member_email, member_address, member.id]
+        );
+
+        console.log('✅ Profil berhasil diperbarui untuk:', member.id);
+        res.redirect('/outside/profile');
+    } catch (err) {
+        console.error('❌ Error updateProfile:', err);
+        res.status(500).send('Gagal memperbarui profil.');
+    }
+};
