@@ -135,7 +135,7 @@ exports.login = async (req, res) => {
     };
 
     console.log(`✅ ${member.member_name} login sebagai member`);
-    return res.redirect('/outside/perpanjangan');
+    return res.redirect('/outside/dashboard');
   } catch (err) {
     console.error('❌ Error saat proses login:', err);
     return res.status(500).render('auth/login', {
