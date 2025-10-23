@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import controller untuk halaman luar (peminjam)
+const dashboardController = require('../controllers/outside/dashboardController');
 const profileController = require('../controllers/outside/profileController');
 const perpanjanganController = require('../controllers/outside/perpanjanganController');
 const dendaController = require('../controllers/outside/dendaController');
@@ -13,6 +14,9 @@ const { requireLogin, requireRole } = require('../middleware/sessionCheck');
 // =====================================================
 // ROUTES untuk ROLE: Member / Peminjam (Outside)
 // =====================================================
+
+// Halaman Dashboard (Landing page setelah login)
+router.get('/dashboard', requireLogin, requireRole('member'), dashboardController.renderDashboard);
 
 // Halaman Profile
 router.get('/profile', requireLogin, requireRole('member'), profileController.renderProfile);

@@ -1,5 +1,7 @@
 const db = require('../../config/db');
 const dayjs = require('dayjs');
+const fs = require('fs');
+const path = require('path');
 
 // =====================================================
 // DASHBOARD PEMINJAMAN & PERPANJANGAN
@@ -14,23 +16,14 @@ exports.renderPerpanjangan = async (req, res) => {
     const memberId = req.session.user.id;
 
     // =============================
-    // 1️⃣ Data Profil Member
-    // =============================
-    const [memberRows] = await db.query(
-      'SELECT member_id, member_name, member_email FROM member WHERE member_id = ?',
-      [memberId]
-    );
-    const member = memberRows[0] || null;
-
-    // =============================
-    // 2️⃣ Daftar Buku Aktif Dipinjam
+    // 1️⃣ Daftar Buku Aktif Dipinjam
     // =============================
     const [loanRows] = await db.query(
       `SELECT 
         loan.loan_id,
         biblio.biblio_id,
         biblio.title,
-        biblio.sor AS author,       -- gunakan kolom sor (penulis/penerbit)
+        biblio.sor AS author,
         biblio.notes,
         biblio.image,
         biblio.publish_year,
@@ -47,11 +40,56 @@ exports.renderPerpanjangan = async (req, res) => {
       [memberId]
     );
 
-    // Ganti semua gambar null/undefined dengan /images/buku.png
-    const loans = loanRows.map((b) => ({
-      ...b,
-      image: b.image || '/images/buku.png',
-    }));
+    // =============================
+    // 2️⃣ PARSING COLLATION FIELD & IMAGE FALLBACK
+    // =============================
+    const loans = loanRows.map((b) => {
+      let edition = null;
+      let pages = null;
+      let size = null;
+
+      // Parse collation
+      if (b.collation) {
+        const collation = b.collation.trim();
+
+        // 1. Deteksi Edisi (angka romawi di awal atau Ed./Cet.)
+        const editionMatch = collation.match(/^([ivxlcdm]+)\s*,?/i) || 
+                            collation.match(/(?:ed\.?|cet\.?)\s*(\d+)/i);
+        if (editionMatch) {
+          edition = editionMatch[1].toUpperCase();
+        }
+
+        // 2. Deteksi Jumlah Halaman (hal. atau hlm.)
+        const pagesMatch = collation.match(/(\d+)\s*(?:hal\.?|hlm\.?)/i);
+        if (pagesMatch) {
+          pages = `${pagesMatch[1]} Halaman`;
+        }
+
+        // 3. Deteksi Ukuran (cm)
+        const sizeMatch = collation.match(/(\d+)\s*cm/i);
+        if (sizeMatch) {
+          size = `${sizeMatch[1]} cm`;
+        }
+      }
+
+      // Image fallback logic
+      let finalImage = '/images/buku.png';
+      if (b.image) {
+        // Cek apakah file ada di server
+        const imagePath = path.join(__dirname, '../../public', b.image);
+        if (fs.existsSync(imagePath)) {
+          finalImage = b.image;
+        }
+      }
+
+      return {
+        ...b,
+        edition,
+        pages,
+        size,
+        image: finalImage,
+      };
+    });
 
     // =============================
     // 3️⃣ Total Denda Aktif (belum lunas)
@@ -67,17 +105,15 @@ exports.renderPerpanjangan = async (req, res) => {
 
     res.render('outside/perpanjangan', {
       title: 'Detail & Perpanjangan Peminjaman',
-      member,
       loans,
       totalDenda,
       popup: null,
       activeNav: 'Perpanjangan',
     });
   } catch (err) {
-    console.error('❌ Gagal memuat dashboard perpanjangan:', err);
+    console.error(' Gagal memuat dashboard perpanjangan:', err);
     res.render('outside/perpanjangan', {
       title: 'Detail & Perpanjangan Peminjaman',
-      member: null,
       loans: [],
       totalDenda: 0,
       popup: {
@@ -151,7 +187,7 @@ exports.extendLoan = async (req, res) => {
       });
     }
 
-    // ✅ Hitung due_date baru +7 hari (skip hari Minggu)
+    //  Hitung due_date baru +7 hari (skip hari Minggu)
     let newDue = dayjs(loan.due_date);
     let daysAdded = 0;
     while (daysAdded < 7) {

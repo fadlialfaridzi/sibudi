@@ -16,9 +16,9 @@ const MySQLStore = require('express-mysql-session')(session);
 const db = require('./config/db'); // koneksi database
 const security = require('./middleware/security'); // helmet + CSP + limiter
 
-// routes utama
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+// // routes utama
+// const indexRouter = require('./routes/index');
+// const usersRouter = require('./routes/users');
 
 // routes sistem inti
 const authRouter = require('./routes/auth');       // login/logout
@@ -103,11 +103,11 @@ app.use('/', authRouter);
 // Halaman publik (Home, About, Panduan)
 app.use('/', landingRouter);
 
-// Rute testing (legacy)
-app.use('/legacy', indexRouter);
+// // Rute testing (legacy)
+// app.use('/legacy', indexRouter);
 
-// Rute user management (admin/testing)
-app.use('/users', usersRouter);
+// // Rute user management (admin/testing)
+// app.use('/users', usersRouter);
 
 // Rute pustakawan (Mode Kios / Inside)
 app.use('/inside', insideRouter);

@@ -1,0 +1,386 @@
+/* =====================================================
+   ANIMASI 3D CLEAN - SiBuDi (Final Optimized)
+   Smooth, ringan, loading cepat dengan floating animation
+   ===================================================== */
+
+/* =====================================================
+   BASE STYLING
+   ===================================================== */
+   body {
+    background: #ffffff;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* =====================================================
+     1️⃣ CARD 3D BASE
+     ===================================================== */
+  .card-3d {
+    position: relative;
+    background: #ffffff;
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* =====================================================
+     2️⃣ TILT 3D (Controlled by JS)
+     ===================================================== */
+  .card-3d {
+    --rotateX: 0deg;
+    --rotateY: 0deg;
+    transform: perspective(1000px) rotateX(var(--rotateX)) rotateY(var(--rotateY)) scale(1);
+  }
+  
+  /* =====================================================
+     3️⃣ HOVER - FLOATING EFFECT
+     ===================================================== */
+  .card-3d:hover {
+    transform: perspective(1000px) rotateX(var(--rotateX)) rotateY(var(--rotateY)) translateY(-8px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(21, 128, 61, 0.15);
+  }
+  
+  /* =====================================================
+     4️⃣ GLOW EFFECT (Subtle)
+     ===================================================== */
+  .card-3d::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, rgba(21, 128, 61, 0.3), rgba(234, 179, 8, 0.3));
+    border-radius: inherit;
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  .card-3d:hover::after {
+    opacity: 0.6;
+  }
+  
+  /* =====================================================
+     5️⃣ FLOATING ANIMATION (Naik-Turun Halus)
+     ===================================================== */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+  
+  /* Float untuk card (lebih subtle) */
+  .card-3d.animate-float {
+    animation: float-card 4s ease-in-out infinite;
+  }
+  
+  @keyframes float-card {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+  
+  /* =====================================================
+     6️⃣ LOAN ITEM STYLING
+     ===================================================== */
+  .loan-item.card-3d {
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  }
+  
+  .loan-item.card-3d:hover {
+    border-color: rgba(21, 128, 61, 0.3);
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    transform: translateX(-4px) translateY(-2px) scale(1.02);
+  }
+  
+  .loan-item.card-3d.active {
+    border-color: #15803d;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1), 0 8px 20px rgba(21, 128, 61, 0.15);
+  }
+  
+  /* =====================================================
+     7️⃣ HERO IMAGE TILT
+     ===================================================== */
+  .hero-tilt {
+    --rotateX: 0deg;
+    --rotateY: 0deg;
+    transform: perspective(1500px) rotateY(var(--rotateY)) rotateX(var(--rotateX)) scale(1);
+    transition: transform 0.4s ease;
+  }
+  
+  .hero-tilt:hover {
+    transform: perspective(1500px) rotateY(var(--rotateY)) rotateX(var(--rotateX)) scale(1.05);
+  }
+  
+  /* =====================================================
+     8️⃣ SCROLLBAR (Custom)
+     ===================================================== */
+  .loan-list-container {
+    scrollbar-width: thin;
+    scrollbar-color: #15803d #f3f4f6;
+  }
+  
+  .loan-list-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .loan-list-container::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 10px;
+  }
+  
+  .loan-list-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #15803d, #86efac);
+    border-radius: 10px;
+  }
+  
+  .loan-list-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #166534, #4ade80);
+  }
+  
+  /* =====================================================
+     9️⃣ THUMBNAIL HOVER
+     ===================================================== */
+  .loan-item img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .loan-item:hover img {
+    transform: scale(1.08) rotate(2deg);
+    box-shadow: 0 4px 12px rgba(21, 128, 61, 0.3);
+  }
+  
+  /* =====================================================
+     🔟 BADGE ANIMATION
+     ===================================================== */
+  .loan-item span[class*="bg-green"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .loan-item:hover span[class*="bg-green"] {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(21, 128, 61, 0.3);
+  }
+  
+  /* =====================================================
+     1️⃣1️⃣ BUTTON RIPPLE EFFECT
+     ===================================================== */
+  button {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+  }
+  
+  button::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+    pointer-events: none;
+  }
+  
+  button:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  button:active {
+    transform: scale(0.97);
+  }
+  
+  /* =====================================================
+     1️⃣2️⃣ TITLE LINE CLAMP
+     ===================================================== */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+  }
+  
+  /* =====================================================
+     1️⃣3️⃣ FADE-IN ANIMATION
+     ===================================================== */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* =====================================================
+     1️⃣4️⃣ LOAN ITEMS STAGGER
+     ===================================================== */
+  .loan-item {
+    animation: fadeInUp 0.3s ease-out backwards;
+  }
+  
+  .loan-item:nth-child(1) { animation-delay: 0.03s; }
+  .loan-item:nth-child(2) { animation-delay: 0.06s; }
+  .loan-item:nth-child(3) { animation-delay: 0.09s; }
+  .loan-item:nth-child(4) { animation-delay: 0.12s; }
+  .loan-item:nth-child(5) { animation-delay: 0.15s; }
+  .loan-item:nth-child(n+6) { animation-delay: 0.18s; }
+  
+  /* =====================================================
+     1️⃣5️⃣ ICON ANIMATIONS
+     ===================================================== */
+  .loan-item i {
+    transition: transform 0.3s ease;
+  }
+  
+  .loan-item:hover i {
+    transform: scale(1.1) rotate(5deg);
+  }
+  
+  /* =====================================================
+     1️⃣6️⃣ DASHBOARD CARD HOVER SCALE
+     ===================================================== */
+  a .card-3d:hover {
+    transform: translateY(-8px) scale(1.03);
+  }
+  
+  a:active .card-3d {
+    transform: translateY(-4px) scale(1.01);
+  }
+  
+  /* =====================================================
+     1️⃣7️⃣ RESPONSIVE ADJUSTMENTS
+     ===================================================== */
+  @media (max-width: 1024px) {
+    .card-3d:hover {
+      transform: perspective(1000px) translateY(-6px) scale(1.01);
+    }
+    
+    .loan-item.card-3d:hover {
+      transform: translateX(-2px) translateY(-2px) scale(1.01);
+    }
+    
+    .hero-tilt:hover {
+      transform: perspective(1500px) scale(1.03);
+    }
+    
+    .loan-list-container {
+      max-height: 500px;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .card-3d::after {
+      display: none;
+    }
+    
+    .hero-tilt:hover {
+      transform: scale(1.02);
+    }
+    
+    .loan-item:hover img {
+      transform: scale(1.05);
+    }
+    
+    .title-responsive {
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+    
+    .loan-list-container {
+      max-height: 400px;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    
+    @keyframes float-card {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  }
+  
+  /* =====================================================
+     1️⃣8️⃣ ACCESSIBILITY (Reduced Motion)
+     ===================================================== */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    
+    .card-3d:hover,
+    .hero-tilt:hover,
+    .animate-float {
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+  
+  /* =====================================================
+     1️⃣9️⃣ Z-INDEX MANAGEMENT
+     ===================================================== */
+  .loan-item.card-3d {
+    z-index: 1;
+  }
+  
+  .loan-item.card-3d:hover,
+  .loan-item.card-3d.active {
+    z-index: 10;
+  }
+  
+  /* =====================================================
+     2️⃣0️⃣ LOADING STATE
+     ===================================================== */
+  .loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.8; }
+  }
+  
+  .loading {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  /* =====================================================
+     2️⃣1️⃣ SMOOTH TRANSITIONS
+     ===================================================== */
+  * {
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  

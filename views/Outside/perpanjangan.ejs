@@ -1,109 +1,203 @@
+<%- include('partials/header-simple') %>
 
-  <%- include('partials/header-simple') %>
-  <body class="bg-gray-50 min-h-screen flex flex-col">
-    <!-- Navbar -->
-    <%- include('../partials/navbarOutside') %>
+<!-- Link ke animasi 3D CSS -->
+<link rel="stylesheet" href="/css/animasi3d.css">
 
+<body class="bg-white min-h-screen flex flex-col">
+  <!-- Navbar -->
+  <%- include('../partials/navbarOutside') %>
+
+  <!-- ======================
+       KONTEN UTAMA - LAYOUT 3 KOLOM
+  ======================= -->
+  <main class="flex flex-col lg:flex-row bg-white min-h-screen p-4 lg:p-10 gap-4 lg:gap-8 max-w-screen-2xl mx-auto w-full pt-24 lg:pt-32 transition-all duration-500">
+    
     <!-- ======================
-         KONTEN UTAMA
+         KOLOM KIRI: LIST BUKU DIPINJAM
     ======================= -->
-    <main
-      class="flex flex-col md:flex-row gap-6 p-6 pt-24 flex-1 transition-all duration-300"
-    >
-      <!-- ======================
-           PANEL KIRI: DAFTAR BUKU
-      ======================= -->
-      <section class="md:w-1/3 bg-white rounded-2xl shadow-md p-4">
-        <h2 class="text-lg font-semibold mb-3 text-green-700">
-          Buku yang Sedang Dipinjam
+    <aside id="loan-panel" class="w-full lg:w-80 xl:w-96 bg-white rounded-3xl shadow-xl border border-gray-200 order-1 lg:order-1 transition-all duration-800">
+      
+      <!-- Header Sticky -->
+      <div class="sticky top-0 bg-white p-6 pb-4 mb-4 border-b border-gray-200 z-10 rounded-t-3xl">
+        <h2 class="text-xl font-bold text-green-700 flex items-center gap-2">
+          <i class="fa-solid fa-layer-group"></i>
+          Buku Dipinjam
         </h2>
+        <p class="text-sm text-gray-500 mt-1">
+          <%= loans && loans.length > 0 ? loans.length : 0 %> buku aktif
+        </p>
+      </div>
 
-        <ul id="loan-list">
+      <!-- List Buku dengan Scroll -->
+      <div class="px-6 pb-6 overflow-y-auto loan-list-container" style="max-height: calc(100vh - 280px);">
+        <ul id="loan-list" class="space-y-4">
           <% if (loans && loans.length > 0) { %>
             <% loans.forEach(function(loan, i) { %>
-              <li
-                class="loan-item mb-3 p-3 rounded-lg hover:bg-green-50 cursor-pointer transition border border-gray-200"
-                data-index="<%= i %>"
-              >
-                <h3 class="font-medium text-gray-800"><%= loan.title %></h3>
-                <p class="text-sm text-gray-500">
-                  Penulis: <%= loan.author || '-' %>
-                </p>
+              <li class="loan-item card-3d flex items-center gap-4 p-4 rounded-2xl cursor-pointer bg-gradient-to-br from-white to-green-50 border-2 border-transparent hover:border-green-400 transition-all duration-500 group <%= i === 0 ? 'active' : '' %>"
+                  data-index="<%= i %>">
+                
+                <!-- Mini Thumbnail -->
+                <div class="flex-shrink-0 relative">
+                  <div class="absolute inset-0 bg-green-200 blur-md rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover-glow"></div>
+                  <img 
+                    src="<%= loan.image || '/images/buku1.png' %>"
+                    alt="<%= loan.title %>"
+                    class="relative w-16 h-20 rounded-lg shadow-md object-contain bg-transparent"
+                  />
+                </div>
+                
+                <!-- Info Buku -->
+                <div class="flex-1 min-w-0">
+                  <!-- Judul Buku -->
+                  <h3 class="font-semibold text-gray-800 mb-2 group-hover:text-green-700 transition-colors title-responsive line-clamp-2">
+                    <%= loan.title %>
+                  </h3>
+                  
+                  <!-- Badge Perpanjangan -->
+                  <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-600 text-white text-xs font-medium">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <%= loan.renewed || 0 %>/2 perpanjangan
+                  </span>
+                </div>
               </li>
             <% }); %>
           <% } else { %>
-            <p class="text-gray-500 text-sm italic">
-              Belum ada buku yang sedang dipinjam.
-            </p>
+            <div class="text-center py-12">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <i class="fa-solid fa-inbox text-3xl text-gray-400"></i>
+              </div>
+              <p class="text-gray-500 text-sm italic">
+                Belum ada buku yang dipinjam
+              </p>
+            </div>
           <% } %>
         </ul>
-      </section>
+      </div>
 
-      <!-- ======================
-           PANEL TENGAH: DETAIL BUKU
-      ======================= -->
-      <section
-        class="md:w-2/3 bg-white rounded-2xl shadow-md p-6"
-        id="book-detail"
-      >
-        <h2 class="text-lg font-semibold mb-3 text-green-700">Detail Buku</h2>
+      <!-- Hidden input untuk total denda -->
+      <input type="hidden" id="total-denda" value="<%= totalDenda || 0 %>" />
+    </aside>
 
-        <div id="detail-content" class="text-gray-600">
-          <p class="italic text-gray-500">
-            Pilih buku dari daftar kiri untuk melihat detail dan melakukan
-            perpanjangan.
-          </p>
+    <!-- ======================
+         KOLOM TENGAH: HERO IMAGE BUKU
+    ======================= -->
+    <section id="book-hero" class="w-full lg:flex-1 flex flex-col items-center justify-center relative order-2 lg:order-2 transition-all duration-800 min-h-96">
+      
+      <% if (!loans || loans.length === 0) { %>
+        <!-- State: Tidak ada buku dipinjam -->
+        <div class="text-center space-y-6 fade-in">
+          <div class="relative group hero-container">
+            <div class="absolute inset-0 bg-green-300 blur-3xl rounded-full opacity-30 scale-110 transition-all duration-700 group-hover:opacity-40 group-hover:scale-125"></div>
+            <img 
+              src="/images/buku1.png" 
+              alt="SIBUDI"
+              class="hero-tilt relative w-64 h-80 lg:w-72 lg:h-96 object-contain transition-all duration-500 ease-out group-hover:scale-105 drop-shadow-2xl"
+            />
+          </div>
+          
+          <div class="space-y-3 mt-8">
+            <h2 class="text-3xl font-bold text-gray-800">Belum Ada Buku Dipinjam</h2>
+            <p class="text-base text-gray-600 max-w-md mx-auto leading-relaxed">
+              Kamu belum meminjam buku, segera pinjam buku di perpustakaan untuk menambah wawasan kamu
+            </p>
+            <div class="inline-flex items-center gap-2 text-sm text-green-600 font-semibold mt-4">
+              <i class="fa-solid fa-lightbulb"></i>
+              <span>Kunjungi perpustakaan untuk meminjam buku</span>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <!-- ======================
-           PANEL KANAN: PROFIL ANGGOTA
-      ======================= -->
-      <aside class="md:w-1/4 bg-white rounded-2xl shadow-md p-4 text-center">
-        <% if (member) { %>
-          <h3 class="text-green-700 font-semibold mb-2">Profil Anggota</h3>
-          <p class="text-gray-700 font-medium"><%= member.member_name %></p>
-          <p class="text-sm text-gray-500">ID: <%= member.member_id %></p>
-          <p class="text-sm text-gray-500"><%= member.member_email %></p>
-
-          <div class="mt-4 border-t pt-2 text-sm">
-            <p class="text-gray-600">Total Denda Aktif:</p>
-            <p class="font-semibold text-red-600">
-              Rp <%= totalDenda ? totalDenda.toLocaleString('id-ID') : '0' %>
+      <% } else { %>
+        <!-- State: Ada buku dipinjam -->
+        <div class="relative group hero-container">
+          <!-- Glow effect -->
+          <div class="absolute inset-0 bg-green-300 blur-3xl rounded-full opacity-30 scale-110 transition-all duration-700 group-hover:opacity-40 group-hover:scale-125 hero-glow"></div>
+          
+          <!-- Gambar hero (akan di-update oleh JavaScript) -->
+          <img 
+            id="hero-image"
+            src="<%= loans[0].image || '/images/buku1.png' %>" 
+            alt="<%= loans[0].title || 'Buku' %>"
+            class="hero-tilt relative w-64 h-80 lg:w-72 lg:h-96 object-contain transition-all duration-500 ease-out group-hover:scale-105 drop-shadow-2xl"
+          />
+        </div>
+        
+        <!-- Info placeholder (akan disembunyikan saat detail muncul) -->
+        <div id="hero-placeholder" class="text-center mt-8 space-y-6">
+          <div class="space-y-3">
+            <h2 class="text-2xl lg:text-3xl font-bold text-gray-800">
+              SIBUDI
+            </h2>
+            <p class="text-base text-gray-600">
+              Sistem Peminjaman Buku Mandiri
+            </p>
+            <p class="text-sm text-gray-500 max-w-xs mx-auto">
+              Kelola peminjaman buku Anda dengan mudah
             </p>
           </div>
 
-          <!-- Tambahan hidden input agar JS bisa baca total denda -->
-          <input
-            type="hidden"
-            id="total-denda"
-            value="<%= totalDenda || 0 %>"
-          />
-        <% } else { %>
-          <p class="text-gray-500 text-sm italic">
-            Data anggota tidak ditemukan.
-          </p>
+          <!-- Card Statistik -->
+          <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto mt-6">
+            <div class="card-3d text-center bg-gradient-to-br from-white to-green-50 rounded-2xl px-5 py-6 border border-green-100 flex-1">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-3">
+                <i class="fa-solid fa-book text-xl text-green-600"></i>
+              </div>
+              <p class="text-3xl font-bold text-green-600 mb-1">
+                <%= loans.length %>
+              </p>
+              <p class="text-xs text-gray-600 font-medium">Buku Dipinjam</p>
+            </div>
+            
+            <div class="card-3d text-center bg-gradient-to-br from-white to-yellow-50 rounded-2xl px-5 py-6 border border-yellow-100 flex-1">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 mb-3">
+                <i class="fa-solid fa-coins text-xl text-yellow-600"></i>
+              </div>
+              <p class="text-2xl font-bold text-yellow-600 mb-1">
+                Rp <%= (totalDenda || 0).toLocaleString('id-ID') %>
+              </p>
+              <p class="text-xs text-gray-600 font-medium">Total Denda</p>
+            </div>
+          </div>
+        </div>
+      <% } %>
+      
+    </section>
+
+    <!-- ======================
+         KOLOM KANAN: DETAIL BUKU
+    ======================= -->
+    <section id="book-info" class="w-full lg:flex-1 flex flex-col justify-center order-3 lg:order-3 transition-all duration-800">
+      <div id="book-detail" class="space-y-4 lg:space-y-6">
+        <!-- Default state: Menunggu user memilih buku -->
+        <% if (loans && loans.length > 0) { %>
+          <div class="text-center py-12 space-y-6">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 mb-4">
+              <i class="fa-solid fa-book-open text-4xl text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800">Pilih Buku</h3>
+            <p class="text-base text-gray-500 max-w-md mx-auto">
+              Klik salah satu buku di panel sebelah kiri untuk melihat detail lengkap dan melakukan perpanjangan
+            </p>
+            <div class="animate-bounce mt-4">
+              <i class="fa-solid fa-arrow-left text-green-600 text-2xl"></i>
+            </div>
+          </div>
         <% } %>
-      </aside>
-    </main>
+      </div>
+    </section>
 
-    <!-- ======================
-         POPUP (INCLUDE)
-    ======================= -->
-    <%- include('../partials/popup', { popup: popup }) %>
+  </main>
 
-    <!-- ======================
-         DATA JSON UNTUK JS
-    ======================= -->
-    <script id="loans-data" type="application/json">
-      <%- JSON.stringify(loans || []) %>
-    </script>
+  <!-- Popup -->
+  <%- include('../partials/popup', { popup: popup }) %>
 
-    <!-- ======================
-         SCRIPT EKSTERNAL
-    ======================= -->
-    <script src="/js/main.js"></script>
-    <script src="/js/popup.js"></script>
-  </body>
+  <!-- Data JSON untuk JavaScript -->
+  <script id="loans-data" type="application/json">
+    <%- JSON.stringify(loans || []) %>
+  </script>
 
-    <%- include('partials/footer-simple') %>
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/popup.js"></script>
+</body>
+
+<%- include('partials/footer-simple') %>
