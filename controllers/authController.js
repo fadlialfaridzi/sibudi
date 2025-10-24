@@ -142,7 +142,7 @@ exports.login = async (req, res) => {
 exports.logout = (req, res) => {
     req.session.destroy(() => {
         res.clearCookie('sibudi_session_id'); // cookie session
-        res.redirect('/login');
+        res.redirect('/');
     });
 };
 
