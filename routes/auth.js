@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const forgetController = require('../controllers/forgetController');
 
 // Halaman login
 router.get('/login', authController.showLogin);
@@ -10,5 +11,21 @@ router.post('/login', authController.login);
 
 // Logout
 router.get('/logout', authController.logout);
+
+// =====================================================
+// Lupa Password Routes
+// =====================================================
+
+// Halaman lupa password
+router.get('/lupa-password', forgetController.showForgetPassword);
+
+// Kirim email reset password
+router.post('/lupa-password', forgetController.sendResetEmail);
+
+// Halaman reset password dengan token
+router.get('/reset-password/:token', forgetController.showResetPassword);
+
+// Proses reset password
+router.post('/reset-password/:token', forgetController.resetPassword);
 
 module.exports = router;

@@ -10,7 +10,7 @@ exports.login = async (req, res) => {
     try {
         const { nim, password } = req.body;
 
-        // 🔍 Validasi input kosong
+        //  Validasi input kosong
         if (!nim || !password) {
             return res.status(400).render('auth/login', {
                 popup: {
@@ -30,8 +30,8 @@ exports.login = async (req, res) => {
             const user = userRows[0];
             let isMatch = false;
 
-            // 🔐 Cek hash bcrypt
-            if (typeof user.passwd === 'string' && (user.passwd.startsWith('$2a$') || user.passwd.startsWith('$2b$') || user.passwd.startsWith('$2y$'))) {
+            // 🔐 Cek hash bcrypt / plaintext
+            if (typeof user.passwd === 'string' && user.passwd.match(/^\$2[aby]\$/)) {
                 isMatch = await bcrypt.compare(password, user.passwd);
             } else {
                 isMatch = password === user.passwd;
@@ -47,18 +47,19 @@ exports.login = async (req, res) => {
                 });
             }
 
-            // ✅ Login berhasil → set session pustakawan/admin
+            //  Login berhasil → set session pustakawan/admin
             req.session.user = {
-                id: user.username,
+                id: user.user_id,
+                username: user.username,
+                realname: user.realname || user.username,
                 role: 'pustakawan',
                 email: user.email || '-',
-                realname: user.realname || user.username,
             };
 
             console.log(`✅ ${user.username} berhasil login sebagai pustakawan/admin`);
 
-            // 🕒 Update waktu login & IP pustakawan/admin
-            await db.query('UPDATE user SET last_login = NOW(), last_login_ip = ? WHERE username = ?', [req.ip, user.username]);
+            // Update waktu login & IP pustakawan/admin
+            await db.query('UPDATE user SET last_login = NOW(), last_login_ip = ? WHERE user_id = ?', [req.ip, user.user_id]);
 
             return res.redirect('/inside/peminjaman');
         }
@@ -66,7 +67,15 @@ exports.login = async (req, res) => {
         // =====================================================
         // 2️⃣ Jika tidak ditemukan di user → cek member
         // =====================================================
-        const [memberRows] = await db.query('SELECT * FROM member WHERE member_id = ?', [nim]);
+        const [memberRows] = await db.query(
+            `
+            SELECT m.*, t.member_type_name 
+            FROM member AS m
+            LEFT JOIN mst_member_type AS t ON m.member_type_id = t.member_type_id
+            WHERE m.member_id = ?
+        `,
+            [nim]
+        );
 
         if (memberRows.length === 0) {
             return res.status(404).render('auth/login', {
@@ -81,8 +90,8 @@ exports.login = async (req, res) => {
         const member = memberRows[0];
         let isPasswordCorrect = false;
 
-        // 🔐 Cek password member (bcrypt atau plaintext)
-        if (typeof member.mpasswd === 'string' && (member.mpasswd.startsWith('$2a$') || member.mpasswd.startsWith('$2b$') || member.mpasswd.startsWith('$2y$'))) {
+        //  Cek password member (bcrypt atau plaintext)
+        if (typeof member.mpasswd === 'string' && member.mpasswd.match(/^\$2[aby]\$/)) {
             isPasswordCorrect = await bcrypt.compare(password, member.mpasswd);
         } else {
             isPasswordCorrect = password === member.mpasswd;
@@ -98,7 +107,7 @@ exports.login = async (req, res) => {
             });
         }
 
-        // ⏳ Cek keanggotaan expired
+        //  Cek keanggotaan expired
         const today = dayjs().format('YYYY-MM-DD');
         if (member.expire_date && dayjs(member.expire_date).isBefore(today)) {
             return res.status(403).render('auth/login', {
@@ -110,17 +119,18 @@ exports.login = async (req, res) => {
             });
         }
 
-        // ✅ Login berhasil → set session member
+        //  Login berhasil → set session member
         req.session.user = {
             id: member.member_id,
+            name: member.member_name,
             role: 'member',
             email: member.member_email,
-            member_name: member.member_name,
+            memberType: member.member_type_name || '-',
         };
 
-        console.log(`✅ ${member.member_name} login sebagai member`);
+        console.log(`✅ ${member.member_name} login sebagai member (${member.member_type_name})`);
 
-        // 🕒 Update waktu login & IP member
+        //  Update waktu login & IP member
         await db.query('UPDATE member SET last_login = NOW(), last_login_ip = ? WHERE member_id = ?', [req.ip, member.member_id]);
 
         return res.redirect('/outside/dashboard');

@@ -15,6 +15,7 @@
     "body-parser": "^2.2.0",
     "compression": "^1.8.1",
     "cookie-parser": "~1.4.4",
+    "crypto": "^1.0.1",
     "dayjs": "^1.11.18",
     "debug": "~2.6.9",
     "dotenv": "^17.2.2",
@@ -27,6 +28,7 @@
     "http-errors": "~1.6.3",
     "morgan": "^1.10.1",
     "mysql2": "^3.15.0",
+    "nodemailer": "^7.0.10",
     "preline": "^3.2.3"
   },
   "devDependencies": {

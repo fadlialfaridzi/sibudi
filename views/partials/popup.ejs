@@ -5,6 +5,7 @@
   <div
     id="popup"
     class="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-[1000] animate-fadeIn"
+    <% if (popup.redirect) { %>data-redirect="<%= popup.redirect %>"<% } %>
   >
     <div
       class="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6 text-center relative"
@@ -34,6 +35,13 @@
       </h2>
       <p class="text-gray-600 mb-6"><%- popup.message %></p>
 
+      <% if (popup.redirect) { %>
+        <!-- Auto redirect message -->
+        <p class="text-sm text-gray-500 mb-4">
+          <i class="fa-solid fa-spinner fa-spin"></i> Mengalihkan ke halaman login...
+        </p>
+      <% } %>
+
       <!-- Tombol -->
       <button
         type="button"
@@ -61,4 +69,19 @@
       animation: fadeIn 0.3s ease-out;
     }
   </style>
+
+  <!-- Auto Redirect Script -->
+  <% if (popup.redirect) { %>
+  <script>
+    // Auto redirect setelah 2 detik
+    setTimeout(function() {
+      window.location.href = '<%= popup.redirect %>';
+    }, 2000);
+
+    // Atau redirect langsung saat klik OK
+    document.querySelector('[data-popup-close]').addEventListener('click', function() {
+      window.location.href = '<%= popup.redirect %>';
+    });
+  </script>
+  <% } %>
 <% } %>
