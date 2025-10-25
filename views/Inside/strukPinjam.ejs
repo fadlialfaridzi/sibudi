@@ -46,6 +46,13 @@
       body {
         background: linear-gradient(135deg, #F0F8F0 0%, #E8F5E9 100%);
         font-family: 'Inter', sans-serif;
+        /* Page break before Informasi Peminjaman */
+        .print-page-break {
+          page-break-before: always !important;
+          break-before: page !important;
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+        }
       }
 
       @media print {
@@ -165,6 +172,12 @@
         .space-y-2 > * + * {
           margin-top: 0.35rem !important;
         }
+
+        /* Page break before Informasi Peminjaman */
+        .print-page-break {
+          page-break-before: always !important;
+          break-before: page !important;
+        }
       }
 
       .bg-primary {
@@ -247,7 +260,7 @@
 
       <!-- Print Header (Only visible when printing) -->
       <div class="hidden print:block text-center border-b-2 border-gray-300 pb-3 mb-4 print-header">
-        <h1 class="text-xl font-bold text-primary">SIBUDI - Universitas Andalas</h1>
+        <h1 class="text-xl font-bold text-primary">SiBuDi - Universitas Andalas</h1>
         <p class="text-gray-600 text-xs">Struk Peminjaman Buku</p>
       </div>
 
@@ -314,23 +327,23 @@
             <i class="fas fa-user"></i> Informasi Peminjam
           </h3>
           <div class="bg-gray-50 rounded-xl p-5 space-y-2">
-            <div class="flex print-compact-text">
-              <span class="font-semibold text-gray-700" style="min-width: 130px;">Nama</span>
-              <span class="text-gray-900">: <%= receipt.member_name %></span>
+            <div class="print-compact-text flex">
+              <span style="width: 120px;">Nama</span>
+              <span>: <%= receipt.member_name %></span>
             </div>
-            <div class="flex print-compact-text">
-              <span class="font-semibold text-gray-700" style="min-width: 130px;">NIM</span>
-              <span class="text-gray-900 font-mono">: <%= receipt.member_id %></span>
+            <div class="print-compact-text flex">
+              <span style="width: 120px;">NIM</span>
+              <span>: <%= receipt.member_id %></span>
             </div>
-            <div class="flex print-compact-text">
-              <span class="font-semibold text-gray-700" style="min-width: 130px;">Tipe Anggota</span>
-              <span class="text-gray-900">: <%= receipt.member_type %></span>
+            <div class="print-compact-text flex">
+              <span style="width: 120px;">Tipe Anggota</span>
+              <span>: <%= receipt.member_type %></span>
             </div>
           </div>
         </div>
 
-        <!-- Informasi Peminjaman -->
-        <div class="mb-6 print-compact">
+        <!-- Informasi Peminjaman (Page break before saat print) -->
+        <div class="mb-6 print-compact print-page-break">
           <h3 class="text-lg print-compact-title font-bold text-primary mb-4 flex items-center gap-2">
             <i class="fas fa-calendar-alt"></i> Informasi Peminjaman
           </h3>

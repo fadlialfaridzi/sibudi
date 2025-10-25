@@ -1,2 +1,4 @@
 .env
 node_modules
+logs/holiday-monitor.log
+logs/holiday-snapshot.json

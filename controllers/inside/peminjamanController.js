@@ -45,6 +45,56 @@ function calculateDueDate(startDate, days, holidays = []) {
 }
 
 // =====================================================
+// 🧮 HELPER: Load Holidays (From Snapshot or DB)
+// =====================================================
+/**
+ * Mengambil daftar hari libur dari snapshot atau database
+ * 
+ * @param {Object} connection - MySQL connection object
+ * @returns {Promise<Array<string>>} - Array tanggal libur format YYYY-MM-DD
+ */
+async function loadHolidays(connection) {
+  try {
+    // Coba baca snapshot file
+    const snapshotPath = path.join(__dirname, '../../logs/holiday-snapshot.json');
+    
+    if (fs.existsSync(snapshotPath)) {
+      const snapshotData = fs.readFileSync(snapshotPath, 'utf8');
+      const snapshot = JSON.parse(snapshotData);
+      
+      if (snapshot.holiday_ids && Array.isArray(snapshot.holiday_ids) && snapshot.holiday_ids.length > 0) {
+        // Ambil data holiday berdasarkan ID dari snapshot
+        const placeholders = snapshot.holiday_ids.map(() => '?').join(',');
+        const [holidayRows] = await connection.query(
+          `SELECT holiday_date FROM holiday WHERE holiday_id IN (${placeholders})`,
+          snapshot.holiday_ids
+        );
+        
+        const holidays = holidayRows.map(row => {
+          const parsed = dayjs(row.holiday_date, ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY"], true);
+          return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+        }).filter(date => date !== null);
+        
+        console.log(`📁 Menggunakan snapshot holiday, total: ${holidays.length}`);
+        return holidays;
+      }
+    }
+  } catch (err) {
+    console.warn('⚠️ Gagal membaca snapshot holiday:', err.message);
+  }
+  
+  // Fallback: ambil semua dari database
+  const [holidayRows] = await connection.query('SELECT holiday_date FROM holiday');
+  const holidays = holidayRows.map(row => {
+    const parsed = dayjs(row.holiday_date, ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY"], true);
+    return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+  }).filter(date => date !== null);
+  
+  console.log(`📅 Snapshot tidak ditemukan, ambil dari DB: ${holidays.length}`);
+  return holidays;
+}
+
+// =====================================================
 // 🧮 HELPER: Parse Collation
 // =====================================================
 /**
@@ -183,7 +233,7 @@ exports.findBook = async (req, res) => {
       return res.status(400).json({
         success: false,
         type: 'warning',
-        title: 'Buku Non-Lending',
+        title: 'Buku Tidak Dapat Dipinjam',
         message: 'Buku ini hanya bisa dibaca di perpustakaan dan tidak dapat dipinjam.'
       });
     }
@@ -413,6 +463,25 @@ exports.borrowBookAPI = async (req, res) => {
       });
     }
 
+    // =====================================================
+    // 🆕 Validasi Denda (Member dengan denda aktif tidak boleh meminjam)
+    // =====================================================
+    const [fineRows] = await connection.query(
+      'SELECT SUM(debet - credit) AS total_denda FROM fines WHERE member_id = ?',
+      [member.member_id]
+    );
+    const totalFine = fineRows[0].total_denda || 0;
+
+    if (totalFine > 0) {
+      await connection.rollback();
+      return res.status(403).json({
+        success: false,
+        type: 'warning',
+        title: 'Masih Ada Denda',
+        message: `Anggota masih memiliki denda sebesar Rp ${totalFine.toLocaleString('id-ID')}. Harap lunasi terlebih dahulu sebelum meminjam buku.`
+      });
+    }
+
     // 📅 Cek keanggotaan expired
     const today = dayjs().format('YYYY-MM-DD');
     if (member.expire_date && dayjs(member.expire_date).isBefore(today)) {
@@ -470,16 +539,7 @@ exports.borrowBookAPI = async (req, res) => {
     // =====================================================
     // 7️⃣ Ambil Data Hari Libur (Holiday) - BLACKLIST
     // =====================================================
-    const [holidayRows] = await connection.query(
-      'SELECT holiday_date FROM holiday'
-    );
-    const holidays = holidayRows.map(row => {
-      // Parse dengan fleksibilitas format
-      const parsed = dayjs(row.holiday_date, ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY"], true);
-      return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
-    }).filter(date => date !== null);
-
-    console.log(`🗓️ Blacklisted holidays: ${holidays.length} dates`, holidays);
+    const holidays = await loadHolidays(connection);
 
     // =====================================================
     // 8️⃣ Hitung Due Date (Skip Minggu & Holidays)
@@ -694,3 +754,4 @@ exports.renderStrukPinjam = (req, res) => {
 // 🧮 EXPORT HELPER FUNCTIONS UNTUK DIGUNAKAN DI LUAR
 // =====================================================
 module.exports.calculateDueDate = calculateDueDate;
+module.exports.loadHolidays = loadHolidays;
