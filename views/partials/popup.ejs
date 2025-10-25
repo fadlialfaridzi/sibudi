@@ -29,8 +29,10 @@
       <% } %>
 
       <!-- Message -->
-      <h2 class="text-lg font-semibold text-gray-800 mb-2"><%= popup.title || (popup.type === "success" ? "Berhasil" : popup.type === "error" ? "Gagal" : "Informasi") %></h2>
-      <p class="text-gray-600 mb-6"><%= popup.message %></p>
+      <h2 class="text-lg font-semibold text-gray-800 mb-2">
+        <%= popup.title || (popup.type === "success" ? "Berhasil" : popup.type === "error" ? "Gagal" : popup.type === "warning" ? "Peringatan" : "Informasi") %>
+      </h2>
+      <p class="text-gray-600 mb-6"><%- popup.message %></p>
 
       <!-- Tombol -->
       <button

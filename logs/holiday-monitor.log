@@ -1,0 +1,26 @@
+[2025-10-25T06:14:28.865Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T06:14:28.870Z] 📁 Snapshot tidak ditemukan, inisialisasi ulang dari DB.
+[2025-10-25T06:14:28.924Z] 📊 Inisialisasi jumlah awal data holiday: 979
+[2025-10-25T06:14:28.927Z] 💾 Snapshot disimpan: count = 979
+[2025-10-25T06:14:30.199Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T06:14:30.203Z] 📁 Snapshot holiday count dipulihkan: 979
+[2025-10-25T06:16:00.279Z] 🔔 Deteksi penambahan hari libur: 979 → 980
+[2025-10-25T06:16:02.313Z] 📅 Hari libur baru terdeteksi: 2025-10-29
+[2025-10-25T06:16:02.591Z] ❌ Error update loan: calculateDueDate is not a function
+[2025-10-25T06:16:02.593Z] 💾 Snapshot disimpan: count = 980
+[2025-10-25T06:16:03.789Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T06:16:03.793Z] 📁 Snapshot holiday count dipulihkan: 980
+[2025-10-25T06:18:31.240Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T06:18:31.244Z] 📁 Snapshot holiday count dipulihkan: 980
+[2025-10-25T06:22:28.147Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T06:22:28.151Z] 📁 Snapshot holiday count dipulihkan: 980
+[2025-10-25T06:23:28.225Z] 🔔 Deteksi penambahan hari libur: 980 → 981
+[2025-10-25T06:23:30.259Z] 📅 Hari libur baru terdeteksi: 2025-10-29
+[2025-10-25T06:23:35.225Z] ✅ 3223 loan diperbarui karena hari libur baru.
+[2025-10-25T06:23:35.228Z] 💾 Snapshot disimpan: count = 981
+[2025-10-25T06:23:36.444Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T06:23:36.449Z] 📁 Snapshot holiday count dipulihkan: 981
+[2025-10-25T08:09:19.075Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T08:09:19.079Z] 📁 Snapshot holiday count dipulihkan: 981
+[2025-10-25T08:10:32.411Z] 🚀 Live Monitor dimulai (interval 30 detik)...
+[2025-10-25T08:10:32.416Z] 📁 Snapshot holiday count dipulihkan: 981

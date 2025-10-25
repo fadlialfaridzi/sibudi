@@ -16,10 +16,6 @@ const MySQLStore = require('express-mysql-session')(session);
 const db = require('./config/db'); // koneksi database
 const security = require('./middleware/security'); // helmet + CSP + limiter
 
-// // routes utama
-// const indexRouter = require('./routes/index');
-// const usersRouter = require('./routes/users');
-
 // routes sistem inti
 const authRouter = require('./routes/auth');       // login/logout
 const landingRouter = require('./routes/landing'); // halaman publik
@@ -87,7 +83,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // =====================================================
 // 8️⃣ SET GLOBAL VARIABLE UNTUK VIEW
 // =====================================================
-// (memudahkan akses info user di semua halaman ejs)
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   next();
@@ -102,12 +97,6 @@ app.use('/', authRouter);
 
 // Halaman publik (Home, About, Panduan)
 app.use('/', landingRouter);
-
-// // Rute testing (legacy)
-// app.use('/legacy', indexRouter);
-
-// // Rute user management (admin/testing)
-// app.use('/users', usersRouter);
 
 // Rute pustakawan (Mode Kios / Inside)
 app.use('/inside', insideRouter);
@@ -131,6 +120,34 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// =====================================================
+// 🛰️ 11️⃣ BACKGROUND SERVICE: Live Monitor Holiday
+// =====================================================
+// Jalankan service pemantau tabel holiday yang otomatis
+// memperbarui due_date pinjaman jika ada hari libur baru.
+const liveMonitor = require('./services/liveMonitor');
+console.log('🛰️  Service liveMonitor.js aktif dan berjalan di background...');
+
+// =====================================================
+// 🧹 12️⃣ GRACEFUL SHUTDOWN HANDLER (optional tapi penting)
+// =====================================================
+function shutdown(signal) {
+  console.log(`\n⚙️  ${signal} diterima, menghentikan SiBuDi dengan aman...`);
+  try {
+    if (liveMonitor && typeof liveMonitor.stop === 'function') {
+      liveMonitor.stop();
+      console.log('🧹 Live monitor dihentikan dengan bersih.');
+    }
+  } catch (err) {
+    console.error('❌ Error saat menghentikan live monitor:', err);
+  }
+  process.exit(0);
+}
+
+// Tangani SIGINT (Ctrl+C) & SIGTERM (PM2 stop / docker stop)
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
 
 // =====================================================
 // 🔚 EXPORT APP

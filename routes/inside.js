@@ -16,6 +16,9 @@ router.post('/peminjaman/find', peminjamanController.findBook);
 // 🟢 API untuk proses transaksi peminjaman
 router.post('/api/kiosk/borrow', peminjamanController.borrowBookAPI);
 
+// 🟢 Halaman struk peminjaman 
+router.get('/strukPinjam', peminjamanController.renderStrukPinjam);
+
 // =====================================================
 // 📦 (Opsional - nanti) API pengembalian buku
 // =====================================================

@@ -1,211 +1,437 @@
+<%
+  // === Helper Format Tanggal di sisi server ===
+  function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    if (isNaN(d)) return '-';
+    return d.toLocaleDateString('id-ID', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  const loanDateFormatted = formatDate(receipt.loan_date);
+  const dueDateFormatted = formatDate(receipt.due_date);
+
+  // Helper untuk filter data buku yang tidak null/kosong
+  const bookInfoItems = [
+    { icon: 'fa-user-pen', bg: 'bg-green-100', color: 'text-green-600', label: 'Penulis', value: receipt.author },
+    { icon: 'fa-calendar', bg: 'bg-blue-100', color: 'text-blue-600', label: 'Tahun Terbit', value: receipt.publish_year },
+    { icon: 'fa-layer-group', bg: 'bg-purple-100', color: 'text-purple-600', label: 'Jumlah Halaman', value: receipt.collation_pages },
+    { icon: 'fa-ruler', bg: 'bg-yellow-100', color: 'text-yellow-600', label: 'Ketebalan Buku', value: receipt.collation_size },
+    { icon: 'fa-language', bg: 'bg-indigo-100', color: 'text-indigo-600', label: 'Bahasa', value: receipt.language },
+    { icon: 'fa-building', bg: 'bg-pink-100', color: 'text-pink-600', label: 'Penerbit', value: receipt.publisher },
+    { icon: 'fa-bookmark', bg: 'bg-teal-100', color: 'text-teal-600', label: 'Jenis Koleksi', value: receipt.coll_type },
+    { icon: 'fa-map-marker-alt', bg: 'bg-orange-100', color: 'text-orange-600', label: 'Lokasi', value: receipt.location }
+  ].filter(item => item.value && item.value !== '-' && item.value.toString().trim() !== '');
+%>
+
 <!DOCTYPE html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
+    <title>Struk Peminjaman | SiBuDi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Struk Peminjaman Buku</title>
-
-    <!-- Tailwind & Preline -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/preline@1.0.0/dist/preline.min.css" rel="stylesheet"/>
-
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
       body {
-        background-color: #F0F8F0;
+        background: linear-gradient(135deg, #F0F8F0 0%, #E8F5E9 100%);
         font-family: 'Inter', sans-serif;
       }
 
-      .bg-primary { background-color: #2E7D32; }
-      .text-primary { color: #2E7D32; }
-      .border-primary { border-color: #2E7D32; }
-
-      .bg-secondary { background-color: #FFD700; }
-      .text-secondary { color: #FFD700; }
-
-      .hover-primary:hover { background-color: #256828; }
-      .hover-secondary:hover { background-color: #e6c200; }
-
-      /* Efek hover interaktif */
-      .service-item {
-        transition: all 0.3s ease;
-      }
-      .service-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(47, 122, 51, 0.15);
-        background-color: #f8fff8;
-      }
-
       @media print {
+        @page {
+          size: A4;
+          margin: 1.5cm;
+        }
+
+        html, body {
+          height: auto;
+          overflow: visible;
+        }
+
         body {
           background: white;
+          margin: 0;
+          padding: 0;
         }
-        button {
+
+        .no-print {
           display: none !important;
         }
-        .shadow-2xl {
+
+        .print-area {
           box-shadow: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          max-width: 100% !important;
+          border-radius: 0 !important;
+          overflow: visible !important;
         }
+        
+        /* Compact spacing for print */
+        .print-compact {
+          margin-bottom: 0.75rem !important;
+          padding: 0.5rem !important;
+        }
+
+        .print-compact-title {
+          font-size: 1.125rem !important;
+          margin-bottom: 0.5rem !important;
+        }
+
+        .print-compact-text {
+          font-size: 0.75rem !important;
+          line-height: 1.25 !important;
+        }
+
+        /* 2 kolom untuk info buku saat print */
+        .print-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 0.5rem !important;
+          column-gap: 1.5rem !important;
+        }
+
+        /* Hide icons saat print */
+        .print-hide-icon .info-icon {
+          display: none !important;
+        }
+
+        /* Adjust info row untuk print (tanpa icon) */
+        .print-hide-icon .info-row {
+          padding-left: 0 !important;
+        }
+
+        .print-hide-icon .info-content {
+          margin-left: 0 !important;
+        }
+
+        /* Hide rounded corners in print */
+        * {
+          border-radius: 0 !important;
+        }
+
+        /* Compact header */
+        .print-header {
+          padding: 0.75rem 0 !important;
+          margin-bottom: 0.75rem !important;
+        }
+
+        /* Compact image */
+        .print-image {
+          width: 6rem !important;
+          height: 8rem !important;
+        }
+
+        /* Reduce spacing */
+        .mb-8 {
+          margin-bottom: 0.75rem !important;
+        }
+
+        .mb-6 {
+          margin-bottom: 0.75rem !important;
+        }
+
+        .p-8 {
+          padding: 1rem !important;
+        }
+
+        .p-5, .p-4 {
+          padding: 0.75rem !important;
+        }
+
+        .gap-4 {
+          gap: 0.5rem !important;
+        }
+
+        .gap-3 {
+          gap: 0.5rem !important;
+        }
+
+        .space-y-3 > * + * {
+          margin-top: 0.5rem !important;
+        }
+
+        .space-y-2 > * + * {
+          margin-top: 0.35rem !important;
+        }
+      }
+
+      .bg-primary {
+        background-color: #2F7A33;
+      }
+
+      .text-primary {
+        color: #2F7A33;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      /* Info row styling dengan icon (screen view) */
+      .info-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+      }
+
+      .info-icon {
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.75rem;
+        font-size: 1.125rem;
+      }
+
+      .info-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .info-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        margin-bottom: 0.25rem;
+      }
+
+      .info-value {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1F2937;
+        word-wrap: break-word;
       }
     </style>
   </head>
 
   <body class="min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden service-item">
 
-      <!-- Header -->
-      <div class="bg-primary text-white p-8 text-center">
-        <div class="mb-4">
-          <i class="fas fa-book-reader text-6xl opacity-90"></i>
+    <div class="print-area max-w-4xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-fadeIn">
+      
+      <!-- Header Struk (Screen Only) -->
+      <div class="bg-primary text-white p-8 text-center no-print">
+        <div class="flex items-center justify-center mb-3">
+          <i class="fas fa-check-circle text-5xl"></i>
         </div>
-        <h1 class="text-3xl font-bold mb-2">Struk Peminjaman Buku</h1>
-        <p class="text-green-100">Perpustakaan Universitas Andalas</p>
+        <h1 class="text-3xl font-bold mb-2">Peminjaman Berhasil</h1>
+        <p class="text-green-100">Transaksi peminjaman telah diproses</p>
       </div>
 
-      <!-- Content -->
+      <!-- Print Header (Only visible when printing) -->
+      <div class="hidden print:block text-center border-b-2 border-gray-300 pb-3 mb-4 print-header">
+        <h1 class="text-xl font-bold text-primary">SIBUDI - Universitas Andalas</h1>
+        <p class="text-gray-600 text-xs">Struk Peminjaman Buku</p>
+      </div>
+
       <div class="p-8">
-        <!-- Status Badge -->
-        <div class="text-center mb-8">
-          <div class="inline-block bg-green-100 text-green-800 px-6 py-3 rounded-full">
-            <i class="fas fa-check-circle mr-2 text-primary"></i>
-            <span class="font-bold text-lg">Peminjaman Berhasil</span>
-          </div>
-        </div>
-
-        <!-- Book & Member Info -->
-        <div class="flex flex-col md:flex-row gap-8 mb-8">
-          <!-- Book Cover -->
-          <div class="flex-shrink-0 mx-auto md:mx-0">
-            <div class="relative">
+        
+        <!-- Book Title & Cover (Centered & Compact) -->
+        <div class="mb-8 print-compact">
+          <div class="flex flex-col items-center text-center gap-3">
+            <!-- Cover Buku -->
+            <div class="flex-shrink-0">
               <img 
-                src="<%= receipt.cover %>" 
+                src="<%= receipt.cover || '/images/buku.png' %>" 
                 alt="Cover Buku" 
-                class="w-48 h-64 object-cover rounded-lg shadow-xl border-4 border-gray-200"
-              >
-              <div class="absolute -bottom-3 -right-3 bg-secondary text-primary rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
-                <i class="fas fa-book text-2xl"></i>
-              </div>
+                class="w-32 h-44 print-image object-cover rounded-xl shadow-lg border-2 border-gray-200 mx-auto"
+              />
             </div>
-          </div>
 
-          <!-- Details -->
-          <div class="flex-1">
-            <div class="mb-6">
-              <h2 class="text-3xl font-bold text-primary mb-3 leading-tight">
+            <!-- Judul Buku -->
+            <div class="w-full max-w-2xl">
+              <h2 class="text-2xl md:text-3xl print-compact-title font-bold text-primary mb-2">
                 <%= receipt.book_title %>
               </h2>
-              <p class="text-gray-700 text-lg">
-                <i class="fas fa-user-edit mr-2 text-primary"></i>
-                <strong>Penulis:</strong> <%= receipt.author %>
-              </p>
-            </div>
-
-            <!-- Member Info Card -->
-            <div class="bg-green-50 rounded-lg p-6 border-2 border-primary mb-6">
-              <h3 class="text-lg font-bold text-primary mb-3 flex items-center gap-2">
-                <i class="fas fa-user-circle"></i>
-                Informasi Peminjam
-              </h3>
-              <div class="space-y-2 text-gray-700">
-                <div class="flex items-center">
-                  <span class="font-semibold w-32">Nama:</span>
-                  <span class="text-lg"><%= receipt.member_name %></span>
-                </div>
-                <div class="flex items-center">
-                  <span class="font-semibold w-32">NIM:</span>
-                  <span class="text-lg font-mono"><%= receipt.member_id %></span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Librarian Info -->
-            <div class="bg-[#F0F8F0] rounded-lg p-4 border border-green-200">
-              <p class="text-sm text-gray-700">
-                <i class="fas fa-user-tie mr-2 text-primary"></i>
-                <strong>Diproses oleh:</strong> <%= receipt.librarian_name %>
+              
+              <!-- Kode Buku -->
+              <p class="text-sm print-compact-text text-gray-500 font-mono bg-gray-100 inline-block px-3 py-1 rounded-lg">
+                <%= receipt.item_code %>
               </p>
             </div>
           </div>
         </div>
 
-        <!-- Date Info -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <!-- Loan Date -->
-          <div class="bg-green-50 rounded-lg p-6 border-2 border-green-300">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
-                <i class="fas fa-calendar-check"></i>
-              </div>
-              <h4 class="font-bold text-primary">Tanggal Pinjam</h4>
-            </div>
-            <p class="text-2xl font-bold text-primary ml-1">
-              <%= new Date(receipt.loan_date).toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }) %>
-            </p>
-          </div>
+        <!-- Divider -->
+        <div class="border-t border-gray-300 my-4"></div>
 
-          <!-- Due Date -->
-          <div class="bg-yellow-50 rounded-lg p-6 border-2 border-yellow-300">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="bg-secondary text-primary rounded-full w-10 h-10 flex items-center justify-center">
-                <i class="fas fa-calendar-times"></i>
+        <!-- Informasi Buku (Icon di screen, tanpa icon saat print) -->
+        <% if (bookInfoItems.length > 0) { %>
+        <div class="mb-8 print-compact print-hide-icon">
+          <h3 class="text-lg print-compact-title font-bold text-primary mb-4 flex items-center gap-2">
+            <i class="fas fa-book"></i> Informasi Buku
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 print-grid">
+            <% bookInfoItems.forEach((item, index) => { %>
+              <div class="info-row">
+                <div class="info-icon <%= item.bg %> <%= item.color %>">
+                  <i class="fa-solid <%= item.icon %>"></i>
+                </div>
+                <div class="info-content">
+                  <p class="info-label"><%= item.label %></p>
+                  <p class="info-value"><%= item.value %></p>
+                </div>
               </div>
-              <h4 class="font-bold text-primary">Jatuh Tempo</h4>
-            </div>
-            <p class="text-2xl font-bold text-red-700 ml-1">
-              <%= new Date(receipt.due_date).toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }) %>
-            </p>
+            <% }) %>
           </div>
         </div>
+        <% } %>
 
-        <!-- Important Notes -->
-        <div class="bg-[#FFFBEA] border-l-4 border-yellow-400 rounded-lg p-6 mb-8">
-          <h4 class="font-bold text-yellow-800 mb-3 flex items-center gap-2">
-            <i class="fas fa-exclamation-triangle text-yellow-600"></i>
-            Perhatian Penting
-          </h4>
-          <ul class="space-y-2 text-sm text-gray-800">
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check-circle mt-1 text-primary"></i>
-              <span>Harap kembalikan buku tepat waktu sesuai tanggal jatuh tempo.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check-circle mt-1 text-primary"></i>
-              <span>Keterlambatan pengembalian akan dikenakan sanksi sesuai peraturan.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i class="fas fa-check-circle mt-1 text-primary"></i>
-              <span>Jaga buku dengan baik, hindari kerusakan atau kehilangan.</span>
-            </li>
-          </ul>
+        <!-- Divider -->
+        <div class="border-t border-gray-300 my-4"></div>
+
+        <!-- Informasi Peminjam (Fixed NIM alignment) -->
+        <div class="mb-6 print-compact">
+          <h3 class="text-lg print-compact-title font-bold text-primary mb-4 flex items-center gap-2">
+            <i class="fas fa-user"></i> Informasi Peminjam
+          </h3>
+          <div class="bg-gray-50 rounded-xl p-5 space-y-2">
+            <div class="flex print-compact-text">
+              <span class="font-semibold text-gray-700" style="min-width: 130px;">Nama</span>
+              <span class="text-gray-900">: <%= receipt.member_name %></span>
+            </div>
+            <div class="flex print-compact-text">
+              <span class="font-semibold text-gray-700" style="min-width: 130px;">NIM</span>
+              <span class="text-gray-900 font-mono">: <%= receipt.member_id %></span>
+            </div>
+            <div class="flex print-compact-text">
+              <span class="font-semibold text-gray-700" style="min-width: 130px;">Tipe Anggota</span>
+              <span class="text-gray-900">: <%= receipt.member_type %></span>
+            </div>
+          </div>
         </div>
 
-        <!-- Footer -->
-        <div class="text-center pt-6 border-t border-gray-200">
-          <p class="text-gray-600 mb-4">Terima kasih telah menggunakan layanan <strong class="text-primary">SiBuDi</strong></p>
-          <button 
-            onclick="window.print()" 
-            class="bg-primary hover-primary text-white px-8 py-3 rounded-lg font-semibold transition duration-200 inline-flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-          >
-            <i class="fas fa-print"></i>
-            Cetak Struk
-          </button>
+        <!-- Informasi Peminjaman -->
+        <div class="mb-6 print-compact">
+          <h3 class="text-lg print-compact-title font-bold text-primary mb-4 flex items-center gap-2">
+            <i class="fas fa-calendar-alt"></i> Informasi Peminjaman
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Tanggal Pinjam -->
+            <div class="bg-blue-50 rounded-xl p-5 border-2 border-blue-200">
+              <p class="text-sm print-compact-text text-gray-600 mb-2">Tanggal Pinjam</p>
+              <p class="text-base md:text-lg print-compact-text font-bold text-blue-600"><%= loanDateFormatted %></p>
+            </div>
+            
+            <!-- Jatuh Tempo -->
+            <div class="bg-red-50 rounded-xl p-5 border-2 border-red-200">
+              <p class="text-sm print-compact-text text-gray-600 mb-2">Jatuh Tempo</p>
+              <p class="text-base md:text-lg print-compact-text font-bold text-red-600"><%= dueDateFormatted %></p>
+            </div>
+          </div>
         </div>
+
+        <!-- Aturan Peminjaman -->
+        <div class="mb-6 print-compact">
+          <h3 class="text-lg print-compact-title font-bold text-primary mb-4 flex items-center gap-2">
+            <i class="fas fa-info-circle"></i> Aturan Peminjaman
+          </h3>
+          <div class="bg-yellow-50 rounded-xl p-5 border-2 border-yellow-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div>
+                <p class="text-gray-600 mb-1 print-compact-text">Durasi Peminjaman</p>
+                <p class="font-bold text-gray-800 text-base print-compact-text"><%= receipt.loan_periode %> hari</p>
+              </div>
+              <div>
+                <p class="text-gray-600 mb-1 print-compact-text">Batas Perpanjangan</p>
+                <p class="font-bold text-gray-800 text-base print-compact-text"><%= receipt.reborrow_limit %> kali</p>
+              </div>
+              <div>
+                <p class="text-gray-600 mb-1 print-compact-text">Denda per Hari</p>
+                <p class="font-bold text-gray-800 text-base print-compact-text">Rp <%= Number(receipt.fine_each_day).toLocaleString('id-ID') %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informasi Pustakawan -->
+        <div class="text-sm print-compact-text text-gray-600 text-center mb-6 bg-gray-50 rounded-lg p-4">
+          <p class="mb-1">Diproses oleh: <strong class="text-gray-800"><%= receipt.librarian_name %></strong></p>
+          <p class="text-xs text-gray-500">Tanggal cetak: <%= new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></p>
+        </div>
+
+        <!-- Peringatan -->
+        <div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-lg">
+          <div class="flex items-start gap-3">
+            <i class="fas fa-exclamation-triangle text-red-500 text-xl mt-1 flex-shrink-0"></i>
+            <div>
+              <p class="font-semibold text-red-800 mb-2 print-compact-text">Perhatian</p>
+              <ul class="text-sm print-compact-text text-red-700 space-y-1.5 list-disc list-inside">
+                <li>Harap kembalikan buku sebelum tanggal jatuh tempo</li>
+                <li>Keterlambatan pengembalian akan dikenakan denda</li>
+                <li>Jaga kebersihan dan kelayakan buku selama dipinjam</li>
+                <li>Simpan struk ini sebagai bukti peminjaman</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      <!-- Action Buttons -->
+      <div class="bg-gray-100 p-6 flex gap-3 border-t no-print">
+        <button 
+          id="printBtn" 
+          class="flex-1 bg-primary hover:bg-green-800 text-white px-6 py-3 rounded-xl font-semibold transition duration-200 flex items-center justify-center gap-2 shadow-md"
+        >
+          <i class="fas fa-print"></i> Cetak Struk
+        </button>
+        <button 
+          id="newTransBtn" 
+          class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition duration-200 flex items-center justify-center gap-2 shadow-md"
+        >
+          <i class="fas fa-arrow-left"></i> Transaksi Baru
+        </button>
+      </div>
+
     </div>
 
-    <!-- Preline Script -->
-    <script src="https://cdn.jsdelivr.net/npm/preline@1.0.0/dist/preline.min.js"></script>
+    <script>
+      // Attach button event listeners (CSP compliant - no inline handlers)
+      document.addEventListener('DOMContentLoaded', function() {
+        const printBtn = document.getElementById('printBtn');
+        const newTransBtn = document.getElementById('newTransBtn');
+
+        if (printBtn) {
+          printBtn.addEventListener('click', function() {
+            window.print();
+          });
+        }
+
+        if (newTransBtn) {
+          newTransBtn.addEventListener('click', function() {
+            window.location.href = '/inside/peminjaman';
+          });
+        }
+      });
+    </script>
   </body>
 </html>
