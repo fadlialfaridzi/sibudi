@@ -1,0 +1,302 @@
+<%# =========================================================
+    Detail Peminjaman Page - SiBuDi
+    Full page dengan carousel list buku + detail card
+========================================================= %>
+
+<%- include('../partials/header-simple.ejs', { title: title || 'Detail Peminjaman' }) %>
+
+<body class="bg-gradient-to-br from-green-50 via-white to-yellow-50 font-['Inter'] min-h-screen">
+  <%- include('../partials/navbarOutside.ejs') %>
+
+  <main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- Header Section -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-[#2F7A33] mb-2">
+          <i class="fa-solid fa-book-open mr-2"></i>
+          Detail Peminjaman Buku
+        </h1>
+        <p class="text-gray-600">Kelola perpanjangan dan lihat detail buku yang Anda pinjam</p>
+      </div>
+
+      <% if (loans && loans.length > 0) { %>
+      
+      <!-- Main Container -->
+      <div id="main-container" class="grid grid-cols-1 lg:grid-cols-3 gap-6 transition-all duration-700">
+        
+        <!-- LEFT SIDE: Carousel List Buku -->
+        <div class="lg:col-span-1 space-y-4">
+          <div class="bg-white rounded-2xl shadow-lg p-6 border border-green-100">
+            <h2 class="text-xl font-bold text-[#2F7A33] mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-layer-group"></i>
+              <span>Buku Dipinjam</span>
+              <span class="ml-auto bg-[#FFD700] text-[#2F7A33] px-3 py-1 rounded-full text-sm font-bold">
+                <%= loans.length %> buku aktif
+              </span>
+            </h2>
+
+            <!-- Carousel Container -->
+            <div class="relative">
+              <div id="loan-carousel" class="overflow-hidden">
+                <div id="loan-list" class="space-y-3">
+                  <% loans.forEach((loan, index) => { %>
+                  <div class="loan-item card-3d cursor-pointer rounded-xl border-2 border-gray-200 p-4 transition-all duration-300 hover:border-[#2F7A33] hover:shadow-lg bg-gradient-to-br from-white to-green-50 <%= index === 0 ? 'active ring-2 ring-[#2F7A33]' : '' %>" 
+                       data-index="<%= index %>"
+                       style="min-height: 120px;">
+                    
+                    <div class="flex gap-4">
+                      <!-- Book Image -->
+                      <div class="flex-shrink-0">
+                        <img src="<%= loan.image || '/images/buku.png' %>" 
+                             alt="<%= loan.title %>" 
+                             class="w-20 h-28 object-cover rounded-lg shadow-md border border-gray-200">
+                      </div>
+
+                      <!-- Book Info -->
+                      <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-2">
+                          <%= loan.title || 'Tanpa Judul' %>
+                        </h3>
+                        
+                        <div class="space-y-1 text-xs text-gray-600">
+                          <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-barcode text-[#2F7A33] w-4"></i>
+                            <span class="font-mono"><%= loan.item_code %></span>
+                          </div>
+                          
+                          <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-[#2F7A33] w-4"></i>
+                            <span><%= new Date(loan.loan_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) %></span>
+                          </div>
+                          
+                          <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-yellow-600 w-4"></i>
+                            <span class="font-semibold text-yellow-700">
+                              <% 
+                              const daysLeft = Math.ceil((new Date(loan.due_date) - new Date()) / (1000 * 60 * 60 * 24));
+                              const daysColor = daysLeft < 0 ? 'text-red-600' : daysLeft <= 3 ? 'text-orange-600' : 'text-green-600';
+                              %>
+                              <span class="<%= daysColor %>">
+                                <%= daysLeft < 0 ? `${Math.abs(daysLeft)} hari terlambat` : `${daysLeft} hari lagi` %>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <!-- Badge Perpanjangan atau No Reborrow -->
+                        <div class="mt-2">
+                          <% if (loan.noReborrow) { %>
+                          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+                            <i class="fa-solid fa-ban"></i>
+                            Tidak bisa diperpanjang
+                          </span>
+                          <% } else { %>
+                          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold <%= loan.renewed >= loan.reborrow_limit ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' %>">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                            <%= loan.renewed || 0 %>/<%= loan.reborrow_limit || 2 %> perpanjangan
+                          </span>
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Active Indicator -->
+                    <div class="absolute top-2 right-2 w-3 h-3 rounded-full bg-[#2F7A33] opacity-0 transition-opacity duration-300 active-indicator"></div>
+                  </div>
+                  <% }); %>
+                </div>
+              </div>
+
+              <!-- Carousel Navigation (if more than 3 books) -->
+              <% if (loans.length > 3) { %>
+              <div class="flex justify-center gap-3 mt-4">
+                <button id="carousel-prev" class="w-10 h-10 rounded-full bg-[#2F7A33] text-white hover:bg-[#256328] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  <i class="fa-solid fa-chevron-up"></i>
+                </button>
+                <button id="carousel-next" class="w-10 h-10 rounded-full bg-[#2F7A33] text-white hover:bg-[#256328] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE: Detail Buku dengan Hero Image -->
+        <div class="lg:col-span-2 space-y-6">
+          
+          <!-- Hero Image Section -->
+          <div class="bg-gradient-to-br from-[#2F7A33] to-[#1a4d1e] rounded-2xl shadow-2xl overflow-hidden relative" style="height: 280px;">
+            <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.03) 10px, rgba(255,255,255,.03) 20px);"></div>
+            
+            <div class="relative h-full flex items-center justify-center p-8">
+              <div class="text-center">
+                <div class="relative inline-block hero-tilt">
+                  <img id="hero-image" 
+                       src="<%= loans[0].image || '/images/buku.png' %>" 
+                       alt="Book Cover" 
+                       class="w-40 h-56 object-cover rounded-xl shadow-2xl border-4 border-white transform transition-all duration-500"
+                       style="box-shadow: 0 20px 60px rgba(0,0,0,0.4);">
+                  
+                  <!-- Floating Decorations -->
+                  <div class="absolute -top-4 -right-4 w-16 h-16 bg-[#FFD700] rounded-full opacity-30 blur-xl animate-pulse"></div>
+                  <div class="absolute -bottom-4 -left-4 w-20 h-20 bg-yellow-300 rounded-full opacity-20 blur-xl animate-pulse" style="animation-delay: 0.5s;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detail Content (akan di-render oleh JS) -->
+          <div id="book-detail" class="space-y-4">
+            <!-- Content will be dynamically inserted here -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Hidden Data -->
+      <script type="application/json" id="loans-data">
+        <%- JSON.stringify(loans.map(loan => ({
+          loan_id: loan.loan_id,
+          item_code: loan.item_code,
+          title: loan.title,
+          author: loan.author,
+          publish_year: loan.publish_year,
+          edition: loan.edition,
+          pages: loan.collation_pages,
+          size: loan.collation_size,
+          language_id: loan.language,
+          image: loan.image,
+          loan_date: loan.loan_date,
+          due_date: loan.due_date,
+          renewed: loan.renewed,
+          reborrow_limit: loan.reborrow_limit,
+          noReborrow: loan.noReborrow
+        }))) %>
+      </script>
+      <input type="hidden" id="total-denda" value="<%= totalDenda || 0 %>">
+
+      <% } else { %>
+      
+      <!-- Empty State -->
+      <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-200">
+          <div class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+            <i class="fa-solid fa-book-open text-6xl text-gray-400"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-3">Belum Ada Peminjaman Aktif</h2>
+          <p class="text-gray-600 mb-6">Anda belum memiliki buku yang sedang dipinjam. Kunjungi katalog untuk meminjam buku.</p>
+          <a href="/outside/dashboard" class="inline-flex items-center gap-2 px-6 py-3 bg-[#2F7A33] text-white rounded-xl font-semibold hover:bg-[#256328] transition-colors shadow-lg">
+            <i class="fa-solid fa-home"></i>
+            Kembali ke Dashboard
+          </a>
+        </div>
+      </div>
+      
+      <% } %>
+
+    </div>
+  </main>
+
+  <!-- Popup Notification -->
+  <% if (popup) { %>
+  <div id="popup-notification" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden transform animate-slideUp">
+      <div class="p-6">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center <%= popup.type === 'success' ? 'bg-green-100' : popup.type === 'error' ? 'bg-red-100' : 'bg-yellow-100' %>">
+            <i class="fa-solid <%= popup.type === 'success' ? 'fa-circle-check text-green-600' : popup.type === 'error' ? 'fa-circle-xmark text-red-600' : 'fa-triangle-exclamation text-yellow-600' %> text-2xl"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-lg font-bold text-gray-800 mb-2"><%= popup.title %></h3>
+            <p class="text-gray-600 text-sm"><%- popup.message %></p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-6 py-4 flex justify-end gap-3">
+        <button onclick="closePopup()" class="px-6 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition-colors">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function closePopup() {
+      const popup = document.getElementById('popup-notification');
+      popup?.classList.add('animate-fadeOut');
+      setTimeout(() => popup?.remove(), 300);
+    }
+    setTimeout(closePopup, 5000);
+  </script>
+  <% } %>
+
+  <!-- Link CSS Animasi 3D -->
+  <link rel="stylesheet" href="/css/animasi3d.css">
+
+  <style>
+    /* Carousel Styling */
+    .loan-item.active {
+      border-color: #2F7A33;
+      background: linear-gradient(135deg, #f8fff8 0%, #e8f5e9 100%);
+      box-shadow: 0 8px 20px rgba(47, 122, 51, 0.15);
+    }
+
+    .loan-item.active .active-indicator {
+      opacity: 1;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; }
+    }
+
+    .animate-fadeIn { animation: fadeIn 0.3s ease; }
+    .animate-slideUp { animation: slideUp 0.4s ease; }
+    .animate-fadeOut { animation: fadeOut 0.3s ease; }
+
+    /* Line Clamp */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Smooth Transitions */
+    #main-container[data-active="true"] {
+      animation: slideIn 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    @keyframes slideIn {
+      from { 
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Hero Image Hover Effect */
+    #hero-image:hover {
+      transform: scale(1.05) rotateY(5deg);
+    }
+  </style>
+
+  <!-- Main JavaScript -->
+  <script src="/js/main.js"></script>
+</body>
+</html>

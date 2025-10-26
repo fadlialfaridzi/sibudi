@@ -1,3 +1,4 @@
+<!-- views/partials/popup.ejs -->
 <% if (typeof popup !== "undefined" && popup && popup.message) { %>
   <!-- =======================
        MODAL POPUP (center)
@@ -73,15 +74,23 @@
   <!-- Auto Redirect Script -->
   <% if (popup.redirect) { %>
   <script>
-    // Auto redirect setelah 2 detik
-    setTimeout(function() {
-      window.location.href = '<%= popup.redirect %>';
-    }, 2000);
+    (function() {
+      // Auto redirect setelah 2 detik
+      const redirectUrl = '<%= popup.redirect %>';
+      const redirectTimer = setTimeout(function() {
+        window.location.href = redirectUrl;
+      }, 2000);
 
-    // Atau redirect langsung saat klik OK
-    document.querySelector('[data-popup-close]').addEventListener('click', function() {
-      window.location.href = '<%= popup.redirect %>';
-    });
+      // Atau redirect langsung saat klik OK
+      const closeBtn = document.querySelector('[data-popup-close]');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          clearTimeout(redirectTimer);
+          window.location.href = redirectUrl;
+        });
+      }
+    })();
   </script>
   <% } %>
 <% } %>

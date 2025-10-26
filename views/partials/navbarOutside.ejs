@@ -1,4 +1,8 @@
-<%# ========================================================= Navbar Outside (Member/Peminjam) - SiBuDi Tema: Hijau Unand (#2F7A33), Kuning (#FFD700) Framework: Tailwind + Preline Fitur: Dropdown user profile icon
+<%# =========================================================
+    Navbar Outside (Member/Peminjam) - SiBuDi
+    Tema: Hijau Unand (#2F7A33), Kuning (#FFD700)
+    Framework: Tailwind + Preline
+    Fitur: Dropdown user profile icon
 ========================================================= %>
 
 <nav class="fixed top-0 left-0 w-full bg-[#F8FFF8] shadow-sm z-50 transition-all duration-300">
@@ -13,10 +17,12 @@
             </div>
 
             <!-- Desktop Menu -->
-            <a href="/outside/dashboard" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="Dashboard">Dashboard</a>
-            <a href="/outside/perpanjangan" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="Perpanjangan">Detail Peminjaman</a>
-            <a href="/outside/denda" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="Denda">Detail Denda</a>
-            <a href="/outside/about" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="About">Tentang</a>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="/outside/dashboard" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="Dashboard">Dashboard</a>
+                <a href="/outside/rulesPinjam" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="RulesPinjam">Aturan Peminjaman</a>
+                <a href="/outside/detailPinjam" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="DetailPinjam">Detail Peminjaman</a>
+                <a href="/outside/about" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="About">Tentang System</a>
+            </div>
 
             <!-- Profile Dropdown -->
             <div class="hidden md:flex items-center relative">
@@ -50,7 +56,7 @@
     </div>
 
     <!-- Mobile Sidebar Menu -->
-    <div id="nav-outside-menu" class="fixed top-0 right-0 h-full w-3/4 bg-[#F8FFF8] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+    <div id="nav-outside-menu" class="fixed top-0 right-0 h-full w-3/4 bg-[#F8FFF8] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
         <div class="flex flex-col h-full justify-between">
             <div class="p-6 space-y-6">
                 <!-- Header -->
@@ -76,9 +82,9 @@
                 <!-- Navigation Menu -->
                 <div class="flex flex-col space-y-4 mt-6">
                     <a href="/outside/dashboard" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Dashboard">Dashboard</a>
-                    <a href="/outside/perpanjangan" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Perpanjangan">Detail Peminjaman</a>
-                    <a href="/outside/denda" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Denda">Detail Denda</a>
-                    <a href="/outside/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">Tentang</a>
+                    <a href="/outside/rulesPinjam" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="RulesPinjam">Aturan Peminjaman</a>
+                    <a href="/outside/detailPinjam" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="DetailPinjam">Detail Peminjaman</a>
+                    <a href="/outside/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">Tentang System</a>
                 </div>
             </div>
 
@@ -138,7 +144,7 @@
             const activeName = "<%= typeof activeNav !== 'undefined' ? activeNav : '' %>";
             document.querySelectorAll('.nav-link, .nav-link-mobile').forEach((link) => {
                 const name = link.dataset.name;
-                if (name.toLowerCase() === activeName.toLowerCase()) {
+                if (name && activeName && name.toLowerCase() === activeName.toLowerCase()) {
                     link.classList.add('nav-active');
                 }
             });

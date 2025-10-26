@@ -122,6 +122,7 @@ exports.login = async (req, res) => {
         //  Login berhasil → set session member
         req.session.user = {
             id: member.member_id,
+            member_id: member.member_id, 
             name: member.member_name,
             role: 'member',
             email: member.member_email,

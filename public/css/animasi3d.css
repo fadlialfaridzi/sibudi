@@ -1,6 +1,6 @@
 /* =====================================================
-   ANIMASI 3D CLEAN - SiBuDi (Final Optimized)
-   Smooth, ringan, loading cepat dengan floating animation
+   ANIMASI 3D CLEAN - SiBuDi (Final Optimized + Transisi Interaktif)
+   Smooth, ringan, loading cepat dengan floating animation + transisi 3D
    ===================================================== */
 
 /* =====================================================
@@ -127,7 +127,94 @@
   }
   
   /* =====================================================
-     8️⃣ SCROLLBAR (Custom)
+     8️⃣ TRANSISI 3D INTERAKTIF - HERO SLIDE LEFT
+     ===================================================== */
+  #book-hero {
+    transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease;
+    transform-origin: center center;
+  }
+  
+  /* State aktif: Hero bergeser ke kiri */
+  #main-container[data-active="true"] #book-hero {
+    transform: translateX(-10%) scale(0.95);
+  }
+  
+  /* Mobile: Geser vertikal */
+  @media (max-width: 768px) {
+    #main-container[data-active="true"] #book-hero {
+      transform: translateY(-5%) scale(0.95);
+    }
+  }
+  
+  /* =====================================================
+     9️⃣ TRANSISI 3D INTERAKTIF - BOOK INFO FADE IN RIGHT
+     ===================================================== */
+  #book-info {
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    transform: translateX(30px);
+  }
+  
+  /* State aktif: Detail muncul dari kanan */
+  #main-container[data-active="true"] #book-info {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* Mobile: Muncul dari bawah */
+  @media (max-width: 768px) {
+    #book-info {
+      transform: translateY(30px);
+    }
+    
+    #main-container[data-active="true"] #book-info {
+      transform: translateY(0);
+    }
+  }
+  
+  /* =====================================================
+     🔟 ANIMASI REFRESH KONTEN DETAIL
+     ===================================================== */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  #book-detail.refresh {
+    animation: fadeInUp 0.4s ease-in-out;
+  }
+  
+  /* =====================================================
+     1️⃣1️⃣ CROSSFADE HERO IMAGE
+     ===================================================== */
+  #hero-image {
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  
+  #hero-image.updating {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  
+  /* =====================================================
+     1️⃣2️⃣ HERO PLACEHOLDER FADE OUT
+     ===================================================== */
+  #hero-placeholder {
+    transition: opacity 0.3s ease-out;
+  }
+  
+  #main-container[data-active="true"] #hero-placeholder {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* =====================================================
+     1️⃣3️⃣ SCROLLBAR (Custom)
      ===================================================== */
   .loan-list-container {
     scrollbar-width: thin;
@@ -153,7 +240,7 @@
   }
   
   /* =====================================================
-     9️⃣ THUMBNAIL HOVER
+     1️⃣4️⃣ THUMBNAIL HOVER
      ===================================================== */
   .loan-item img {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -165,7 +252,7 @@
   }
   
   /* =====================================================
-     🔟 BADGE ANIMATION
+     1️⃣5️⃣ BADGE ANIMATION
      ===================================================== */
   .loan-item span[class*="bg-green"] {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -177,7 +264,7 @@
   }
   
   /* =====================================================
-     1️⃣1️⃣ BUTTON RIPPLE EFFECT
+     1️⃣6️⃣ BUTTON RIPPLE EFFECT
      ===================================================== */
   button {
     position: relative;
@@ -209,32 +296,17 @@
   }
   
   /* =====================================================
-     1️⃣2️⃣ TITLE LINE CLAMP
+     1️⃣7️⃣ TITLE LINE CLAMP
      ===================================================== */
   .line-clamp-2 {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1.4;
   }
   
   /* =====================================================
-     1️⃣3️⃣ FADE-IN ANIMATION
-     ===================================================== */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* =====================================================
-     1️⃣4️⃣ LOAN ITEMS STAGGER
+     1️⃣8️⃣ LOAN ITEMS STAGGER
      ===================================================== */
   .loan-item {
     animation: fadeInUp 0.3s ease-out backwards;
@@ -248,7 +320,7 @@
   .loan-item:nth-child(n+6) { animation-delay: 0.18s; }
   
   /* =====================================================
-     1️⃣5️⃣ ICON ANIMATIONS
+     1️⃣9️⃣ ICON ANIMATIONS
      ===================================================== */
   .loan-item i {
     transition: transform 0.3s ease;
@@ -259,7 +331,7 @@
   }
   
   /* =====================================================
-     1️⃣6️⃣ DASHBOARD CARD HOVER SCALE
+     2️⃣0️⃣ DASHBOARD CARD HOVER SCALE
      ===================================================== */
   a .card-3d:hover {
     transform: translateY(-8px) scale(1.03);
@@ -270,7 +342,7 @@
   }
   
   /* =====================================================
-     1️⃣7️⃣ RESPONSIVE ADJUSTMENTS
+     2️⃣1️⃣ RESPONSIVE ADJUSTMENTS
      ===================================================== */
   @media (max-width: 1024px) {
     .card-3d:hover {
@@ -329,7 +401,7 @@
   }
   
   /* =====================================================
-     1️⃣8️⃣ ACCESSIBILITY (Reduced Motion)
+     2️⃣2️⃣ ACCESSIBILITY (Reduced Motion)
      ===================================================== */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -349,7 +421,7 @@
   }
   
   /* =====================================================
-     1️⃣9️⃣ Z-INDEX MANAGEMENT
+     2️⃣3️⃣ Z-INDEX MANAGEMENT
      ===================================================== */
   .loan-item.card-3d {
     z-index: 1;
@@ -361,7 +433,7 @@
   }
   
   /* =====================================================
-     2️⃣0️⃣ LOADING STATE
+     2️⃣4️⃣ LOADING STATE
      ===================================================== */
   .loading {
     opacity: 0.6;
@@ -378,9 +450,42 @@
   }
   
   /* =====================================================
-     2️⃣1️⃣ SMOOTH TRANSITIONS 
+     2️⃣5️⃣ SMOOTH TRANSITIONS 
      ===================================================== */
   * {
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-  
+
+  /* =====================================================
+   2️⃣6️⃣ DETAIL PANEL FADE TRANSITION (untuk smooth antar buku)
+   ===================================================== */
+#book-detail > div {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  will-change: opacity, transform;
+}
+
+/* Saat fade-out (dipakai oleh main.js sebelum ganti buku) */
+#book-detail.fade-out > div {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Saat fade-in (setelah konten baru muncul) */
+#book-detail.fade-in > div {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =====================================================
+   2️⃣7️⃣ FIX: Line Clamp Compatibility (hapus warning vendor prefix)
+   ===================================================== */
+.line-clamp-2 {
+  display: -webkit-box;
+  display: box; /* ✅ tambah ini untuk lint compat */
+  -webkit-line-clamp: 2;
+  line-clamp: 2; /* ✅ tambahkan properti standar */
+  -webkit-box-orient: vertical;
+  box-orient: vertical; /* ✅ optional untuk lint */
+  overflow: hidden;
+  line-height: 1.4;
+}
