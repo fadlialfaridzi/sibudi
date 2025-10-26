@@ -7,7 +7,7 @@ exports.renderDenda = async (req, res) => {
             return res.redirect('/login');
         }
 
-        // Ambil daftar denda dengan join ke item, biblio, dan loan
+        // Ambil daftar denda dengan join ke item, biblio, dan loan 
         // loan_date akan merepresentasikan tanggal peminjaman atau perpanjangan terakhir
         const [rows] = await db.query(
             `

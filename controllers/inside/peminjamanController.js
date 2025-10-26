@@ -48,48 +48,52 @@ function calculateDueDate(startDate, days, holidays = []) {
 // 🧮 HELPER: Load Holidays (From Snapshot or DB)
 // =====================================================
 /**
- * Mengambil daftar hari libur dari snapshot atau database
+ * Mengambil daftar hari libur dari snapshot versi baru atau database
+ * Format snapshot baru: { "id": "YYYY-MM-DD", ... }
  * 
  * @param {Object} connection - MySQL connection object
  * @returns {Promise<Array<string>>} - Array tanggal libur format YYYY-MM-DD
  */
 async function loadHolidays(connection) {
   try {
-    // Coba baca snapshot file
     const snapshotPath = path.join(__dirname, '../../logs/holiday-snapshot.json');
-    
+
     if (fs.existsSync(snapshotPath)) {
       const snapshotData = fs.readFileSync(snapshotPath, 'utf8');
       const snapshot = JSON.parse(snapshotData);
-      
-      if (snapshot.holiday_ids && Array.isArray(snapshot.holiday_ids) && snapshot.holiday_ids.length > 0) {
-        // Ambil data holiday berdasarkan ID dari snapshot
-        const placeholders = snapshot.holiday_ids.map(() => '?').join(',');
-        const [holidayRows] = await connection.query(
-          `SELECT holiday_date FROM holiday WHERE holiday_id IN (${placeholders})`,
-          snapshot.holiday_ids
-        );
-        
-        const holidays = holidayRows.map(row => {
-          const parsed = dayjs(row.holiday_date, ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY"], true);
-          return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
-        }).filter(date => date !== null);
-        
-        console.log(`📁 Menggunakan snapshot holiday, total: ${holidays.length}`);
-        return holidays;
+
+      let holidaysObj = {};
+
+      // ✅ Deteksi versi baru (ada key "records")
+      if (snapshot.records && typeof snapshot.records === 'object') {
+        holidaysObj = snapshot.records;
+      } else if (typeof snapshot === 'object') {
+        holidaysObj = snapshot;
       }
+
+      const holidays = Object.values(holidaysObj)
+        .map(date => {
+          const parsed = dayjs(date, ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY"], true);
+          return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+        })
+        .filter(date => date !== null);
+
+      console.log(`📁 Menggunakan snapshot holiday versi baru, total: ${holidays.length}`);
+      return holidays;
     }
   } catch (err) {
     console.warn('⚠️ Gagal membaca snapshot holiday:', err.message);
   }
-  
-  // Fallback: ambil semua dari database
+
+  // 🔁 Fallback ke DB kalau snapshot tidak valid
   const [holidayRows] = await connection.query('SELECT holiday_date FROM holiday');
-  const holidays = holidayRows.map(row => {
-    const parsed = dayjs(row.holiday_date, ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY"], true);
-    return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
-  }).filter(date => date !== null);
-  
+  const holidays = holidayRows
+    .map(row => {
+      const parsed = dayjs(row.holiday_date, ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY"], true);
+      return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+    })
+    .filter(date => date !== null);
+
   console.log(`📅 Snapshot tidak ditemukan, ambil dari DB: ${holidays.length}`);
   return holidays;
 }
@@ -516,33 +520,79 @@ exports.borrowBookAPI = async (req, res) => {
     const loanRule = rulesRows[0];
 
     // =====================================================
-    // 6️⃣ Validasi Batas Peminjaman (loan_limit)
+    // 🆕 6️⃣ Validasi Batas Peminjaman Per Tipe Koleksi
     // =====================================================
-    const [countRows] = await connection.query(`
+    
+    // Hitung jumlah buku aktif yang sedang dipinjam untuk coll_type_id yang sama
+    const [collTypeCountRows] = await connection.query(`
+      SELECT COUNT(*) as total
+      FROM loan l
+      INNER JOIN item i ON l.item_code = i.item_code
+      WHERE l.member_id = ? 
+        AND i.coll_type_id = ? 
+        AND l.is_return = 0
+    `, [member.member_id, book.coll_type_id]);
+
+    const currentCollTypeLoans = collTypeCountRows[0].total;
+
+    // Cek apakah sudah mencapai loan_limit untuk tipe koleksi ini
+    if (currentCollTypeLoans >= loanRule.loan_limit) {
+      // Ambil nama tipe koleksi untuk pesan error
+      const [collTypeRows] = await connection.query(
+        'SELECT coll_type_name FROM mst_coll_type WHERE coll_type_id = ?',
+        [book.coll_type_id]
+      );
+      const collTypeName = collTypeRows.length > 0 ? collTypeRows[0].coll_type_name : 'tipe ini';
+
+      await connection.rollback();
+      return res.status(400).json({
+        success: false,
+        type: 'warning',
+        title: 'Batas Peminjaman Tercapai',
+        message: `Kamu telah mencapai maksimal peminjaman untuk tipe buku ${collTypeName} ini. Segera kembalikan terlebih dahulu buku yang kamu pinjam.`
+      });
+    }
+
+    // =====================================================
+    // 7️⃣ Validasi Total Batas Peminjaman Keseluruhan
+    // =====================================================
+    
+    // Ambil semua aturan untuk member_type_id ini
+    const [allRulesRows] = await connection.query(
+      'SELECT loan_limit FROM mst_loan_rules WHERE member_type_id = ?',
+      [member.member_type_id]
+    );
+
+    // Hitung total maksimum dari semua loan_limit
+    const totalMaxLoans = allRulesRows.reduce((sum, rule) => sum + (rule.loan_limit || 0), 0);
+
+    // Hitung total buku yang sedang dipinjam (semua tipe koleksi)
+    const [totalCountRows] = await connection.query(`
       SELECT COUNT(*) as total
       FROM loan
       WHERE member_id = ? AND is_return = 0
     `, [member.member_id]);
 
-    const currentLoans = countRows[0].total;
+    const currentTotalLoans = totalCountRows[0].total;
 
-    if (currentLoans >= loanRule.loan_limit) {
+    // Cek apakah sudah mencapai batas total keseluruhan
+    if (currentTotalLoans >= totalMaxLoans) {
       await connection.rollback();
       return res.status(400).json({
         success: false,
         type: 'warning',
-        title: 'Batas Peminjaman',
-        message: `Anggota telah mencapai batas maksimum peminjaman (${loanRule.loan_limit} buku). Harap kembalikan buku terlebih dahulu.`
+        title: 'Batas Peminjaman Total Tercapai',
+        message: `Kamu telah mencapai batas maksimum total peminjaman (${totalMaxLoans} buku). Harap kembalikan buku terlebih dahulu.`
       });
     }
 
     // =====================================================
-    // 7️⃣ Ambil Data Hari Libur (Holiday) - BLACKLIST
+    // 8️⃣ Ambil Data Hari Libur (Holiday) - BLACKLIST
     // =====================================================
     const holidays = await loadHolidays(connection);
 
     // =====================================================
-    // 8️⃣ Hitung Due Date (Skip Minggu & Holidays)
+    // 9️⃣ Hitung Due Date (Skip Minggu & Holidays)
     // =====================================================
     const loanDate = dayjs().format('YYYY-MM-DD');
     const dueDate = calculateDueDate(loanDate, loanRule.loan_periode, holidays);
@@ -550,7 +600,7 @@ exports.borrowBookAPI = async (req, res) => {
     console.log(`📅 Loan Date: ${loanDate}, Due Date: ${dueDate} (${loanRule.loan_periode} hari kerja)`);
 
     // =====================================================
-    // 9️⃣ Ambil UID Pustakawan dari Session
+    // 🔟 Ambil UID Pustakawan dari Session
     // =====================================================
     const librarianUID = req.session.user.id || null; // username dari tabel user
 
@@ -567,7 +617,7 @@ exports.borrowBookAPI = async (req, res) => {
     console.log(`👤 Pustakawan UID: ${librarianUID}`);
 
     // =====================================================
-    // 🔟 Insert Transaksi ke Tabel Loan
+    // 1️⃣1️⃣ Insert Transaksi ke Tabel Loan
     // =====================================================
     await connection.query(`
       INSERT INTO loan (
@@ -593,7 +643,7 @@ exports.borrowBookAPI = async (req, res) => {
     await connection.commit();
 
     // =====================================================
-    // 1️⃣1️⃣ Ambil Data Tambahan untuk Struk
+    // 1️⃣2️⃣ Ambil Data Tambahan untuk Struk
     // =====================================================
 
     // Get language name
@@ -636,23 +686,23 @@ exports.borrowBookAPI = async (req, res) => {
       if (collRows.length > 0) collTypeName = collRows[0].coll_type_name;
     }
 
-    // Get member type name
+    // Get member type name (HANYA member_type_id dan member_type_name)
     let memberTypeName = '-';
     if (member.member_type_id) {
       const [mtRows] = await connection.query(
-        'SELECT member_type_name FROM mst_member_type WHERE member_type_id = ?',
+        'SELECT member_type_id, member_type_name FROM mst_member_type WHERE member_type_id = ?',
         [member.member_type_id]
       );
       if (mtRows.length > 0) memberTypeName = mtRows[0].member_type_name;
     }
 
     // =====================================================
-    // 1️⃣2️⃣ Parse Collation (Pisah Edisi, Halaman, Ukuran)
+    // 1️⃣3️⃣ Parse Collation (Pisah Edisi, Halaman, Ukuran)
     // =====================================================
     const { edition, pages, size } = parseCollation(book.collation);
 
     // =====================================================
-    // 1️⃣3️⃣ Cek Cover Image
+    // 1️⃣4️⃣ Cek Cover Image
     // =====================================================
     let coverImage = '/images/buku.png';
     if (book.image) {
@@ -751,7 +801,7 @@ exports.renderStrukPinjam = (req, res) => {
 };
 
 // =====================================================
-// 🧮 EXPORT HELPER FUNCTIONS UNTUK DIGUNAKAN DI LUAR
+// 🧮 EXPORT HELPER FUNCTIONS UNTUK DIGUNAKAN DI LUAR 
 // =====================================================
 module.exports.calculateDueDate = calculateDueDate;
 module.exports.loadHolidays = loadHolidays;

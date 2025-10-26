@@ -35,7 +35,7 @@ exports.renderDashboard = async (req, res) => {
 
     // =====================================================
     // Query 2: Total Denda yang Belum Dibayar
-    // Menggunakan rumus: SUM(debet) - SUM(credit)
+    // Menggunakan rumus: SUM(debet) - SUM(credit) 
     // =====================================================
     const [finesResult] = await db.query(
       `SELECT 

@@ -41,7 +41,7 @@ exports.renderPerpanjangan = async (req, res) => {
     );
 
     // =============================
-    // 2️⃣ PARSING COLLATION FIELD & IMAGE FALLBACK
+    // 2️⃣ PARSING COLLATION FIELD & IMAGE FALLBACK 
     // =============================
     const loans = loanRows.map((b) => {
       let edition = null;
