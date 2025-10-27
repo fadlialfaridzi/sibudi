@@ -2,3 +2,4 @@
 node_modules
 logs/holiday-monitor.log
 logs/holiday-snapshot.json
+logs/fine-monitor.log 

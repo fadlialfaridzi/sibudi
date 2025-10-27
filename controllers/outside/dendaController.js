@@ -88,6 +88,8 @@ exports.renderDenda = async (req, res) => {
 
     // =============================
     // 3️⃣ Ambil Data Denda dari Tabel fines (SUDAH DIHITUNG oleh liveMonitor.js)
+    // CATATAN: Tabel fines TIDAK punya kolom item_code
+    // Kita extract item_code dari description yang formatnya: "Denda keterlambatan buku B001234"
     // =============================
     console.log(`\n[${timestamp}] 💰 Mengambil data denda dari tabel fines...`);
     
@@ -95,16 +97,11 @@ exports.renderDenda = async (req, res) => {
       `SELECT 
         f.fines_id,
         f.fines_date,
-        f.item_code,
         f.debet,
         f.credit,
-        f.description,
-        b.title,
-        b.image
+        f.description
       FROM fines f
-      LEFT JOIN item i ON f.item_code = i.item_code
-      LEFT JOIN biblio b ON i.biblio_id = b.biblio_id
-      WHERE f.member_id = ?
+      WHERE f.member_id = ? AND f.debet > 0
       ORDER BY f.fines_date DESC`,
       [memberId]
     );
@@ -116,6 +113,40 @@ exports.renderDenda = async (req, res) => {
       sum + ((fine.debet || 0) - (fine.credit || 0)), 0
     );
     console.log(`[${timestamp}] 💵 Total denda: Rp ${totalFines.toLocaleString('id-ID')}`);
+
+    // Parse item_code dari description dan ambil info buku
+    const finesWithDetails = await Promise.all(
+      finesRows.map(async (fine) => {
+        // Extract item_code dari description (format: "Denda keterlambatan buku B001234")
+        const match = fine.description.match(/buku\s+([A-Z0-9]+)/i);
+        const itemCode = match ? match[1] : null;
+        
+        let bookTitle = null;
+        let bookImage = null;
+        
+        if (itemCode) {
+          const [bookRows] = await db.query(
+            `SELECT b.title, b.image 
+             FROM item i 
+             LEFT JOIN biblio b ON i.biblio_id = b.biblio_id 
+             WHERE i.item_code = ?`,
+            [itemCode]
+          );
+          
+          if (bookRows.length > 0) {
+            bookTitle = bookRows[0].title;
+            bookImage = bookRows[0].image;
+          }
+        }
+        
+        return {
+          ...fine,
+          item_code: itemCode,
+          title: bookTitle,
+          image: bookImage || '/images/buku.png'
+        };
+      })
+    );
 
     // =============================
     // 4️⃣ Proses Data untuk Setiap Peminjaman

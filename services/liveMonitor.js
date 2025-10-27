@@ -1,6 +1,7 @@
 // ======================================================
 // services/liveMonitor.js
-// 🔄 Holiday + Fine Integrated Live Monitor (Event + Schedule Edition)
+// 🔄 Holiday + Fine Integrated Live Monitor (Indonesian Version)
+// Per-Item Fine Calculation + Detailed Skip Reasons
 // ======================================================
 
 const fs = require("fs");
@@ -10,7 +11,7 @@ const dayjs = require("dayjs");
 const EventEmitter = require("events");
 const utc = require("dayjs/plugin/utc");
 const timezone = require("dayjs/plugin/timezone");
-const PQueue = require("p-queue").default; // untuk limit paralel
+const PQueue = require("p-queue").default;
 const { calculateDueDate } = require("../controllers/inside/peminjamanController");
 
 dayjs.extend(utc);
@@ -18,265 +19,378 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Jakarta");
 
 // ======================================================
-// ⚙️ Config
+// ⚙️ KONFIGURASI
 // ======================================================
 const LOG_DIR = path.join(__dirname, "../logs");
 const HOLIDAY_LOG = path.join(LOG_DIR, "holiday-monitor.log");
 const FINE_LOG = path.join(LOG_DIR, "fine-monitor.log");
 const SNAPSHOT_FILE = path.join(LOG_DIR, "holiday-snapshot.json");
-const POLL_INTERVAL = 30000; // 30 detik (deteksi perubahan holiday)
-const FINE_INTERVAL = 1000 * 60 * 60 * 6; // 6 jam (jadwal rutin recalculation)
-const CHUNK_SIZE = 10000; // batch per loop
-const PARALLEL_LIMIT = 10; // max concurrent query
+
+const POLL_INTERVAL = 30000; // 30 detik - cek perubahan hari libur
+const FINE_INTERVAL = 1000 * 60 * 60 * 6; // 6 jam - recalc denda otomatis
+const CHUNK_SIZE = 10000; // batch size per query
+const PARALLEL_LIMIT = 10; // max concurrent queries
+const MAX_LOG_LINES = 100; // simpan 100 baris terakhir log
 
 const fineEmitter = new EventEmitter();
-let isRunning = false;
+let isHolidayRunning = false;
+let isFineRunning = false;
 let lastHolidaySnapshot = {};
 
+// Skip reasons counter
+let skipReasons = {
+  invalidDueDate: 0,
+  notOverdue: 0,
+  noFineRule: 0,
+  noValidDays: 0,
+  noChange: 0,
+};
+
 // ======================================================
-// 🧩 Ensure log folders
+// 🧩 PASTIKAN FOLDER LOG ADA
 // ======================================================
-if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
+if (!fs.existsSync(LOG_DIR)) {
+  fs.mkdirSync(LOG_DIR, { recursive: true });
+  console.log(`📁 Folder log dibuat: ${LOG_DIR}`);
+}
 if (!fs.existsSync(HOLIDAY_LOG)) fs.writeFileSync(HOLIDAY_LOG, "");
 if (!fs.existsSync(FINE_LOG)) fs.writeFileSync(FINE_LOG, "");
 
 // ======================================================
-// 🧾 Logging helpers
+// 🧾 HELPER LOGGING (Auto-Trim)
 // ======================================================
 function ts() {
-  return dayjs().tz().format("YYYY-MM-DD HH:mm:ss");
+  return dayjs().tz().format("DD/MM/YYYY HH:mm:ss");
 }
 
-function logHoliday(msg) {
-  fs.appendFileSync(HOLIDAY_LOG, `[${ts()}] ${msg}\n`);
+function appendAndTrim(filePath, message) {
+  fs.appendFileSync(filePath, message + "\n");
+  const lines = fs.readFileSync(filePath, "utf-8").trim().split("\n");
+  if (lines.length > MAX_LOG_LINES) {
+    const trimmed = lines.slice(lines.length - MAX_LOG_LINES);
+    fs.writeFileSync(filePath, trimmed.join("\n") + "\n");
+  }
 }
 
-function logFine(msg) {
-  fs.appendFileSync(FINE_LOG, `[${ts()}] ${msg}\n`);
+function logHoliday(msg, isError = false) {
+  const prefix = isError ? "❌" : "📅";
+  const line = `[${ts()}] ${prefix} ${msg}`;
+  appendAndTrim(HOLIDAY_LOG, line);
+  console.log(line); // holiday masih boleh tampil di terminal
+}
+
+function logFine(msg, isError = false) {
+  const prefix = isError ? "❌" : "💰";
+  const line = `[${ts()}] ${prefix} ${msg}`;
+  appendAndTrim(FINE_LOG, line);
+  // tidak console.log agar hanya masuk file log
+}
+
+function logSeparator(logFunc) {
+  logFunc("=".repeat(80));
 }
 
 // ======================================================
-// 📦 Snapshot loader
+// 📦 SNAPSHOT LOADER & SAVER
 // ======================================================
 function loadSnapshot() {
   try {
     if (fs.existsSync(SNAPSHOT_FILE)) {
       const data = JSON.parse(fs.readFileSync(SNAPSHOT_FILE, "utf-8"));
       lastHolidaySnapshot = data.records || {};
-      logHoliday(`📁 Snapshot loaded (${Object.keys(lastHolidaySnapshot).length})`);
+
+      const validSnapshot = {};
+      let invalidCount = 0;
+
+      for (const [id, date] of Object.entries(lastHolidaySnapshot)) {
+        if (date && date !== "Invalid Date" && dayjs(date).isValid()) {
+          validSnapshot[id] = date;
+        } else {
+          invalidCount++;
+        }
+      }
+
+      lastHolidaySnapshot = validSnapshot;
+
+      logHoliday(
+        `Snapshot berhasil dimuat (${Object.keys(lastHolidaySnapshot).length} hari libur)`
+      );
+      if (invalidCount > 0) {
+        logHoliday(`⚠️ ${invalidCount} tanggal tidak valid dihapus dari snapshot`);
+      }
+    } else {
+      logHoliday(`Snapshot tidak ditemukan. Membuat snapshot baru...`);
     }
   } catch (e) {
-    logHoliday(`⚠️ Snapshot load failed: ${e.message}`);
+    logHoliday(`Gagal memuat snapshot: ${e.message}`, true);
   }
 }
 
 function saveSnapshot(records) {
   try {
     fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify({ records }, null, 2));
+    logHoliday(`Snapshot berhasil disimpan (${Object.keys(records).length} hari libur)`);
   } catch (e) {
-    logHoliday(`⚠️ Snapshot save failed: ${e.message}`);
+    logHoliday(`Gagal menyimpan snapshot: ${e.message}`, true);
   }
 }
 
 // ======================================================
-// 📆 Fetch holidays
+// 📆 AMBIL DATA HARI LIBUR DARI DATABASE
 // ======================================================
 async function fetchHolidays() {
-  const [rows] = await db.query("SELECT holiday_id, holiday_date FROM holiday ORDER BY holiday_id ASC");
-  return rows.map((r) => dayjs(r.holiday_date).format("YYYY-MM-DD"));
+  try {
+    const [rows] = await db.query(
+      "SELECT holiday_id, holiday_date FROM holiday WHERE holiday_date IS NOT NULL ORDER BY holiday_id ASC"
+    );
+    const holidays = rows
+      .map((r) => dayjs(r.holiday_date).format("YYYY-MM-DD"))
+      .filter((date) => date !== "Invalid Date" && dayjs(date).isValid());
+    return holidays;
+  } catch (e) {
+    logHoliday(`Error mengambil data hari libur: ${e.message}`, true);
+    return [];
+  }
 }
 
 // ======================================================
-// 🔄 Update due_date saat holiday berubah
+// 💰 PERHITUNGAN ULANG DENDA (PER-ITEM)
 // ======================================================
-async function updateDueDatesForChange(changedDates, holidays) {
-  logHoliday(`📅 Holiday changed: ${changedDates.join(", ")}`);
+async function recalcFines() {
+  if (isFineRunning) {
+    logFine(`⏸️ Dilewati: perhitungan denda sedang berjalan`);
+    return;
+  }
+
+  isFineRunning = true;
+  skipReasons = {
+    invalidDueDate: 0,
+    notOverdue: 0,
+    noFineRule: 0,
+    noValidDays: 0,
+    noChange: 0,
+  };
+
+  logSeparator(logFine);
+  logFine(`PERHITUNGAN ULANG DENDA DIMULAI`);
+  logFine(`Mode: Per-Item (berdasarkan item_code)`);
+
   const conn = await db.getConnection();
 
   try {
-    await conn.beginTransaction();
-    const [countRows] = await conn.query("SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0");
-    const total = countRows[0].total;
-    logHoliday(`📊 Found ${total} active loans`);
+    const holidays = await fetchHolidays();
+    const today = dayjs().tz().startOf("day");
 
-    if (total === 0) {
-      await conn.commit();
-      conn.release();
+    const [countRows] = await conn.query(
+      "SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0"
+    );
+    const totalLoans = countRows[0].total || 0;
+
+    logFine(`Hari ini: ${today.format("DD MMMM YYYY (dddd)")}`);
+    logFine(`Jumlah hari libur: ${holidays.length}`);
+    logFine(`Total loan aktif: ${totalLoans}`);
+
+    if (totalLoans === 0) {
+      logFine(`Tidak ada peminjaman aktif. Dihentikan.`);
       return;
     }
 
-    let updatedCount = 0;
-    for (let offset = 0; offset < total; offset += CHUNK_SIZE) {
+    let processedLoans = 0,
+      overdueLoans = 0,
+      insertedFines = 0,
+      updatedFines = 0;
+
+    for (let offset = 0; offset < totalLoans; offset += CHUNK_SIZE) {
       const [batch] = await conn.query(
-        `SELECT loan_id, loan_date, due_date, loan_rules_id FROM loan 
-         WHERE is_lent=1 AND is_return=0 LIMIT ? OFFSET ?`,
+        `SELECT loan_id, member_id, item_code, due_date, loan_rules_id, loan_date
+         FROM loan
+         WHERE is_lent=1 AND is_return=0
+         ORDER BY loan_id ASC
+         LIMIT ? OFFSET ?`,
         [CHUNK_SIZE, offset]
       );
 
-      const promises = batch.map(async (loan) => {
+      const tasks = batch.map(async (loan) => {
+        processedLoans++;
+
+        const dueDate = dayjs(loan.due_date).tz().startOf("day");
+        if (!dueDate.isValid()) {
+          skipReasons.invalidDueDate++;
+          logFine(`⚠️ SKIP loan_id ${loan.loan_id}: due_date invalid`);
+          return;
+        }
+
+        const overdueDays = today.diff(dueDate, "day");
+        if (overdueDays <= 0) {
+          skipReasons.notOverdue++;
+          return;
+        }
+
+        // 🔸 Cek loan_rules_id valid
+        if (!loan.loan_rules_id || loan.loan_rules_id === 0) {
+          skipReasons.noFineRule++;
+          logFine(
+            `⚠️ SKIP → loan_id ${loan.loan_id} (${loan.item_code}): loan_rules_id kosong atau 0`
+          );
+          return;
+        }
+
         const [[rule]] = await conn.query(
-          "SELECT loan_periode FROM mst_loan_rules WHERE loan_rules_id=?",
+          "SELECT fine_each_day FROM mst_loan_rules WHERE loan_rules_id=?",
           [loan.loan_rules_id]
         );
-        if (!rule) return;
-
-        const newDue = calculateDueDate(loan.loan_date, rule.loan_periode, holidays);
-        if (newDue !== loan.due_date) {
-          await conn.query("UPDATE loan SET due_date=?, last_update=NOW() WHERE loan_id=?", [newDue, loan.loan_id]);
-          updatedCount++;
+        if (!rule || !rule.fine_each_day) {
+          skipReasons.noFineRule++;
+          logFine(
+            `⚠️ SKIP loan_id ${loan.loan_id}: aturan denda tidak ditemukan`
+          );
+          return;
         }
-      });
 
-      await Promise.all(promises);
-    }
-
-    await conn.commit();
-    logHoliday(`✅ ${updatedCount} loans updated due to holiday change`);
-    fineEmitter.emit("dueDateChanged");
-  } catch (e) {
-    await conn.rollback();
-    logHoliday(`❌ Update failed: ${e.message}`);
-  } finally {
-    conn.release();
-  }
-}
-
-// ======================================================
-// 💰 Live Fine Recalculation Service
-// ======================================================
-async function recalcFines() {
-  logFine("💰 Starting fine recalculation...");
-
-  const holidays = await fetchHolidays();
-  const today = dayjs().tz().format("YYYY-MM-DD");
-
-  const [countRows] = await db.query("SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0");
-  const total = countRows[0].total;
-  if (total === 0) {
-    logFine("✅ No active loans.");
-    return;
-  }
-
-  const queue = new PQueue({ concurrency: PARALLEL_LIMIT });
-
-  for (let offset = 0; offset < total; offset += CHUNK_SIZE) {
-    const [batch] = await db.query(
-      `SELECT loan_id, member_id, item_code, due_date, loan_rules_id 
-       FROM loan WHERE is_lent=1 AND is_return=0 LIMIT ? OFFSET ?`,
-      [CHUNK_SIZE, offset]
-    );
-
-    batch.forEach((loan) =>
-      queue.add(async () => {
-        const dueDate = dayjs(loan.due_date).tz();
-        const diff = dayjs(today).diff(dueDate, "day");
-        if (diff <= 0) return;
-
-        const [[rule]] = await db.query("SELECT fine_each_day FROM mst_loan_rules WHERE loan_rules_id=?", [
-          loan.loan_rules_id,
-        ]);
-        if (!rule) return;
-
-        // count only valid working days
-        let valid = 0;
-        for (let i = 1; i <= diff; i++) {
-          const d = dueDate.add(i, "day");
-          if (d.day() !== 0 && !holidays.includes(d.format("YYYY-MM-DD"))) valid++;
+        let validDays = 0;
+        for (let i = 1; i <= overdueDays; i++) {
+          const check = dueDate.add(i, "day");
+          if (check.day() !== 0 && !holidays.includes(check.format("YYYY-MM-DD"))) {
+            validDays++;
+          }
         }
-        if (valid <= 0) return;
 
-        const fineVal = valid * rule.fine_each_day;
-        const [existing] = await db.query(
-          "SELECT fines_id FROM fines WHERE member_id=? AND item_code=? ORDER BY fines_id DESC LIMIT 1",
-          [loan.member_id, loan.item_code]
+        if (validDays <= 0) {
+          skipReasons.noValidDays++;
+          return;
+        }
+
+        overdueLoans++;
+        const totalFine = validDays * rule.fine_each_day;
+        const fineDate = dueDate.add(1, "day").format("YYYY-MM-DD");
+        const description = `Denda keterlambatan buku ${loan.item_code}`;
+
+        const [existing] = await conn.query(
+          "SELECT fines_id, debet FROM fines WHERE member_id=? AND description LIKE ? ORDER BY fines_id DESC LIMIT 1",
+          [loan.member_id, `%${loan.item_code}%`]
         );
 
         if (existing.length > 0) {
-          await db.query("UPDATE fines SET debet=?, input_date=NOW() WHERE fines_id=?", [fineVal, existing[0].fines_id]);
-          logFine(`🔄 Update fine for ${loan.item_code}, Rp${fineVal}`);
+          const oldDebet = existing[0].debet;
+          if (oldDebet !== totalFine) {
+            await conn.query(
+              "UPDATE fines SET debet=?, fines_date=?, description=? WHERE fines_id=?",
+              [totalFine, fineDate, description, existing[0].fines_id]
+            );
+            updatedFines++;
+            logFine(
+              `🔄 UPDATE ${loan.item_code} (member:${loan.member_id}) Rp${oldDebet}→Rp${totalFine}`
+            );
+          } else {
+            skipReasons.noChange++;
+          }
         } else {
-          const finesDate = dueDate.add(1, "day").format("YYYY-MM-DD");
-          const desc = `Denda terlambat untuk eksemplar ${loan.item_code}`;
-          await db.query(
-            "INSERT INTO fines (member_id, fines_date, debet, description, input_date, item_code) VALUES (?, ?, ?, ?, NOW(), ?)",
-            [loan.member_id, finesDate, fineVal, desc, loan.item_code]
+          await conn.query(
+            "INSERT INTO fines (member_id, fines_date, debet, credit, description) VALUES (?, ?, ?, 0, ?)",
+            [loan.member_id, fineDate, totalFine, description]
           );
-          logFine(`➕ New fine for ${loan.item_code}, Rp${fineVal}`);
+          insertedFines++;
+          logFine(`➕ INSERT ${loan.item_code} (member:${loan.member_id}) Rp${totalFine}`);
         }
-      })
-    );
-  }
+      });
 
-  await queue.onIdle();
-  logFine("✅ Fine recalculation complete.");
+      await Promise.all(tasks);
+    }
+
+    logFine(`PERHITUNGAN DENDA SELESAI`);
+    logFine(`Diproses: ${processedLoans}, Terlambat: ${overdueLoans}, Insert: ${insertedFines}, Update: ${updatedFines}`);
+    logFine(`Skip invalidDueDate:${skipReasons.invalidDueDate}, notOverdue:${skipReasons.notOverdue}, noFineRule:${skipReasons.noFineRule}, noValidDays:${skipReasons.noValidDays}, noChange:${skipReasons.noChange}`);
+    logSeparator(logFine);
+  } catch (err) {
+    logFine(`❌ Error perhitungan denda: ${err.message}`, true);
+    logFine(`Stack trace: ${err.stack}`, true);
+  } finally {
+    conn.release();
+    isFineRunning = false;
+  }
 }
 
 // ======================================================
-// 🔍 Detect Holiday Delta
+// 🔍 DETEKSI PERUBAHAN HARI LIBUR
 // ======================================================
 async function detectHolidayDelta() {
-  const [rows] = await db.query("SELECT holiday_id, holiday_date FROM holiday ORDER BY holiday_id ASC");
-  const current = Object.fromEntries(rows.map((r) => [String(r.holiday_id), dayjs(r.holiday_date).format("YYYY-MM-DD")]));
+  try {
+    const [rows] = await db.query(
+      "SELECT holiday_id, holiday_date FROM holiday WHERE holiday_date IS NOT NULL ORDER BY holiday_id ASC"
+    );
+    const current = {};
+    for (const r of rows) {
+      const date = dayjs(r.holiday_date).format("YYYY-MM-DD");
+      if (date !== "Invalid Date" && dayjs(date).isValid()) {
+        current[String(r.holiday_id)] = date;
+      }
+    }
 
-  const oldIds = new Set(Object.keys(lastHolidaySnapshot));
-  const newIds = new Set(Object.keys(current));
+    const oldIds = new Set(Object.keys(lastHolidaySnapshot));
+    const newIds = new Set(Object.keys(current));
+    const inserted = [...newIds].filter((id) => !oldIds.has(id));
+    const deleted = [...oldIds].filter((id) => !newIds.has(id));
+    const updated = [...newIds].filter(
+      (id) => oldIds.has(id) && lastHolidaySnapshot[id] !== current[id]
+    );
 
-  const inserted = [...newIds].filter((id) => !oldIds.has(id));
-  const deleted = [...oldIds].filter((id) => !newIds.has(id));
-  const updated = [...newIds].filter((id) => oldIds.has(id) && lastHolidaySnapshot[id] !== current[id]);
+    if (inserted.length === 0 && deleted.length === 0 && updated.length === 0) return;
 
-  if (inserted.length === 0 && deleted.length === 0 && updated.length === 0) {
-    logHoliday("🕒 No holiday change detected.");
-    return;
+    if (inserted.length > 0)
+      logHoliday(`➕ Hari libur baru: ${inserted.map((id) => current[id]).join(", ")}`);
+    if (deleted.length > 0)
+      logHoliday(`➖ Hari libur dihapus: ${deleted.map((id) => lastHolidaySnapshot[id]).join(", ")}`);
+    if (updated.length > 0)
+      logHoliday(`🔄 Hari libur diubah: ${updated.map((id) => `${lastHolidaySnapshot[id]}→${current[id]}`).join(", ")}`);
+
+    lastHolidaySnapshot = current;
+    saveSnapshot(current);
+  } catch (e) {
+    logHoliday(`Error mendeteksi perubahan hari libur: ${e.message}`, true);
   }
-
-  const changedDates = [
-    ...inserted.map((id) => current[id]),
-    ...updated.map((id) => current[id]),
-  ];
-
-  await updateDueDatesForChange(changedDates, Object.values(current));
-  lastHolidaySnapshot = current;
-  saveSnapshot(current);
 }
 
 // ======================================================
-// 🚀 Start Service
+// 🚀 START MONITOR
 // ======================================================
 (async function startMonitor() {
-  logHoliday("🚀 Integrated Live Monitor started (Holiday + Fine + Schedule)");
+  console.log("\n" + "=".repeat(80));
+  console.log("🚀 LAYANAN LIVE MONITOR DIMULAI");
+  console.log("=".repeat(80));
+  console.log(`📅 Interval cek hari libur : ${POLL_INTERVAL / 1000}s`);
+  console.log(`💰 Interval recalc denda   : ${FINE_INTERVAL / 1000 / 60 / 60} jam`);
+  console.log("=".repeat(80));
 
   loadSnapshot();
 
-  // Event-driven recalculation (holiday changed)
+  try {
+    logFine(`🕐 Menjalankan perhitungan denda awal saat startup...`);
+    await recalcFines();
+  } catch (e) {
+    logFine(`❌ Perhitungan denda awal gagal: ${e.message}`, true);
+  }
+
   fineEmitter.on("dueDateChanged", async () => {
-    try {
-      await recalcFines();
-    } catch (e) {
-      logFine(`❌ Fine recalculation error: ${e.message}`);
-    }
+    logFine(`📡 Event: due_date berubah, jalankan recalc ulang...`);
+    await recalcFines();
   });
 
-  // Scheduled recalculation (every 6 hours)
   setInterval(async () => {
-    try {
-      logFine("🕓 Scheduled fine recalculation triggered (6-hour interval)");
-      await recalcFines();
-    } catch (e) {
-      logFine(`❌ Scheduled fine recalculation failed: ${e.message}`);
-    }
+    logFine(`⏰ Perhitungan denda terjadwal dimulai...`);
+    await recalcFines();
   }, FINE_INTERVAL);
 
-  // Polling for holiday delta every 30s
   setInterval(async () => {
-    if (isRunning) return;
-    isRunning = true;
+    if (isHolidayRunning) return;
+    isHolidayRunning = true;
     try {
       await detectHolidayDelta();
     } catch (e) {
-      logHoliday(`❌ Holiday monitor loop error: ${e.message}`);
+      logHoliday(`Error monitor hari libur: ${e.message}`, true);
     } finally {
-      isRunning = false;
+      isHolidayRunning = false;
     }
   }, POLL_INTERVAL);
+
+  console.log("✅ Semua monitor berhasil diinisialisasi\n");
 })();
