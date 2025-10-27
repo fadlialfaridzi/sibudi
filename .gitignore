@@ -1,3 +1,8 @@
 .env
 node_modules
 logs
+logs/fine-monitor.log
+logs/holiday-monitor.log
+logs/holiday-snapshot.json
+
+logs/holiday-snapshot.json
