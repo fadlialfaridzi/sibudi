@@ -1,8 +1,9 @@
 // controllers/outside/dendaController.js
 const db = require('../../config/db');
 const dayjs = require('dayjs');
-const timezone = require('dayjs/plugin/timezone');
 const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const { calculateWorkingDaysOverdue, loadHolidays } = require('../inside/peminjamanController');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -118,47 +119,52 @@ exports.renderDenda = async (req, res) => {
     console.log(`[${timestamp}] 💵 Total denda: Rp ${totalFines.toLocaleString('id-ID')}`);
 
     // =============================
-    // 4️⃣ Proses Data untuk Setiap Peminjaman
+    // 4️⃣ Load Holidays untuk Perhitungan Hari Kerja
+    // =============================
+    console.log(`\n[${timestamp}] 📅 Loading holidays...`);
+    const connection = await db.getConnection();
+    const holidays = await loadHolidays(connection);
+    connection.release();
+    console.log(`[${timestamp}] ✅ Holidays loaded: ${holidays.length} dates`);
+
+    // =============================
+    // 5️⃣ Proses Data untuk Setiap Peminjaman
     // =============================
     console.log(`\n[${timestamp}] 🔄 Memproses data peminjaman...`);
-    
-    const today = dayjs().tz('Asia/Jakarta').startOf('day');
+    const today = dayjs().tz('Asia/Jakarta').format('YYYY-MM-DD');
     
     const loansWithFines = loanRows.map((loan, index) => {
-      const dueDate = dayjs(loan.due_date).tz('Asia/Jakarta').startOf('day');
-      const daysOverdue = today.diff(dueDate, 'day');
-      
       console.log(`\n[${timestamp}] 📖 Processing loan ${index + 1}/${loanRows.length}:`);
       console.log(`   - item_code: ${loan.item_code}`);
       console.log(`   - due_date: ${loan.due_date}`);
-      console.log(`   - days_overdue: ${daysOverdue}`);
       
-      // ✅ Cari denda yang SUDAH ADA di tabel fines (dihitung oleh liveMonitor.js)
-      const existingFine = finesRows.find(f => f.item_code === loan.item_code && f.debet > 0);
+      // ✅ Cari denda yang SUDAH DIHITUNG oleh liveMonitor.js di tabel fines
+      const existingFine = finesRows.find(f => 
+        f.description && f.description.includes(loan.item_code) && f.debet > 0
+      );
       
-      let fineStatus = 'on_time'; // 'on_time', 'overdue_pending', 'has_fine'
+      let fineStatus = 'on_time'; // 'on_time', 'has_fine'
       let calculatedFine = 0;
       let fineDate = null;
       let hasFineRecord = false;
+      let workingDaysOverdue = 0;
+      
+      // ✅ Hitung hari kerja terlambat dengan benar (skip Minggu & holiday)
+      workingDaysOverdue = calculateWorkingDaysOverdue(loan.due_date, today, holidays);
       
       if (existingFine) {
-        // ✅ Sudah ada record denda di database (dari liveMonitor.js)
+        // ✅ Sudah ada record denda di database (dihitung oleh liveMonitor.js)
         fineStatus = 'has_fine';
         calculatedFine = existingFine.debet - (existingFine.credit || 0);
         fineDate = existingFine.fines_date;
         hasFineRecord = true;
-        console.log(`   ✅ Has fine record: Rp ${calculatedFine.toLocaleString('id-ID')}`);
-      } else if (daysOverdue > 0) {
-        // ⚠️ Terlambat tapi belum ada record denda (mungkin belum di-process oleh liveMonitor.js)
-        fineStatus = 'overdue_pending';
-        // Estimasi denda (untuk informasi user)
-        calculatedFine = daysOverdue * (loan.fine_each_day || 0);
-        // Tanggal denda dihitung sehari setelah deadline
-        fineDate = dueDate.add(1, 'day').format('YYYY-MM-DD');
-        console.log(`   ⚠️ Overdue but pending calculation`);
-        console.log(`   - estimated_fine: Rp ${calculatedFine.toLocaleString('id-ID')}`);
+        
+        console.log(`   ✅ Has fine record: Rp ${calculatedFine.toLocaleString('id-ID')} (${workingDaysOverdue} working days)`);
+      } else if (workingDaysOverdue > 0) {
+        // ⚠️ Terlambat tapi belum ada record denda (belum diproses liveMonitor)
+        console.log(`   ⚠️ Overdue ${workingDaysOverdue} working days, but no fine record yet`);
       } else {
-        console.log(`   ✅ On time`);
+        console.log(`   ✅ On time (no fine record)`);
       }
       
       return {
@@ -171,16 +177,16 @@ exports.renderDenda = async (req, res) => {
         renewed: loan.renewed,
         fine_per_day: loan.fine_each_day || 0,
         rule_name: loan.loan_rules_name,
-        days_overdue: Math.max(0, daysOverdue),
+        days_overdue: workingDaysOverdue, // ✅ Hari kerja terlambat (skip Minggu & holiday)
         fine_status: fineStatus,
-        calculated_fine: calculatedFine,
+        calculated_fine: calculatedFine, // Dari database (sudah benar)
         fine_date: fineDate,
         has_fine_record: hasFineRecord
       };
     });
 
     // =============================
-    // 5️⃣ Render ke View
+    // 6️⃣ Render ke View
     // =============================
     console.log(`\n[${timestamp}] 🎨 Rendering view...`);
     console.log(`   - fineRules: ${fineRules.length} categories`);

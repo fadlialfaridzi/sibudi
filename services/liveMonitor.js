@@ -25,12 +25,13 @@ const HOLIDAY_LOG = path.join(LOG_DIR, "holiday-monitor.log");
 const FINE_LOG = path.join(LOG_DIR, "fine-monitor.log");
 const SNAPSHOT_FILE = path.join(LOG_DIR, "holiday-snapshot.json");
 const POLL_INTERVAL = 30000; // 30 detik (deteksi perubahan holiday)
-const FINE_INTERVAL = 1000 * 60 * 60 * 6; // 6 jam (jadwal rutin recalculation)
+const FINE_POLL_INTERVAL = 60000; // 30 detik (cek denda)
 const CHUNK_SIZE = 10000; // batch per loop
 const PARALLEL_LIMIT = 10; // max concurrent query
 
 const fineEmitter = new EventEmitter();
 let isRunning = false;
+let isFineRunning = false;
 let lastHolidaySnapshot = {};
 
 // ======================================================
@@ -152,12 +153,15 @@ async function recalcFines() {
     const today = dayjs().tz().format("YYYY-MM-DD");
     logFine(`📅 Today: ${today}, Holidays loaded: ${holidays.length}`);
 
-    const [countRows] = await db.query("SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0");
+    // PERBAIKAN: Filter hanya loan yang terlambat untuk efisiensi
+    const [countRows] = await db.query(
+      "SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0 AND due_date < CURDATE()"
+    );
     const total = countRows[0].total;
-    logFine(`📊 Found ${total} active loans`);
+    logFine(`📊 Found ${total} overdue loans (filtered from active loans)`);
     
     if (total === 0) {
-      logFine("✅ No active loans to process.");
+      logFine("✅ No overdue loans to process.");
       return;
     }
 
@@ -166,11 +170,17 @@ async function recalcFines() {
     let updatedCount = 0;
     let insertedCount = 0;
     let errorCount = 0;
+    let skippedCount = 0;
+
+    logFine(`🔄 Processing ${total} overdue loans in batches of ${CHUNK_SIZE}...`);
 
     for (let offset = 0; offset < total; offset += CHUNK_SIZE) {
+      logFine(`📦 Batch ${Math.floor(offset / CHUNK_SIZE) + 1}: Processing loans ${offset + 1} to ${Math.min(offset + CHUNK_SIZE, total)}`);
+      
       const [batch] = await db.query(
         `SELECT loan_id, member_id, item_code, due_date, loan_rules_id 
-         FROM loan WHERE is_lent=1 AND is_return=0 LIMIT ? OFFSET ?`,
+         FROM loan WHERE is_lent=1 AND is_return=0 AND due_date < CURDATE()
+         LIMIT ? OFFSET ?`,
         [CHUNK_SIZE, offset]
       );
 
@@ -178,12 +188,18 @@ async function recalcFines() {
         queue.add(async () => {
           try {
             processedCount++;
+            
+            // Log setiap 10 loan untuk tracking progress
+            if (processedCount % 10 === 0) {
+              logFine(`📊 Progress: ${processedCount}/${total} loans processed...`);
+            }
+            
             const dueDate = dayjs(loan.due_date).tz();
             const diff = dayjs(today).diff(dueDate, "day");
             
             if (diff <= 0) {
-              logFine(`⏭️ Skip ${loan.item_code}: not overdue yet (due: ${loan.due_date})`);
-              return;
+              skippedCount++;
+              return; // Skip tanpa log untuk efisiensi
             }
 
             const [[rule]] = await db.query("SELECT fine_each_day FROM mst_loan_rules WHERE loan_rules_id=?", [
@@ -191,43 +207,57 @@ async function recalcFines() {
             ]);
             
             if (!rule) {
+              skippedCount++;
               logFine(`⚠️ Skip ${loan.item_code}: loan rule not found (rule_id: ${loan.loan_rules_id})`);
               return;
             }
 
-            // count only valid working days
+            // count only valid working days (max 365 days untuk safety)
+            const maxDays = Math.min(diff, 365);
             let valid = 0;
-            for (let i = 1; i <= diff; i++) {
+            
+            for (let i = 1; i <= maxDays; i++) {
               const d = dueDate.add(i, "day");
               if (d.day() !== 0 && !holidays.includes(d.format("YYYY-MM-DD"))) valid++;
             }
             
             if (valid <= 0) {
-              logFine(`⏭️ Skip ${loan.item_code}: no valid working days overdue`);
-              return;
+              skippedCount++;
+              return; // Skip tanpa log
+            }
+            
+            // Log jika ada denda yang akan dibuat/update
+            if (valid > 0) {
+              logFine(`💵 ${loan.item_code}: ${valid} working days overdue × Rp${rule.fine_each_day} = Rp${valid * rule.fine_each_day}`);
             }
 
             const fineVal = valid * rule.fine_each_day;
-            logFine(`💵 ${loan.item_code}: ${valid} days × Rp${rule.fine_each_day} = Rp${fineVal}`);
             
+            // Cek apakah sudah ada denda untuk member ini di tanggal yang sama
+            const finesDate = dueDate.add(1, "day").format("YYYY-MM-DD");
             const [existing] = await db.query(
-              "SELECT fines_id FROM fines WHERE member_id=? AND item_code=? ORDER BY fines_id DESC LIMIT 1",
-              [loan.member_id, loan.item_code]
+              "SELECT fines_id, debet FROM fines WHERE member_id=? AND fines_date=? AND description LIKE ? ORDER BY fines_id DESC LIMIT 1",
+              [loan.member_id, finesDate, `%${loan.item_code}%`]
             );
 
             if (existing.length > 0) {
-              await db.query("UPDATE fines SET debet=?, input_date=NOW() WHERE fines_id=?", [fineVal, existing[0].fines_id]);
-              updatedCount++;
-              logFine(`🔄 Updated fine for ${loan.item_code}, Rp${fineVal} (fines_id: ${existing[0].fines_id})`);
+              // Update jika nilai denda berubah
+              if (existing[0].debet !== fineVal) {
+                await db.query("UPDATE fines SET debet=? WHERE fines_id=?", [fineVal, existing[0].fines_id]);
+                updatedCount++;
+                logFine(`🔄 Updated fine for ${loan.item_code}, Rp${existing[0].debet} → Rp${fineVal} (fines_id: ${existing[0].fines_id})`);
+              } else {
+                skippedCount++;
+              }
             } else {
-              const finesDate = dueDate.add(1, "day").format("YYYY-MM-DD");
+              // Insert denda baru
               const desc = `Denda terlambat untuk eksemplar ${loan.item_code}`;
               await db.query(
-                "INSERT INTO fines (member_id, fines_date, debet, description, input_date, item_code) VALUES (?, ?, ?, ?, NOW(), ?)",
-                [loan.member_id, finesDate, fineVal, desc, loan.item_code]
+                "INSERT INTO fines (member_id, fines_date, debet, description) VALUES (?, ?, ?, ?)",
+                [loan.member_id, finesDate, fineVal, desc]
               );
               insertedCount++;
-              logFine(`➕ Inserted new fine for ${loan.item_code}, Rp${fineVal}`);
+              logFine(`➕ Inserted new fine for ${loan.item_code}, Rp${fineVal} (date: ${finesDate})`);
             }
           } catch (err) {
             errorCount++;
@@ -291,15 +321,18 @@ async function detectHolidayDelta() {
     }
   });
 
-  // Scheduled recalculation (every 6 hours)
+  // Polling for fine recalculation every 30s
   setInterval(async () => {
+    if (isFineRunning) return;
+    isFineRunning = true;
     try {
-      logFine("🕓 Scheduled fine recalculation triggered (6-hour interval)");
       await recalcFines();
     } catch (e) {
-      logFine(`❌ Scheduled fine recalculation failed: ${e.message}`);
+      logFine(`❌ Fine recalculation failed: ${e.message}`);
+    } finally {
+      isFineRunning = false;
     }
-  }, FINE_INTERVAL);
+  }, FINE_POLL_INTERVAL);
 
   // Polling for holiday delta every 30s
   setInterval(async () => {

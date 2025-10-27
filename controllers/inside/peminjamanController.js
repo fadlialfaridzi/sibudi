@@ -820,7 +820,46 @@ exports.renderStrukPinjam = (req, res) => {
 };
 
 // =====================================================
+// 🧮 HELPER: Calculate Working Days Overdue (Skip Minggu & Holidays)
+// =====================================================
+/**
+ * Menghitung jumlah hari kerja terlambat (skip Minggu & holiday)
+ * 
+ * @param {string} dueDate - Tanggal jatuh tempo (YYYY-MM-DD)
+ * @param {string} currentDate - Tanggal sekarang (YYYY-MM-DD)
+ * @param {Array<string>} holidays - Array tanggal libur format YYYY-MM-DD
+ * @returns {number} - Jumlah hari kerja terlambat
+ */
+function calculateWorkingDaysOverdue(dueDate, currentDate, holidays = []) {
+  const due = dayjs(dueDate);
+  const current = dayjs(currentDate);
+  
+  // Jika belum terlambat, return 0
+  if (current.isBefore(due) || current.isSame(due, 'day')) {
+    return 0;
+  }
+  
+  const totalDays = current.diff(due, 'day');
+  let workingDays = 0;
+  
+  // Hitung hari kerja dari due_date + 1 sampai current_date
+  for (let i = 1; i <= totalDays; i++) {
+    const checkDate = due.add(i, 'day');
+    const formatted = checkDate.format('YYYY-MM-DD');
+    const dayOfWeek = checkDate.day(); // 0 = Sunday
+    
+    // Hitung jika bukan Minggu dan bukan holiday
+    if (dayOfWeek !== 0 && !holidays.includes(formatted)) {
+      workingDays++;
+    }
+  }
+  
+  return workingDays;
+}
+
+// =====================================================
 // 🧮 EXPORT HELPER FUNCTIONS UNTUK DIGUNAKAN DI LUAR 
 // =====================================================
 module.exports.calculateDueDate = calculateDueDate;
 module.exports.loadHolidays = loadHolidays;
+module.exports.calculateWorkingDaysOverdue = calculateWorkingDaysOverdue;
