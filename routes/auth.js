@@ -9,8 +9,11 @@ router.get('/login', authController.showLogin);
 // Proses login
 router.post('/login', authController.login);
 
-// Logout
+// Logout (untuk member - langsung logout)
 router.get('/logout', authController.logout);
+
+// Logout dengan validasi password (untuk pustakawan)
+router.post('/logout-validate', authController.validateLogout);
 
 // =====================================================
 // Lupa Password Routes
