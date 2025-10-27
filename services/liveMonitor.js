@@ -147,68 +147,102 @@ async function updateDueDatesForChange(changedDates, holidays) {
 async function recalcFines() {
   logFine("💰 Starting fine recalculation...");
 
-  const holidays = await fetchHolidays();
-  const today = dayjs().tz().format("YYYY-MM-DD");
+  try {
+    const holidays = await fetchHolidays();
+    const today = dayjs().tz().format("YYYY-MM-DD");
+    logFine(`📅 Today: ${today}, Holidays loaded: ${holidays.length}`);
 
-  const [countRows] = await db.query("SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0");
-  const total = countRows[0].total;
-  if (total === 0) {
-    logFine("✅ No active loans.");
-    return;
+    const [countRows] = await db.query("SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0");
+    const total = countRows[0].total;
+    logFine(`📊 Found ${total} active loans`);
+    
+    if (total === 0) {
+      logFine("✅ No active loans to process.");
+      return;
+    }
+
+    const queue = new PQueue({ concurrency: PARALLEL_LIMIT });
+    let processedCount = 0;
+    let updatedCount = 0;
+    let insertedCount = 0;
+    let errorCount = 0;
+
+    for (let offset = 0; offset < total; offset += CHUNK_SIZE) {
+      const [batch] = await db.query(
+        `SELECT loan_id, member_id, item_code, due_date, loan_rules_id 
+         FROM loan WHERE is_lent=1 AND is_return=0 LIMIT ? OFFSET ?`,
+        [CHUNK_SIZE, offset]
+      );
+
+      batch.forEach((loan) =>
+        queue.add(async () => {
+          try {
+            processedCount++;
+            const dueDate = dayjs(loan.due_date).tz();
+            const diff = dayjs(today).diff(dueDate, "day");
+            
+            if (diff <= 0) {
+              logFine(`⏭️ Skip ${loan.item_code}: not overdue yet (due: ${loan.due_date})`);
+              return;
+            }
+
+            const [[rule]] = await db.query("SELECT fine_each_day FROM mst_loan_rules WHERE loan_rules_id=?", [
+              loan.loan_rules_id,
+            ]);
+            
+            if (!rule) {
+              logFine(`⚠️ Skip ${loan.item_code}: loan rule not found (rule_id: ${loan.loan_rules_id})`);
+              return;
+            }
+
+            // count only valid working days
+            let valid = 0;
+            for (let i = 1; i <= diff; i++) {
+              const d = dueDate.add(i, "day");
+              if (d.day() !== 0 && !holidays.includes(d.format("YYYY-MM-DD"))) valid++;
+            }
+            
+            if (valid <= 0) {
+              logFine(`⏭️ Skip ${loan.item_code}: no valid working days overdue`);
+              return;
+            }
+
+            const fineVal = valid * rule.fine_each_day;
+            logFine(`💵 ${loan.item_code}: ${valid} days × Rp${rule.fine_each_day} = Rp${fineVal}`);
+            
+            const [existing] = await db.query(
+              "SELECT fines_id FROM fines WHERE member_id=? AND item_code=? ORDER BY fines_id DESC LIMIT 1",
+              [loan.member_id, loan.item_code]
+            );
+
+            if (existing.length > 0) {
+              await db.query("UPDATE fines SET debet=?, input_date=NOW() WHERE fines_id=?", [fineVal, existing[0].fines_id]);
+              updatedCount++;
+              logFine(`🔄 Updated fine for ${loan.item_code}, Rp${fineVal} (fines_id: ${existing[0].fines_id})`);
+            } else {
+              const finesDate = dueDate.add(1, "day").format("YYYY-MM-DD");
+              const desc = `Denda terlambat untuk eksemplar ${loan.item_code}`;
+              await db.query(
+                "INSERT INTO fines (member_id, fines_date, debet, description, input_date, item_code) VALUES (?, ?, ?, ?, NOW(), ?)",
+                [loan.member_id, finesDate, fineVal, desc, loan.item_code]
+              );
+              insertedCount++;
+              logFine(`➕ Inserted new fine for ${loan.item_code}, Rp${fineVal}`);
+            }
+          } catch (err) {
+            errorCount++;
+            logFine(`❌ Error processing ${loan.item_code}: ${err.message}`);
+          }
+        })
+      );
+    }
+
+    await queue.onIdle();
+    logFine(`✅ Fine recalculation complete: ${processedCount} processed, ${updatedCount} updated, ${insertedCount} inserted, ${errorCount} errors`);
+  } catch (err) {
+    logFine(`❌ Fine recalculation failed: ${err.message}`);
+    logFine(`Stack: ${err.stack}`);
   }
-
-  const queue = new PQueue({ concurrency: PARALLEL_LIMIT });
-
-  for (let offset = 0; offset < total; offset += CHUNK_SIZE) {
-    const [batch] = await db.query(
-      `SELECT loan_id, member_id, item_code, due_date, loan_rules_id 
-       FROM loan WHERE is_lent=1 AND is_return=0 LIMIT ? OFFSET ?`,
-      [CHUNK_SIZE, offset]
-    );
-
-    batch.forEach((loan) =>
-      queue.add(async () => {
-        const dueDate = dayjs(loan.due_date).tz();
-        const diff = dayjs(today).diff(dueDate, "day");
-        if (diff <= 0) return;
-
-        const [[rule]] = await db.query("SELECT fine_each_day FROM mst_loan_rules WHERE loan_rules_id=?", [
-          loan.loan_rules_id,
-        ]);
-        if (!rule) return;
-
-        // count only valid working days
-        let valid = 0;
-        for (let i = 1; i <= diff; i++) {
-          const d = dueDate.add(i, "day");
-          if (d.day() !== 0 && !holidays.includes(d.format("YYYY-MM-DD"))) valid++;
-        }
-        if (valid <= 0) return;
-
-        const fineVal = valid * rule.fine_each_day;
-        const [existing] = await db.query(
-          "SELECT fines_id FROM fines WHERE member_id=? AND item_code=? ORDER BY fines_id DESC LIMIT 1",
-          [loan.member_id, loan.item_code]
-        );
-
-        if (existing.length > 0) {
-          await db.query("UPDATE fines SET debet=?, input_date=NOW() WHERE fines_id=?", [fineVal, existing[0].fines_id]);
-          logFine(`🔄 Update fine for ${loan.item_code}, Rp${fineVal}`);
-        } else {
-          const finesDate = dueDate.add(1, "day").format("YYYY-MM-DD");
-          const desc = `Denda terlambat untuk eksemplar ${loan.item_code}`;
-          await db.query(
-            "INSERT INTO fines (member_id, fines_date, debet, description, input_date, item_code) VALUES (?, ?, ?, ?, NOW(), ?)",
-            [loan.member_id, finesDate, fineVal, desc, loan.item_code]
-          );
-          logFine(`➕ New fine for ${loan.item_code}, Rp${fineVal}`);
-        }
-      })
-    );
-  }
-
-  await queue.onIdle();
-  logFine("✅ Fine recalculation complete.");
 }
 
 // ======================================================
