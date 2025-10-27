@@ -1,200 +1,1255 @@
+<%- include('partials/header-simple') %>
 
-  <%- include('partials/header-simple') %>
   <body class="bg-gray-50 text-gray-800 font-[Inter]">
-    <!-- ✅ Navbar dengan activeNav -->
     <%- include('partials/navbarHome', { activeNav: 'Home' }) %>
 
-    <!-- HERO SECTION -->
-    <section
-      class="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-yellow-50 pt-24"
-    >
-      <div class="max-w-7xl mx-auto px-6 py-24 lg:py-32 text-center">
-        <h1
-          class="text-3xl md:text-5xl font-bold leading-tight text-gray-800 mb-6"
-        >
-          Sistem Informasi Perpanjangan Peminjaman Buku Mandiri <br />
-          <span class="text-[#2F7A33]"
-            >UPT Perpustakaan Universitas Andalas</span
-          >
-        </h1>
-        <p class="max-w-3xl mx-auto text-gray-600 text-lg mb-8">
-          SiBuDi (Sistem Informasi Buku Digital) adalah platform inovatif untuk
-          mendukung layanan
-          <strong
-            >perpanjangan, peminjaman, dan pengelolaan denda</strong
-          >
-          buku secara mandiri dan terintegrasi dengan sistem SLiMS.
-        </p>
-        <a
-          href="/login"
-          class="inline-block px-8 py-3 bg-[#2F7A33] text-white font-medium rounded-lg hover:bg-[#256328] transition-all"
-        >
-          Mulai Sekarang
-        </a>
-      </div>
-    </section>
-
-    <!-- PERPANJANG BUKU DARI RUMAH -->
-    <section
-      class="py-20 bg-gradient-to-br from-yellow-50 via-white to-green-50 relative"
-    >
-      <div
-        class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center"
-      >
-        <div>
-          <h2 class="text-3xl font-semibold mb-4 text-gray-800">
-            Perpanjang Buku dari Rumah
-          </h2>
-          <p class="text-gray-600 mb-6">
-            Kini kamu bisa memperpanjang buku kapan saja, di mana saja. Tanpa
-            antrean, tanpa repot — semua bisa dilakukan secara online melalui
-            SiBuDi.
+      <!-- HERO SECTION -->
+      <section class="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-yellow-50 pt-24 scroll-animate" data-animation="fadeInUp">
+        <div class="max-w-7xl mx-auto px-6 py-24 lg:py-32 text-center">
+          <h1 class="text-3xl md:text-5xl font-bold leading-tight text-gray-800 mb-6">
+            Sistem Informasi Perpanjangan Peminjaman Buku Mandiri <br />
+            <span class="text-[#2F7A33]">UPT Perpustakaan Universitas Andalas</span>
+          </h1>
+          <p class="max-w-3xl mx-auto text-gray-600 text-lg mb-8">
+            SIBUDI (Sistem Informasi Buku Digital) adalah platform inovatif untuk
+            mendukung layanan
+            <strong>perpanjangan, peminjaman, dan pengelolaan denda</strong>
+            buku secara mandiri dan terintegrasi dengan sistem SLiMS.
           </p>
-          <div
-            class="flex items-center gap-4 bg-white shadow-sm p-4 rounded-xl"
-          >
-            <img
-              src="/images/Perpustakaan Unand.jpg"
-              alt="Kepala Perpustakaan"
-              class="w-16 h-16 rounded-full object-cover"
-            />
-            <div>
-              <h4 class="font-semibold text-gray-800">
-                apt. Yori Yuliandra, M.Farm, Ph.D
-              </h4>
-              <p class="text-gray-500 text-sm">Kepala Perpustakaan</p>
+          <a href="/login"
+            class="inline-block px-8 py-3 bg-[#2F7A33] text-white font-medium rounded-lg hover:bg-[#256328] transition-all btn-animate">
+            Mulai Sekarang
+          </a>
+        </div>
+      </section>
+
+      <!-- VIDEO SECTION -->
+      <section class="py-20 bg-gradient-to-br from-[#F8FFF8] via-white to-green-50 scroll-animate" data-animation="zoomIn">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-[#2F7A33]">
+              Ketahui Lebih Lanjut Tentang SiBuDi
+            </h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-lg">
+              Simak video demo untuk melihat cara menggunakan platform SiBuDi dengan mudah dan efektif.
+            </p>
+          </div>
+
+          <!-- Video Container dengan interaktif frame -->
+          <div class="relative max-w-6xl mx-auto group" id="video-container">
+            <!-- Decorative elements around video -->
+            <div class="absolute -top-6 -left-6 w-24 h-24 bg-[#2F7A33] opacity-20 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-[#FFD700] opacity-20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+            
+            <!-- Video Wrapper with Interactive Frame -->
+            <div class="relative video-frame-wrapper">
+              <!-- Interactive Border Animation -->
+              <div class="video-border-animation"></div>
+              
+              <!-- Video Container -->
+              <div class="relative overflow-hidden rounded-2xl shadow-2xl bg-gray-900 video-content-wrapper">
+                <!-- Play Button Overlay (shown before video loads) -->
+                <div id="video-play-overlay" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 z-20 cursor-pointer transition-all duration-300 hover:bg-opacity-40">
+                  <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-4 bg-[#2F7A33] rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg group">
+                      <i class="fas fa-play text-white text-2xl ml-1"></i>
+                    </div>
+                    <p class="text-white font-medium">Klik untuk memutar</p>
+                  </div>
+                </div>
+
+                <!-- Video Element -->
+                <video 
+                  id="autoplay-video" 
+                  class="w-full h-auto cursor-pointer"
+                  poster="/images/Perpustakaan Unand.jpg"
+                  playsinline
+                  controls
+                  preload="metadata">
+                  <!-- Video sources - ganti dengan URL video Anda -->
+                  <source src="/videos/library-videos.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+
+                <!-- Video Fallback jika video tidak ditemukan -->
+                <div id="video-fallback" class="hidden absolute inset-0 flex items-center justify-center bg-gray-900 text-white p-8">
+                  <div class="text-center max-w-md">
+                    <i class="fas fa-video-slash text-6xl mb-4 text-gray-500"></i>
+                    <h3 class="text-xl font-semibold mb-2">Video sedang dalam tahap persiapan</h3>
+                    <p class="text-gray-400 mb-4">
+                      Video demo akan tersedia dalam waktu dekat. Untuk saat ini, Anda dapat menjelajahi fitur-fitur SiBuDi dengan mendaftar atau login.
+                    </p>
+                    <a href="/login" class="inline-block px-6 py-3 bg-[#2F7A33] text-white rounded-lg hover:bg-[#256328] transition-all">
+                      <i class="fas fa-sign-in-alt mr-2"></i>Login untuk Memulai
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Video Controls Overlay -->
+                <div class="absolute bottom-4 right-4 z-10 flex gap-2">
+                  <button id="video-fullscreen" class="bg-black bg-opacity-50 text-white p-2 rounded-lg hover:bg-opacity-70 transition-all">
+                    <i class="fas fa-expand"></i>
+                  </button>
+                  <button id="video-mute" class="bg-black bg-opacity-50 text-white p-2 rounded-lg hover:bg-opacity-70 transition-all">
+                    <i class="fas fa-volume-up"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Corner decorations -->
+              <div class="video-corner-corner corner-top-left"></div>
+              <div class="video-corner-corner corner-top-right"></div>
+              <div class="video-corner-corner corner-bottom-left"></div>
+              <div class="video-corner-corner corner-bottom-right"></div>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 overflow-hidden rounded-b-2xl">
+              <div id="video-progress" class="h-full bg-gradient-to-r from-[#2F7A33] to-[#FFD700] transition-all duration-300" style="width: 0%"></div>
             </div>
           </div>
         </div>
+      </section>
+      <!-- LAYANAN SIBUDI -->
 
-        <div class="text-center md:text-right space-y-4">
-          <div
-            class="inline-block bg-[#2F7A33] text-white px-4 py-2 rounded-2xl text-sm shadow-md"
-          >
-            “Sudah berapa buku yang kamu baca hari ini?”
+      <!-- PERPANJANG BUKU DARI RUMAH -->
+      <section class="py-20 bg-gradient-to-br from-yellow-50 via-white to-green-50 relative scroll-animate" data-animation="slideInLeft">
+        <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 class="text-3xl font-semibold mb-4 text-gray-800">
+              Perpanjang Buku dari Rumah
+            </h2>
+            <p class="text-gray-600 mb-6">
+              Kini kamu bisa memperpanjang buku kapan saja, di mana saja. Tanpa
+              antrean, tanpa repot — semua bisa dilakukan secara online melalui
+              SiBuDi.
+            </p>
+            <div class="flex items-center gap-4 bg-white shadow-sm p-4 rounded-xl">
+              <img src="/images/Perpustakaan Unand.jpg" alt="Kepala Perpustakaan"
+                class="w-16 h-16 rounded-full object-cover" />
+              <div>
+                <h4 class="font-semibold text-gray-800">
+                  apt. Yori Yuliandra, M.Farm, Ph.D
+                </h4>
+                <p class="text-gray-500 text-sm">Kepala Perpustakaan</p>
+              </div>
+            </div>
           </div>
-          <div
-            class="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded-2xl text-sm shadow-md"
-          >
-            “Hi! Jangan lupa untuk membaca buku!”
+
+          <div class="text-center md:text-right space-y-4">
+            <div class="inline-block bg-[#2F7A33] text-white px-4 py-2 rounded-2xl text-sm shadow-md">
+              “Sudah berapa buku yang kamu baca hari ini?”
+            </div>
+            <div class="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded-2xl text-sm shadow-md">
+              “Hi! Jangan lupa untuk membaca buku!”
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- LOKASI PERPUSTAKAAN -->
-    <section class="py-20 bg-white">
-      <div
-        class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center"
-      >
-        <div
-          class="aspect-video bg-gray-100 rounded-xl flex items-center justify-center"
-        >
-          <iframe
-            class="w-full h-full rounded-xl"
-            src="https://www.google.com/maps?q=UPT+Perpustakaan+Universitas+Andalas&output=embed"
-            allowfullscreen
-          ></iframe>
-        </div>
-
-        <div>
-          <h2 class="text-3xl font-semibold mb-4 text-gray-800">
-            Lokasi UPT Perpustakaan
-          </h2>
-          <p class="text-gray-600 leading-relaxed">
-            Gedung Perpustakaan Universitas Andalas berlokasi di Kampus Unand
-            Limau Manis, Padang, Sumatera Barat. Terletak di jantung kampus,
-            dikelilingi oleh gedung perkuliahan dengan pemandangan indah
-            perbukitan.
+      <!-- ABOUT SECTION -->
+      <section class="pt-24 pb-16 bg-gradient-to-br from-green-50 via-white to-yellow-50 scroll-animate" data-animation="fadeInUp">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+          <h1 class="text-4xl font-bold text-[#2F7A33] mb-4 text-animate">Tentang SiBuDi</h1>
+          <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
+            <strong>SiBuDi (Sistem Informasi Buku Digital)</strong> merupakan sistem berbasis web
+            yang dikembangkan untuk mendukung digitalisasi layanan di UPT
+            Perpustakaan Universitas Andalas. Sistem ini memudahkan mahasiswa dalam
+            <span class="font-semibold text-[#2F7A33]">melakukan perpanjangan, pengecekan denda, dan melihat status
+              peminjaman buku</span>
+            secara mandiri.
           </p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- LAYANAN SIBUDI -->
-    <section id="layanan" class="py-20 bg-[#F8FFF8] border-t border-green-100">
-      <div class="max-w-6xl mx-auto px-6 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-6 text-[#2F7A33]">
-          Layanan Perpanjangan Peminjaman Online
-        </h2>
-        <p class="max-w-3xl mx-auto text-gray-600 mb-10">
-          Layanan perpanjangan online diberikan kepada anggota perpustakaan yang
-          ingin memperpanjang masa pinjam buku dengan mudah dan cepat.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Service Item -->
-          <div
-            class="service-item bg-white p-6 rounded-2xl border border-green-100"
-          >
-            <div
-              class="service-number text-white w-12 h-12 flex justify-center items-center rounded-full mx-auto mb-4 text-lg font-bold"
-            >
-              01
-            </div>
-            <h3 class="text-xl font-semibold mb-2 text-gray-800">
-              Detail Peminjaman
-            </h3>
-            <p class="text-gray-600 mb-4">
-              Lihat daftar buku yang sedang kamu pinjam secara real-time dan
-              pantau tanggal pengembalianmu.
+      <!-- VISI & MISI -->
+      <section class="py-20 bg-white border-t border-green-100 scroll-animate" data-animation="slideInRight">
+        <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 class="text-2xl font-bold text-[#2F7A33] mb-4">Visi</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Menjadi sistem informasi perpustakaan modern yang efisien, inklusif,
+              dan mendukung kegiatan literasi di lingkungan akademik Universitas Andalas.
             </p>
-            <a
-              href="/login"
-              class="inline-block px-4 py-2 bg-[#2F7A33] text-white rounded-md hover:bg-[#256328] transition"
-            >
-              Lihat Detail
-            </a>
           </div>
-
-          <div
-            class="service-item bg-white p-6 rounded-2xl border border-green-100"
-          >
-            <div
-              class="service-number text-white w-12 h-12 flex justify-center items-center rounded-full mx-auto mb-4 text-lg font-bold"
-            >
-              02
-            </div>
-            <h3 class="text-xl font-semibold mb-2 text-gray-800">
-              Perpanjang Peminjaman
-            </h3>
-            <p class="text-gray-600 mb-4">
-              Ajukan perpanjangan buku secara online tanpa perlu datang ke
-              pustaka.
-            </p>
-            <a
-              href="/login"
-              class="inline-block px-4 py-2 bg-[#2F7A33] text-white rounded-md hover:bg-[#256328] transition"
-            >
-              Perpanjang Sekarang
-            </a>
-          </div>
-
-          <div
-            class="service-item bg-white p-6 rounded-2xl border border-green-100"
-          >
-            <div
-              class="service-number text-white w-12 h-12 flex justify-center items-center rounded-full mx-auto mb-4 text-lg font-bold"
-            >
-              03
-            </div>
-            <h3 class="text-xl font-semibold mb-2 text-gray-800">Cek Denda</h3>
-            <p class="text-gray-600 mb-4">
-              Ketahui jumlah denda yang sedang kamu miliki agar bisa segera
-              menyelesaikannya dengan mudah.
-            </p>
-            <a
-              href="/login"
-              class="inline-block px-4 py-2 bg-[#2F7A33] text-white rounded-md hover:bg-[#256328] transition"
-            >
-              Cek Sekarang
-            </a>
+          <div>
+            <h2 class="text-2xl font-bold text-[#2F7A33] mb-4">Misi</h2>
+            <ul class="text-gray-700 space-y-2 list-disc pl-5">
+              <li>Meningkatkan aksesibilitas layanan perpustakaan.</li>
+              <li>Mendukung integrasi dengan sistem SLiMS.</li>
+              <li>Memberikan pengalaman pengguna yang cepat dan mudah.</li>
+              <li>Mendorong budaya literasi digital kampus.</li>
+            </ul>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- FOOTER -->
-    <%- include('partials/footer-simple') %>
+      <!-- TIM PENGEMBANG -->
+      <section class="py-20 bg-[#F8FFF8] border-t border-green-100 scroll-animate" data-animation="zoomIn">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+          <h2 class="text-3xl font-bold text-[#2F7A33] mb-10">Tim Pengembang</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <% const team=[ { nama: "Ridho Dwi Syahputra" , peran: "Project Manager" }, { nama: "Rizky Aditya" ,
+              peran: "Backend Developer" }, { nama: "Maya Putri" , peran: "Frontend Designer" }, { nama: "Fauzan Rahman"
+              , peran: "Database Engineer" } ]; team.forEach(member=> { %>
+               <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition team-card">
+                <div
+                  class="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center text-2xl font-bold text-[#2F7A33]">
+                  <%= member.nama.charAt(0) %>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">
+                  <%= member.nama %>
+                </h3>
+                <p class="text-gray-500 text-sm">
+                  <%= member.peran %>
+                </p>
+              </div>
+              <% }) %>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOKASI PERPUSTAKAAN -->
+      <section class="py-20 bg-white scroll-animate" data-animation="slideInUp">
+        <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+          <div class="relative w-full h-96 bg-gray-100 rounded-xl overflow-hidden shadow-lg" id="maps-container">
+            <!-- Loading indicator -->
+            <div class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10" id="maps-loading">
+              <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2F7A33] mx-auto mb-4"></div>
+                <p class="text-gray-600 font-medium">Memuat peta...</p>
+              </div>
+            </div>
+
+            <!-- Google Maps iframe -->
+            <iframe id="google-maps-iframe"
+              class="absolute inset-0 w-full h-full border-0 opacity-0 transition-opacity duration-500"
+              src="https://www.google.com/maps?q=UPT+Perpustakaan+Universitas+Andalas&output=embed" allowfullscreen
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              title="Lokasi UPT Perpustakaan Universitas Andalas"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+
+            <!-- Fallback content jika iframe gagal load -->
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-500 iframe-fallback"
+              style="display: none;" id="maps-fallback">
+              <div class="text-center p-6">
+                <i class="fas fa-map-marker-alt text-6xl mb-4 text-[#2F7A33]"></i>
+                <h3 class="text-xl font-semibold mb-2 text-gray-700">Peta tidak dapat dimuat</h3>
+                <p class="text-gray-600 mb-4">Silakan coba beberapa solusi berikut:</p>
+                <div class="space-y-2 text-sm text-gray-500 mb-6">
+                  <p>• Periksa koneksi internet Anda</p>
+                  <p>• Nonaktifkan ad blocker sementara</p>
+                  <p>• Refresh halaman</p>
+                </div>
+                <div class="space-x-3">
+                  <button id="retry-maps"
+                    class="px-4 py-2 bg-[#2F7A33] text-white rounded-lg hover:bg-[#256328] transition">
+                    <i class="fas fa-refresh mr-2"></i>Coba Lagi
+                  </button>
+                  <button id="open-maps-external"
+                    class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                    <i class="fas fa-external-link-alt mr-2"></i>Buka di Google Maps
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-3xl font-semibold mb-4 text-gray-800">
+              Lokasi UPT Perpustakaan
+            </h2>
+            <p class="text-gray-600 leading-relaxed">
+              Gedung Perpustakaan Universitas Andalas berlokasi di Kampus Unand
+              Limau Manis, Padang, Sumatera Barat. Terletak di jantung kampus,
+              dikelilingi oleh gedung perkuliahan dengan pemandangan indah
+              perbukitan.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="layanan" class="py-20 bg-[#F8FFF8] border-t border-green-100 scroll-animate" data-animation="fadeInUp">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6 text-[#2F7A33]">
+            Layanan Perpanjangan Peminjaman Online
+          </h2>
+          <p class="max-w-3xl mx-auto text-gray-600 mb-10">
+            Layanan perpanjangan online diberikan kepada anggota perpustakaan yang
+            ingin memperpanjang masa pinjam buku dengan mudah dan cepat.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Service Item 1 -->
+            <div
+              class="group relative service-card card-lift rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-[#2F7A33] hover:-translate-y-2">
+              <!-- Card Header -->
+              <div class="p-8 text-center">
+                <!-- Service Number -->
+                <div
+                  class="inline-flex items-center justify-center w-16 h-16 service-number text-white rounded-full text-xl font-bold mb-6 group-hover:scale-110 transition-transform duration-300">
+                  01
+                </div>
+
+                <!-- Service Title -->
+                <h3
+                  class="text-xl font-bold text-gray-800 mb-4 group-hover:text-[#2F7A33] transition-colors duration-300">
+                  Detail Peminjaman
+                </h3>
+
+                <!-- Service Description -->
+                <p class="text-gray-600 leading-relaxed mb-6 group-hover:text-gray-700 transition-colors duration-300">
+                  Lihat daftar buku yang sedang kamu pinjam secara real-time dan pantau tanggal pengembalianmu dengan
+                  mudah.
+                </p>
+              </div>
+
+              <!-- Hover Button -->
+              <div class="hover-button-container">
+                <a href="/login"
+                  class="block w-full text-center text-white font-semibold py-3 px-6 rounded-lg hover:bg-white hover:text-[#2F7A33] transition-all duration-300 border-2 border-transparent hover:border-[#2F7A33]">
+                  <i class="fas fa-eye mr-2"></i>Lihat Detail
+                </a>
+              </div>
+
+              <!-- Decorative Elements -->
+              <div
+                class="absolute top-4 right-4 w-2 h-2 bg-[#2F7A33] rounded-full decorative-dot opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              </div>
+              <div
+                class="absolute top-8 right-8 w-1 h-1 bg-[#FFD700] rounded-full decorative-dot opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+              </div>
+            </div>
+
+            <!-- Service Item 2 -->
+            <div
+              class="group relative service-card card-lift rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-[#2F7A33] hover:-translate-y-2">
+              <!-- Card Header -->
+              <div class="p-8 text-center">
+                <!-- Service Number -->
+                <div
+                  class="inline-flex items-center justify-center w-16 h-16 service-number text-white rounded-full text-xl font-bold mb-6 group-hover:scale-110 transition-transform duration-300">
+                  02
+                </div>
+
+                <!-- Service Title -->
+                <h3
+                  class="text-xl font-bold text-gray-800 mb-4 group-hover:text-[#2F7A33] transition-colors duration-300">
+                  Perpanjang Peminjaman
+                </h3>
+
+                <!-- Service Description -->
+                <p class="text-gray-600 leading-relaxed mb-6 group-hover:text-gray-700 transition-colors duration-300">
+                  Ajukan perpanjangan buku secara online tanpa perlu datang ke pustaka. Proses cepat dan mudah.
+                </p>
+              </div>
+
+              <!-- Hover Button -->
+              <div class="hover-button-container">
+                <a href="/login"
+                  class="block w-full text-center text-white font-semibold py-3 px-6 rounded-lg hover:bg-white hover:text-[#2F7A33] transition-all duration-300 border-2 border-transparent hover:border-[#2F7A33]">
+                  <i class="fas fa-clock mr-2"></i>Perpanjang Sekarang
+                </a>
+              </div>
+
+              <!-- Decorative Elements -->
+              <div
+                class="absolute top-4 right-4 w-2 h-2 bg-[#2F7A33] rounded-full decorative-dot opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              </div>
+              <div
+                class="absolute top-8 right-8 w-1 h-1 bg-[#FFD700] rounded-full decorative-dot opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+              </div>
+            </div>
+
+            <!-- Service Item 3 -->
+            <div
+              class="group relative service-card card-lift rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-[#2F7A33] hover:-translate-y-2">
+              <!-- Card Header -->
+              <div class="p-8 text-center">
+                <!-- Service Number -->
+                <div
+                  class="inline-flex items-center justify-center w-16 h-16 service-number text-white rounded-full text-xl font-bold mb-6 group-hover:scale-110 transition-transform duration-300">
+                  03
+                </div>
+
+                <!-- Service Title -->
+                <h3
+                  class="text-xl font-bold text-gray-800 mb-4 group-hover:text-[#2F7A33] transition-colors duration-300">
+                  Cek Denda
+                </h3>
+
+                <!-- Service Description -->
+                <p class="text-gray-600 leading-relaxed mb-6 group-hover:text-gray-700 transition-colors duration-300">
+                  Ketahui jumlah denda yang sedang kamu miliki agar bisa segera menyelesaikannya dengan mudah dan cepat.
+                </p>
+              </div>
+
+              <!-- Hover Button -->
+              <div class="hover-button-container">
+                <a href="/login"
+                  class="block w-full text-center text-white font-semibold py-3 px-6 rounded-lg hover:bg-white hover:text-[#2F7A33] transition-all duration-300 border-2 border-transparent hover:border-[#2F7A33]">
+                  <i class="fas fa-calculator mr-2"></i>Cek Sekarang
+                </a>
+              </div>
+
+              <!-- Decorative Elements -->
+              <div
+                class="absolute top-4 right-4 w-2 h-2 bg-[#2F7A33] rounded-full decorative-dot opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              </div>
+              <div
+                class="absolute top-8 right-8 w-1 h-1 bg-[#FFD700] rounded-full decorative-dot opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <%- include('partials/footer-simple') %>
+
+         <!-- CSS tambahan untuk Service Cards dan Google Maps -->
+         <style>
+           html {
+             scroll-behavior: smooth;
+           }
+
+           /* Scroll Animation Base */
+           .scroll-animate {
+             opacity: 0;
+             transform: translateY(50px);
+             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+           }
+
+           .scroll-animate.animate {
+             opacity: 1;
+             transform: translateY(0);
+           }
+
+           /* Animation Types */
+           .scroll-animate[data-animation="fadeInUp"] {
+             transform: translateY(50px);
+           }
+
+           .scroll-animate[data-animation="fadeInUp"].animate {
+             transform: translateY(0);
+           }
+
+           .scroll-animate[data-animation="slideInLeft"] {
+             transform: translateX(-100px);
+           }
+
+           .scroll-animate[data-animation="slideInLeft"].animate {
+             transform: translateX(0);
+           }
+
+           .scroll-animate[data-animation="slideInRight"] {
+             transform: translateX(100px);
+           }
+
+           .scroll-animate[data-animation="slideInRight"].animate {
+             transform: translateX(0);
+           }
+
+           .scroll-animate[data-animation="slideInUp"] {
+             transform: translateY(100px);
+           }
+
+           .scroll-animate[data-animation="slideInUp"].animate {
+             transform: translateY(0);
+           }
+
+           .scroll-animate[data-animation="zoomIn"] {
+             transform: scale(0.8);
+           }
+
+           .scroll-animate[data-animation="zoomIn"].animate {
+             transform: scale(1);
+           }
+
+           /* Staggered Animation for Cards */
+           .service-card {
+             opacity: 0;
+             transform: translateY(30px);
+             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+           }
+
+           .service-card.animate {
+             opacity: 1;
+             transform: translateY(0);
+           }
+
+           .service-card:nth-child(1) { transition-delay: 0.1s; }
+           .service-card:nth-child(2) { transition-delay: 0.2s; }
+           .service-card:nth-child(3) { transition-delay: 0.3s; }
+
+           /* Team Cards Animation */
+           .team-card {
+             opacity: 0;
+             transform: translateY(30px) scale(0.9);
+             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+           }
+
+           .team-card.animate {
+             opacity: 1;
+             transform: translateY(0) scale(1);
+           }
+
+           .team-card:nth-child(1) { transition-delay: 0.1s; }
+           .team-card:nth-child(2) { transition-delay: 0.2s; }
+           .team-card:nth-child(3) { transition-delay: 0.3s; }
+           .team-card:nth-child(4) { transition-delay: 0.4s; }
+
+           /* Enhanced fade-in for compatibility */
+           .fade-in {
+             animation: fadeIn 0.8s ease-in-out;
+           }
+
+           @keyframes fadeIn {
+             from {
+               opacity: 0;
+               transform: translateY(10px);
+             }
+
+             to {
+               opacity: 1;
+               transform: translateY(0);
+             }
+           }
+
+          /* Service Cards Enhanced Styling */
+          .service-card {
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(47, 122, 51, 0.1);
+          }
+
+          .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(47, 122, 51, 0.05) 0%, rgba(255, 215, 0, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 1rem;
+          }
+
+          .service-card:hover::before {
+            opacity: 1;
+          }
+
+          /* Service Number Animation */
+          .service-number {
+            background: linear-gradient(135deg, #2F7A33 0%, #256328 50%, #1e4d1f 100%);
+            box-shadow: 0 4px 15px rgba(47, 122, 51, 0.3);
+            position: relative;
+            overflow: hidden;
+          }
+
+          .service-number::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            transition: transform 0.6s ease;
+            opacity: 0;
+          }
+
+          .service-card:hover .service-number::before {
+            transform: rotate(45deg) translate(50%, 50%);
+            opacity: 1;
+          }
+
+          /* Button Slide Animation - Enhanced */
+          .hover-button-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #2F7A33 0%, #256328 100%);
+            padding: 1.5rem;
+            z-index: 10;
+          }
+
+          .group:hover .hover-button-container {
+            transform: translateY(0);
+          }
+
+          .hover-button-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+          }
+
+          .hover-button-container:hover::before {
+            left: 100%;
+          }
+
+          /* Decorative Dots Animation */
+          .decorative-dot {
+            animation: pulse 2s infinite;
+          }
+
+          @keyframes pulse {
+
+            0%,
+            100% {
+              transform: scale(1);
+              opacity: 0.7;
+            }
+
+            50% {
+              transform: scale(1.2);
+              opacity: 1;
+            }
+          }
+
+          /* Card Lift Effect */
+          .card-lift {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+
+          .card-lift:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(47, 122, 51, 0.15);
+          }
+
+           /* Additional Animation Effects */
+           .animate-on-scroll {
+             opacity: 0;
+             transform: translateY(30px);
+             transition: all 0.6s ease;
+           }
+
+           .animate-on-scroll.animated {
+             opacity: 1;
+             transform: translateY(0);
+           }
+
+           /* Text Animation */
+           .text-animate {
+             opacity: 0;
+             transform: translateY(20px);
+             transition: all 0.8s ease;
+           }
+
+           .text-animate.animate {
+             opacity: 1;
+             transform: translateY(0);
+           }
+
+           /* Button Animation */
+           .btn-animate {
+             opacity: 0;
+             transform: scale(0.8);
+             transition: all 0.6s ease;
+           }
+
+           .btn-animate.animate {
+             opacity: 1;
+             transform: scale(1);
+           }
+
+           /* VIDEO SECTION STYLING */
+          .video-frame-wrapper {
+            position: relative;
+            padding: 12px;
+            background: linear-gradient(135deg, #2F7A33 0%, #FFD700 100%);
+            border-radius: 1.5rem;
+            animation: videoFrameGlow 3s ease-in-out infinite;
+          }
+
+          @keyframes videoFrameGlow {
+            0%, 100% {
+              box-shadow: 0 0 20px rgba(47, 122, 51, 0.3);
+            }
+            50% {
+              box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+            }
+          }
+
+          .video-content-wrapper {
+            background: #000;
+            position: relative;
+            z-index: 1;
+          }
+
+          .video-border-animation {
+            position: absolute;
+            inset: -12px;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: linear-gradient(45deg, #2F7A33, #FFD700, #2F7A33);
+            background-size: 300% 300%;
+            animation: borderGlow 3s ease infinite;
+            mask: 
+              linear-gradient(#fff 0 0) content-box, 
+              linear-gradient(#fff 0 0);
+            -webkit-mask: 
+              linear-gradient(#fff 0 0) content-box, 
+              linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+          }
+
+          @keyframes borderGlow {
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
+          }
+
+          .video-corner-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #2F7A33;
+            z-index: 10;
+            transition: all 0.3s ease;
+          }
+
+          .corner-top-left {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 0.5rem;
+          }
+
+          .corner-top-right {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            border-top-right-radius: 0.5rem;
+          }
+
+          .corner-bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            border-bottom-left-radius: 0.5rem;
+          }
+
+          .corner-bottom-right {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 0.5rem;
+          }
+
+          .group:hover .video-corner-corner {
+            border-color: #FFD700;
+            transform: scale(1.2);
+          }
+
+          /* Video controls */
+          #video-play-overlay {
+            transition: opacity 0.3s ease;
+          }
+
+          #video-play-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+          }
+
+          video {
+            display: block;
+            width: 100%;
+            height: auto;
+          }
+
+          /* Responsive adjustments */
+           @media (max-width: 768px) {
+             .service-card {
+               margin-bottom: 2rem;
+             }
+
+             /* Perbaikan button untuk mobile - selalu terlihat */
+             .hover-button-container {
+               position: relative !important;
+               transform: none !important;
+               margin-top: 1rem;
+               background: linear-gradient(135deg, #2F7A33 0%, #256328 100%);
+               border-radius: 0.5rem;
+               opacity: 1 !important;
+               display: block !important;
+             }
+
+             .group:hover .hover-button-container {
+               transform: none !important;
+             }
+
+             /* Video section responsive */
+             .video-frame-wrapper {
+               padding: 8px;
+             }
+
+             .video-corner-corner {
+               width: 12px;
+               height: 12px;
+               border-width: 2px;
+             }
+
+             /* Reduce animation intensity on mobile */
+             .scroll-animate {
+               transform: translateY(20px);
+             }
+
+             .scroll-animate[data-animation="slideInLeft"],
+             .scroll-animate[data-animation="slideInRight"] {
+               transform: translateX(0) translateY(20px);
+             }
+           }
+
+          /* Maps container styling */
+          #maps-container {
+            position: relative;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+          }
+
+          #maps-container:hover {
+            border-color: #2F7A33;
+            box-shadow: 0 10px 25px rgba(47, 122, 51, 0.1);
+          }
+
+          /* Loading animation */
+          #maps-loading {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            z-index: 20;
+          }
+
+          .animate-spin {
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+
+            to {
+              transform: rotate(360deg);
+            }
+          }
+
+          /* Iframe styling */
+          #google-maps-iframe {
+            min-height: 384px;
+            border: none;
+            border-radius: 0.75rem;
+            transition: opacity 0.5s ease;
+          }
+
+          /* Fallback styling */
+          #maps-fallback {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border: 2px dashed #d1d5db;
+            z-index: 15;
+          }
+
+          #maps-fallback:hover {
+            border-color: #2F7A33;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          }
+
+          /* Button animations */
+          #retry-maps,
+          #open-maps-external {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+          }
+
+          #retry-maps:hover,
+          #open-maps-external:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+
+          #retry-maps:active,
+          #open-maps-external:active {
+            transform: translateY(0);
+          }
+
+          /* Responsive design */
+          @media (max-width: 768px) {
+            #google-maps-iframe {
+              min-height: 250px;
+            }
+
+            #maps-container {
+              height: 250px;
+            }
+          }
+
+          @media (max-width: 480px) {
+            #google-maps-iframe {
+              min-height: 200px;
+            }
+
+            #maps-container {
+              height: 200px;
+            }
+
+            #maps-fallback .text-center {
+              padding: 1rem;
+            }
+
+            #maps-fallback .text-6xl {
+              font-size: 3rem;
+            }
+          }
+
+          /* Debug mode (uncomment untuk debugging) */
+          /*
+        #maps-container {
+          border: 3px solid red !important;
+        }
+        
+        #google-maps-iframe {
+          border: 2px solid blue !important;
+        }
+        */
+        </style>
+
+         <!-- JavaScript untuk Scroll Animations dan Google Maps -->
+         <script>
+           // Scroll Animation Handler
+           document.addEventListener('DOMContentLoaded', function() {
+             // Intersection Observer untuk scroll animations
+             const observerOptions = {
+               threshold: 0.1,
+               rootMargin: '0px 0px -50px 0px'
+             };
+
+             const observer = new IntersectionObserver((entries) => {
+               entries.forEach(entry => {
+                 if (entry.isIntersecting) {
+                   entry.target.classList.add('animate');
+                   
+                   // Trigger staggered animations for cards
+                   if (entry.target.classList.contains('scroll-animate')) {
+                     const cards = entry.target.querySelectorAll('.service-card, .team-card');
+                     cards.forEach((card, index) => {
+                       setTimeout(() => {
+                         card.classList.add('animate');
+                       }, index * 100);
+                     });
+                   }
+                 }
+               });
+             }, observerOptions);
+
+             // Observe all scroll-animate elements
+             document.querySelectorAll('.scroll-animate').forEach(el => {
+               observer.observe(el);
+             });
+
+             // Observe individual cards and animated elements
+             document.querySelectorAll('.service-card, .team-card, .text-animate, .btn-animate').forEach(el => {
+               observer.observe(el);
+             });
+
+             // Smooth scroll for anchor links
+             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+               anchor.addEventListener('click', function (e) {
+                 e.preventDefault();
+                 const target = document.querySelector(this.getAttribute('href'));
+                 if (target) {
+                   target.scrollIntoView({
+                     behavior: 'smooth',
+                     block: 'start'
+                   });
+                 }
+               });
+             });
+
+             // Parallax effect for hero section
+             window.addEventListener('scroll', () => {
+               const scrolled = window.pageYOffset;
+               const heroSection = document.querySelector('.scroll-animate[data-animation="fadeInUp"]');
+               if (heroSection) {
+                 const rate = scrolled * -0.5;
+                 heroSection.style.transform = `translateY(${rate}px)`;
+               }
+             });
+           });
+          document.addEventListener('DOMContentLoaded', function () {
+            const iframe = document.getElementById('google-maps-iframe');
+            const loading = document.getElementById('maps-loading');
+            const fallback = document.getElementById('maps-fallback');
+            const retryBtn = document.getElementById('retry-maps');
+            const externalBtn = document.getElementById('open-maps-external');
+
+            // Multiple Google Maps URLs untuk fallback
+            const mapsUrls = [
+              'https://maps.google.com/maps?q=UPT+Perpustakaan+Universitas+Andalas&output=embed'
+            ];
+
+            let currentUrlIndex = 0;
+            let loadTimeout;
+            let retryCount = 0;
+            const maxRetries = 3;
+
+            function loadMaps() {
+              console.log('Loading Google Maps...');
+              loading.style.display = 'flex';
+              fallback.style.display = 'none';
+              iframe.style.opacity = '0';
+
+              // Set src dengan URL yang dipilih
+              iframe.src = mapsUrls[currentUrlIndex];
+
+              // Timeout untuk loading
+              loadTimeout = setTimeout(() => {
+                console.log('Maps loading timeout');
+                showFallback();
+              }, 8000);
+
+              // Event listener untuk success
+              iframe.onload = function () {
+                console.log('Maps loaded successfully');
+                clearTimeout(loadTimeout);
+                setTimeout(() => {
+                  loading.style.display = 'none';
+                  iframe.style.opacity = '1';
+                }, 500);
+              };
+
+              // Event listener untuk error
+              iframe.onerror = function () {
+                console.log('Maps loading error');
+                clearTimeout(loadTimeout);
+                showFallback();
+              };
+            }
+
+            function showFallback() {
+              console.log('Showing fallback');
+              loading.style.display = 'none';
+              iframe.style.opacity = '0';
+              fallback.style.display = 'flex';
+            }
+
+            function retryMaps() {
+              if (retryCount < maxRetries) {
+                retryCount++;
+                console.log(`Retry attempt ${retryCount}`);
+
+                // Coba URL yang berbeda
+                currentUrlIndex = (currentUrlIndex + 1) % mapsUrls.length;
+                loadMaps();
+              } else {
+                console.log('Max retries reached');
+                showFallback();
+              }
+            }
+
+            function openExternalMaps() {
+              window.open('https://www.google.com/maps/search/UPT+Perpustakaan+Universitas+Andalas', '_blank');
+            }
+
+            // Event listeners
+            retryBtn.addEventListener('click', retryMaps);
+            externalBtn.addEventListener('click', openExternalMaps);
+
+            // Start loading maps
+            loadMaps();
+
+            // Debugging info
+            console.log('Google Maps container initialized');
+            console.log('Available URLs:', mapsUrls);
+
+            // Check if iframe is blocked by ad blocker
+            setTimeout(() => {
+              if (iframe.offsetHeight === 0) {
+                console.log('Iframe might be blocked by ad blocker');
+                showFallback();
+              }
+            }, 2000);
+
+            // Additional debugging
+            console.log('Iframe element:', iframe);
+            console.log('Iframe dimensions:', {
+              width: iframe.offsetWidth,
+              height: iframe.offsetHeight,
+              clientWidth: iframe.clientWidth,
+              clientHeight: iframe.clientHeight
+            });
+
+            // Test iframe visibility
+            setTimeout(() => {
+              const rect = iframe.getBoundingClientRect();
+              console.log('Iframe position:', rect);
+              console.log('Iframe computed style:', window.getComputedStyle(iframe));
+            }, 3000);
+          });
+
+          // Video Autoplay on Scroll
+          document.addEventListener('DOMContentLoaded', function () {
+            const video = document.getElementById('autoplay-video');
+            const playOverlay = document.getElementById('video-play-overlay');
+            const videoContainer = document.getElementById('video-container');
+            const videoProgress = document.getElementById('video-progress');
+            const fullscreenBtn = document.getElementById('video-fullscreen');
+            const muteBtn = document.getElementById('video-mute');
+
+            if (!video) return;
+
+            let hasPlayed = false;
+            let isIntersecting = false;
+
+            // Intersection Observer untuk autoplay saat scroll
+            const videoObserver = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                  isIntersecting = true;
+                  if (!hasPlayed) {
+                    playVideo();
+                    hasPlayed = true;
+                  }
+                } else {
+                  isIntersecting = false;
+                  if (hasPlayed && !video.paused) {
+                    video.pause();
+                  }
+                }
+              });
+            }, {
+              threshold: [0, 0.5, 1],
+              rootMargin: '0px'
+            });
+
+            videoObserver.observe(videoContainer);
+
+            function playVideo() {
+              video.play().catch(err => {
+                console.log('Autoplay prevented:', err);
+              });
+            }
+
+            // Play overlay click
+            if (playOverlay) {
+              playOverlay.addEventListener('click', () => {
+                video.play();
+                playOverlay.classList.add('hidden');
+              });
+            }
+
+            // Video play event
+            video.addEventListener('play', () => {
+              if (playOverlay) playOverlay.classList.add('hidden');
+            });
+
+            // Video progress tracking
+            video.addEventListener('timeupdate', () => {
+              if (video.duration) {
+                const progress = (video.currentTime / video.duration) * 100;
+                if (videoProgress) {
+                  videoProgress.style.width = progress + '%';
+                }
+              }
+            });
+
+            // Fullscreen button
+            if (fullscreenBtn) {
+              fullscreenBtn.addEventListener('click', () => {
+                if (video.requestFullscreen) {
+                  video.requestFullscreen();
+                } else if (video.webkitRequestFullscreen) {
+                  video.webkitRequestFullscreen();
+                } else if (video.mozRequestFullScreen) {
+                  video.mozRequestFullScreen();
+                } else if (video.msRequestFullscreen) {
+                  video.msRequestFullscreen();
+                }
+              });
+            }
+
+            // Mute/Unmute button
+            if (muteBtn) {
+              muteBtn.addEventListener('click', () => {
+                if (video.muted) {
+                  video.muted = false;
+                  muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                } else {
+                  video.muted = true;
+                  muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                }
+              });
+            }
+
+            // Keyboard controls
+            video.addEventListener('keydown', (e) => {
+              if (e.key === ' ') {
+                e.preventDefault();
+                if (video.paused) {
+                  video.play();
+                } else {
+                  video.pause();
+                }
+              }
+            });
+
+            // Click on video to play/pause
+            video.addEventListener('click', () => {
+              if (video.paused) {
+                video.play();
+              } else {
+                video.pause();
+              }
+            });
+
+            // Smooth volume fade on load
+            setTimeout(() => {
+              video.volume = 0.5; // Set default volume to 50%
+            }, 100);
+
+            // Handle video error - show fallback
+            video.addEventListener('error', () => {
+              console.log('Video error - showing fallback');
+              const fallback = document.getElementById('video-fallback');
+              if (fallback) {
+                fallback.classList.remove('hidden');
+              }
+              if (playOverlay) {
+                playOverlay.classList.add('hidden');
+              }
+            });
+
+            // Check if video can load
+            video.addEventListener('loadeddata', () => {
+              const fallback = document.getElementById('video-fallback');
+              if (fallback) {
+                fallback.classList.add('hidden');
+              }
+            });
+          });
+        </script>
   </body>
-</html>
+
+  </html>

@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Landing page utama
 router.get('/', (req, res) => {
-  res.render('index', { 
+  res.render('home', { 
     title: 'SIBUDI - Sistem Informasi Buku Digital',
     activeNav: 'Home',
     user: req.session.user || null
