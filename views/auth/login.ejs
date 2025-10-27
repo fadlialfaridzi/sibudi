@@ -2,17 +2,25 @@
 <%- include('partials/header-simple', { title: 'SIBUDI - Login' }) %>
 
 <style>
-  /* Animated Gradient Background */
+  /* Background Image with Overlay */
   .animated-bg {
-    background: linear-gradient(-45deg, #2F7A33, #3d9943, #ffffff, #2F7A33);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
+    background-image: url('/images/Perpustakaan Unand.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
   }
 
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  .animated-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(47, 122, 51, 0.85) 0%, rgba(47, 122, 51, 0.6) 50%, rgba(255, 255, 255, 0.7) 100%);
+    z-index: 1;
   }
 
   /* Floating Particles */
@@ -23,6 +31,7 @@
     animation: float linear infinite;
     pointer-events: none;
     backdrop-filter: blur(2px);
+    z-index: 2;
   }
 
   @keyframes float {
@@ -47,6 +56,7 @@
     position: absolute;
     opacity: 0.12;
     animation: floatShape 20s ease-in-out infinite;
+    z-index: 2;
   }
 
   @keyframes floatShape {
