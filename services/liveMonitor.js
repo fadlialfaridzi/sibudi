@@ -26,12 +26,14 @@ const HOLIDAY_LOG = path.join(LOG_DIR, "holiday-monitor.log");
 const FINE_LOG = path.join(LOG_DIR, "fine-monitor.log");
 const SNAPSHOT_FILE = path.join(LOG_DIR, "holiday-snapshot.json");
 const POLL_INTERVAL = 30000; // 30 detik (deteksi perubahan holiday)
-const FINE_POLL_INTERVAL = 60000; // 30 detik (cek denda)
+const FINE_POLL_INTERVAL = 60000; // 60 detik (cek denda)
 const CHUNK_SIZE = 10000; // batch per loop
 const PARALLEL_LIMIT = 10; // max concurrent query
+const MAX_LOG_LINES = 1000; // maksimal baris log sebelum trim
 
 const fineEmitter = new EventEmitter();
 let isRunning = false;
+let isHolidayRunning = false;
 let isFineRunning = false;
 let lastHolidaySnapshot = {};
 
@@ -352,7 +354,7 @@ async function detectHolidayDelta() {
   console.log("🚀 LAYANAN LIVE MONITOR DIMULAI");
   console.log("=".repeat(80));
   console.log(`📅 Interval cek hari libur : ${POLL_INTERVAL / 1000}s`);
-  console.log(`💰 Interval recalc denda   : ${FINE_INTERVAL / 1000 / 60 / 60} jam`);
+  console.log(`💰 Interval recalc denda   : ${FINE_POLL_INTERVAL / 1000}s`);
   console.log("=".repeat(80));
 
   loadSnapshot();
