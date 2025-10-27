@@ -74,11 +74,12 @@
                             <i class="fa-solid fa-clock text-yellow-600 w-4"></i>
                             <span class="font-semibold text-yellow-700">
                               <% 
-                              const daysLeft = Math.ceil((new Date(loan.due_date) - new Date()) / (1000 * 60 * 60 * 24));
-                              const daysColor = daysLeft < 0 ? 'text-red-600' : daysLeft <= 3 ? 'text-orange-600' : 'text-green-600';
+                              // Gunakan days_overdue dari controller (hari kerja, skip Minggu & holiday)
+                              const workingDaysOverdue = loan.days_overdue || 0;
+                              const daysColor = workingDaysOverdue > 0 ? 'text-red-600' : 'text-green-600';
                               %>
                               <span class="<%= daysColor %>">
-                                <%= daysLeft < 0 ? `${Math.abs(daysLeft)} hari terlambat` : `${daysLeft} hari lagi` %>
+                                <%= workingDaysOverdue > 0 ? `${workingDaysOverdue} hari terlambat` : 'Tepat waktu' %>
                               </span>
                             </span>
                           </div>
@@ -172,7 +173,9 @@
           due_date: loan.due_date,
           renewed: loan.renewed,
           reborrow_limit: loan.reborrow_limit,
-          noReborrow: loan.noReborrow
+          noReborrow: loan.noReborrow,
+          days_overdue: loan.days_overdue,
+          calculated_fine: loan.calculated_fine
         }))) %>
       </script>
       <input type="hidden" id="total-denda" value="<%= totalDenda || 0 %>">

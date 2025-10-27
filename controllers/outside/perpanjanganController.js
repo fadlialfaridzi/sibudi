@@ -11,7 +11,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 // Import helper dari peminjamanController
-const { calculateDueDate, loadHolidays } = require('../inside/peminjamanController');
+const { calculateDueDate, calculateWorkingDaysOverdue, loadHolidays } = require('../inside/peminjamanController');
 
 // =====================================================
 // DASHBOARD PERPANJANGAN (Render Halaman)
@@ -59,7 +59,8 @@ exports.renderPerpanjangan = async (req, res) => {
         biblio.language_id,
         biblio.publisher_id,
         mlr.reborrow_limit,
-        mlr.loan_periode
+        mlr.loan_periode,
+        mlr.fine_each_day
       FROM loan
       JOIN item ON loan.item_code = item.item_code
       JOIN biblio ON item.biblio_id = biblio.biblio_id
@@ -84,6 +85,29 @@ exports.renderPerpanjangan = async (req, res) => {
     // 2️⃣ PARSING COLLATION & AMBIL DATA TAMBAHAN
     // =============================
     console.log(`\n[${timestamp}] 🔄 Memproses ${loanRows.length} buku...`);
+    
+    // Load holidays untuk perhitungan hari kerja
+    const connection = await db.getConnection();
+    const holidays = await loadHolidays(connection);
+    connection.release();
+    console.log(`[${timestamp}] 📅 Holidays loaded: ${holidays.length} dates`);
+
+    // Load fines data
+    const [allFinesRows] = await db.query(
+      `SELECT 
+        f.fines_id,
+        f.fines_date,
+        f.debet,
+        f.credit,
+        f.description
+      FROM fines f
+      WHERE f.member_id = ?
+      ORDER BY f.fines_date DESC`,
+      [memberId]
+    );
+    console.log(`[${timestamp}] 💰 Fines loaded: ${allFinesRows.length} records`);
+
+    const today = dayjs().tz('Asia/Jakarta').format('YYYY-MM-DD');
     
     const loansPromises = loanRows.map(async (b, index) => {
       console.log(`\n[${timestamp}] 📖 Processing book ${index + 1}/${loanRows.length}: ${b.title}`);
@@ -188,6 +212,22 @@ exports.renderPerpanjangan = async (req, res) => {
       console.log(`   - reborrow_limit: ${b.reborrow_limit}`);
       console.log(`   - noReborrow flag: ${noReborrow}`);
 
+      // Hitung hari kerja terlambat (skip Minggu & holiday)
+      const workingDaysOverdue = calculateWorkingDaysOverdue(b.due_date, today, holidays);
+
+      // Cari denda dari tabel fines
+      const existingFine = allFinesRows.find(f => 
+        f.description && f.description.includes(b.item_code) && f.debet > 0
+      );
+
+      let calculatedFine = 0;
+      let fineStatus = 'on_time';
+      
+      if (existingFine) {
+        calculatedFine = existingFine.debet - (existingFine.credit || 0);
+        fineStatus = 'has_fine';
+      }
+
       return {
         loan_id: b.loan_id,
         item_code: b.item_code,
@@ -208,7 +248,11 @@ exports.renderPerpanjangan = async (req, res) => {
         renewed: b.renewed,
         reborrow_limit: b.reborrow_limit,
         loan_periode: b.loan_periode,
-        noReborrow // Flag untuk disable tombol perpanjangan
+        noReborrow, // Flag untuk disable tombol perpanjangan
+        days_overdue: workingDaysOverdue, // Hari kerja terlambat
+        calculated_fine: calculatedFine, // Denda dari database
+        fine_status: fineStatus,
+        fine_per_day: b.fine_each_day || 0
       };
     });
 
@@ -217,20 +261,33 @@ exports.renderPerpanjangan = async (req, res) => {
     console.log(`\n[${timestamp}] ✅ Semua buku berhasil diproses: ${loans.length} buku`);
 
     // =============================
-    // 3️⃣ Total Denda Aktif
+    // 3️⃣ Total Denda Aktif (langsung dari tabel fines)
     // =============================
-    console.log(`\n[${timestamp}] 💰 Mengecek denda aktif...`);
+    console.log(`\n[${timestamp}] 💰 Mengecek denda aktif dari tabel fines...`);
+    
+    // Debug: Lihat semua record fines untuk member ini
+    const [allFinesDebug] = await db.query(
+      `SELECT fines_id, fines_date, debet, credit, description 
+       FROM fines 
+       WHERE member_id = ? 
+       ORDER BY fines_date DESC`,
+      [memberId]
+    );
+    console.log(`[${timestamp}] 📋 Detail semua record fines untuk member ${memberId}:`);
+    allFinesDebug.forEach((f, idx) => {
+      console.log(`   ${idx + 1}. fines_id=${f.fines_id}, debet=${f.debet}, credit=${f.credit}, net=${f.debet - f.credit}`);
+    });
     
     const [fineRows] = await db.query(
       `SELECT 
-         IFNULL(SUM(fines.debet),0) - IFNULL(SUM(fines.credit),0) AS total_due
+         COALESCE(SUM(debet), 0) - COALESCE(SUM(credit), 0) AS total_due
        FROM fines
-       WHERE fines.member_id = ?`,
+       WHERE member_id = ?`,
       [memberId]
     );
     const totalDenda = fineRows[0]?.total_due || 0;
     
-    console.log(`[${timestamp}] ✅ Total denda: Rp ${totalDenda.toLocaleString('id-ID')}`);
+    console.log(`[${timestamp}] ✅ Total denda dari database: Rp ${totalDenda.toLocaleString('id-ID')}`);
 
     // =============================
     // 4️⃣ Render View
@@ -248,6 +305,8 @@ exports.renderPerpanjangan = async (req, res) => {
     res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman',
       loans,
+      fineRules: [], // Tidak digunakan di perpanjangan, tapi perlu untuk konsistensi
+      finesData: allFinesRows || [],
       totalDenda,
       popup: null,
       activeNav: 'DetailPinjam',
@@ -268,6 +327,8 @@ exports.renderPerpanjangan = async (req, res) => {
     res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman',
       loans: [],
+      fineRules: [],
+      finesData: [],
       totalDenda: 0,
       popup: {
         type: 'error',
@@ -298,6 +359,8 @@ exports.extendLoan = async (req, res) => {
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman',
         loans: [],
+        fineRules: [],
+        finesData: [],
         totalDenda: 0,
         popup: {
           type: 'error',
@@ -322,6 +385,8 @@ exports.extendLoan = async (req, res) => {
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman',
         loans: [],
+        fineRules: [],
+        finesData: [],
         totalDenda: 0,
         popup: {
           type: 'error',
@@ -366,6 +431,8 @@ exports.extendLoan = async (req, res) => {
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman',
         loans: [],
+        fineRules: [],
+        finesData: [],
         totalDenda: 0,
         popup: {
           type: 'warning',
@@ -404,6 +471,8 @@ exports.extendLoan = async (req, res) => {
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman',
         loans,
+        fineRules: [],
+        finesData: [],
         totalDenda: totalDue,
         popup: {
           type: 'error',
@@ -423,6 +492,8 @@ exports.extendLoan = async (req, res) => {
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman',
         loans,
+        fineRules: [],
+        finesData: [],
         totalDenda: 0,
         popup: {
           type: 'error',
@@ -442,6 +513,8 @@ exports.extendLoan = async (req, res) => {
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman',
         loans,
+        fineRules: [],
+        finesData: [],
         totalDenda: 0,
         popup: {
           type: 'warning',
@@ -461,6 +534,8 @@ exports.extendLoan = async (req, res) => {
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman',
         loans,
+        fineRules: [],
+        finesData: [],
         totalDenda: 0,
         popup: {
           type: 'warning',
@@ -534,6 +609,8 @@ exports.extendLoan = async (req, res) => {
     return res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman',
       loans,
+      fineRules: [],
+      finesData: [],
       totalDenda: 0,
       popup: {
         type: 'success',
@@ -558,6 +635,8 @@ exports.extendLoan = async (req, res) => {
     return res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman',
       loans,
+      fineRules: [],
+      finesData: [],
       totalDenda: 0,
       popup: {
         type: 'error',
@@ -597,7 +676,8 @@ async function reloadLoans(memberId) {
       biblio.language_id,
       biblio.publisher_id,
       mlr.reborrow_limit,
-      mlr.loan_periode
+      mlr.loan_periode,
+      mlr.fine_each_day
     FROM loan
     JOIN item ON loan.item_code = item.item_code
     JOIN biblio ON item.biblio_id = biblio.biblio_id
@@ -608,6 +688,29 @@ async function reloadLoans(memberId) {
   );
 
   console.log(`[${timestamp}] ✅ Reload query result: ${loanRows.length} rows`);
+
+  // Load holidays untuk perhitungan hari kerja
+  const connection = await db.getConnection();
+  const holidays = await loadHolidays(connection);
+  connection.release();
+  console.log(`[${timestamp}] 📅 Holidays loaded: ${holidays.length} dates`);
+
+  // Load fines data untuk mencocokkan dengan loan
+  const [finesRows] = await db.query(
+    `SELECT 
+      f.fines_id,
+      f.fines_date,
+      f.debet,
+      f.credit,
+      f.description
+    FROM fines f
+    WHERE f.member_id = ?
+    ORDER BY f.fines_date DESC`,
+    [memberId]
+  );
+  console.log(`[${timestamp}] 💰 Fines loaded: ${finesRows.length} records`);
+
+  const today = dayjs().tz('Asia/Jakarta').format('YYYY-MM-DD');
 
   const loansPromises = loanRows.map(async (b) => {
     let edition = null;
@@ -671,6 +774,22 @@ async function reloadLoans(memberId) {
 
     const noReborrow = (b.reborrow_limit === 0);
 
+    // ✅ Hitung hari kerja terlambat (skip Minggu & holiday)
+    const workingDaysOverdue = calculateWorkingDaysOverdue(b.due_date, today, holidays);
+
+    // ✅ Cari denda dari tabel fines
+    const existingFine = finesRows.find(f => 
+      f.description && f.description.includes(b.item_code) && f.debet > 0
+    );
+
+    let calculatedFine = 0;
+    let fineStatus = 'on_time';
+    
+    if (existingFine) {
+      calculatedFine = existingFine.debet - (existingFine.credit || 0);
+      fineStatus = 'has_fine';
+    }
+
     return {
       loan_id: b.loan_id,
       item_code: b.item_code,
@@ -691,7 +810,11 @@ async function reloadLoans(memberId) {
       renewed: b.renewed,
       reborrow_limit: b.reborrow_limit,
       loan_periode: b.loan_periode,
-      noReborrow
+      noReborrow,
+      days_overdue: workingDaysOverdue, // ✅ Hari kerja terlambat
+      calculated_fine: calculatedFine, // ✅ Denda dari database
+      fine_status: fineStatus,
+      fine_per_day: b.fine_each_day || 0
     };
   });
 

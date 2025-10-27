@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
               warningType = 'info';
               console.log("⛔ Book cannot be renewed: noReborrow = true");
             } 
-            // ✅ PRIORITAS 2: Cek denda aktif
+            // ✅ PRIORITAS 2: Cek denda aktif (baca langsung dari database via totalDenda)
             else if (totalDenda > 0) {
               disabledReason = `Anda memiliki denda aktif sebesar <b>Rp ${totalDenda.toLocaleString("id-ID")}</b>. Harap lunasi terlebih dahulu.`;
               warningType = 'error';
