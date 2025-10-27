@@ -1,6 +1,7 @@
 // ======================================================
 // services/liveMonitor.js
-// 🔄 Holiday + Fine Integrated Live Monitor (Event + Schedule Edition)
+// 🔄 Holiday + Fine Integrated Live Monitor (Indonesian Version)
+// Per-Item Fine Calculation + Detailed Skip Reasons
 // ======================================================
 
 const fs = require("fs");
@@ -10,7 +11,7 @@ const dayjs = require("dayjs");
 const EventEmitter = require("events");
 const utc = require("dayjs/plugin/utc");
 const timezone = require("dayjs/plugin/timezone");
-const PQueue = require("p-queue").default; // untuk limit paralel
+const PQueue = require("p-queue").default;
 const { calculateDueDate } = require("../controllers/inside/peminjamanController");
 
 dayjs.extend(utc);
@@ -18,7 +19,7 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Jakarta");
 
 // ======================================================
-// ⚙️ Config
+// ⚙️ KONFIGURASI
 // ======================================================
 const LOG_DIR = path.join(__dirname, "../logs");
 const HOLIDAY_LOG = path.join(LOG_DIR, "holiday-monitor.log");
@@ -34,124 +35,149 @@ let isRunning = false;
 let isFineRunning = false;
 let lastHolidaySnapshot = {};
 
+// Skip reasons counter
+let skipReasons = {
+  invalidDueDate: 0,
+  notOverdue: 0,
+  noFineRule: 0,
+  noValidDays: 0,
+  noChange: 0,
+};
+
 // ======================================================
-// 🧩 Ensure log folders
+// 🧩 PASTIKAN FOLDER LOG ADA
 // ======================================================
-if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
+if (!fs.existsSync(LOG_DIR)) {
+  fs.mkdirSync(LOG_DIR, { recursive: true });
+  console.log(`📁 Folder log dibuat: ${LOG_DIR}`);
+}
 if (!fs.existsSync(HOLIDAY_LOG)) fs.writeFileSync(HOLIDAY_LOG, "");
 if (!fs.existsSync(FINE_LOG)) fs.writeFileSync(FINE_LOG, "");
 
 // ======================================================
-// 🧾 Logging helpers
+// 🧾 HELPER LOGGING (Auto-Trim)
 // ======================================================
 function ts() {
-  return dayjs().tz().format("YYYY-MM-DD HH:mm:ss");
+  return dayjs().tz().format("DD/MM/YYYY HH:mm:ss");
 }
 
-function logHoliday(msg) {
-  fs.appendFileSync(HOLIDAY_LOG, `[${ts()}] ${msg}\n`);
+function appendAndTrim(filePath, message) {
+  fs.appendFileSync(filePath, message + "\n");
+  const lines = fs.readFileSync(filePath, "utf-8").trim().split("\n");
+  if (lines.length > MAX_LOG_LINES) {
+    const trimmed = lines.slice(lines.length - MAX_LOG_LINES);
+    fs.writeFileSync(filePath, trimmed.join("\n") + "\n");
+  }
 }
 
-function logFine(msg) {
-  fs.appendFileSync(FINE_LOG, `[${ts()}] ${msg}\n`);
+function logHoliday(msg, isError = false) {
+  const prefix = isError ? "❌" : "📅";
+  const line = `[${ts()}] ${prefix} ${msg}`;
+  appendAndTrim(HOLIDAY_LOG, line);
+  console.log(line); // holiday masih boleh tampil di terminal
+}
+
+function logFine(msg, isError = false) {
+  const prefix = isError ? "❌" : "💰";
+  const line = `[${ts()}] ${prefix} ${msg}`;
+  appendAndTrim(FINE_LOG, line);
+  // tidak console.log agar hanya masuk file log
+}
+
+function logSeparator(logFunc) {
+  logFunc("=".repeat(80));
 }
 
 // ======================================================
-// 📦 Snapshot loader
+// 📦 SNAPSHOT LOADER & SAVER
 // ======================================================
 function loadSnapshot() {
   try {
     if (fs.existsSync(SNAPSHOT_FILE)) {
       const data = JSON.parse(fs.readFileSync(SNAPSHOT_FILE, "utf-8"));
       lastHolidaySnapshot = data.records || {};
-      logHoliday(`📁 Snapshot loaded (${Object.keys(lastHolidaySnapshot).length})`);
+
+      const validSnapshot = {};
+      let invalidCount = 0;
+
+      for (const [id, date] of Object.entries(lastHolidaySnapshot)) {
+        if (date && date !== "Invalid Date" && dayjs(date).isValid()) {
+          validSnapshot[id] = date;
+        } else {
+          invalidCount++;
+        }
+      }
+
+      lastHolidaySnapshot = validSnapshot;
+
+      logHoliday(
+        `Snapshot berhasil dimuat (${Object.keys(lastHolidaySnapshot).length} hari libur)`
+      );
+      if (invalidCount > 0) {
+        logHoliday(`⚠️ ${invalidCount} tanggal tidak valid dihapus dari snapshot`);
+      }
+    } else {
+      logHoliday(`Snapshot tidak ditemukan. Membuat snapshot baru...`);
     }
   } catch (e) {
-    logHoliday(`⚠️ Snapshot load failed: ${e.message}`);
+    logHoliday(`Gagal memuat snapshot: ${e.message}`, true);
   }
 }
 
 function saveSnapshot(records) {
   try {
     fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify({ records }, null, 2));
+    logHoliday(`Snapshot berhasil disimpan (${Object.keys(records).length} hari libur)`);
   } catch (e) {
-    logHoliday(`⚠️ Snapshot save failed: ${e.message}`);
+    logHoliday(`Gagal menyimpan snapshot: ${e.message}`, true);
   }
 }
 
 // ======================================================
-// 📆 Fetch holidays
+// 📆 AMBIL DATA HARI LIBUR DARI DATABASE
 // ======================================================
 async function fetchHolidays() {
-  const [rows] = await db.query("SELECT holiday_id, holiday_date FROM holiday ORDER BY holiday_id ASC");
-  return rows.map((r) => dayjs(r.holiday_date).format("YYYY-MM-DD"));
+  try {
+    const [rows] = await db.query(
+      "SELECT holiday_id, holiday_date FROM holiday WHERE holiday_date IS NOT NULL ORDER BY holiday_id ASC"
+    );
+    const holidays = rows
+      .map((r) => dayjs(r.holiday_date).format("YYYY-MM-DD"))
+      .filter((date) => date !== "Invalid Date" && dayjs(date).isValid());
+    return holidays;
+  } catch (e) {
+    logHoliday(`Error mengambil data hari libur: ${e.message}`, true);
+    return [];
+  }
 }
 
 // ======================================================
-// 🔄 Update due_date saat holiday berubah
+// 💰 PERHITUNGAN ULANG DENDA (PER-ITEM)
 // ======================================================
-async function updateDueDatesForChange(changedDates, holidays) {
-  logHoliday(`📅 Holiday changed: ${changedDates.join(", ")}`);
+async function recalcFines() {
+  if (isFineRunning) {
+    logFine(`⏸️ Dilewati: perhitungan denda sedang berjalan`);
+    return;
+  }
+
+  isFineRunning = true;
+  skipReasons = {
+    invalidDueDate: 0,
+    notOverdue: 0,
+    noFineRule: 0,
+    noValidDays: 0,
+    noChange: 0,
+  };
+
+  logSeparator(logFine);
+  logFine(`PERHITUNGAN ULANG DENDA DIMULAI`);
+  logFine(`Mode: Per-Item (berdasarkan item_code)`);
+
   const conn = await db.getConnection();
 
   try {
-    await conn.beginTransaction();
-    const [countRows] = await conn.query("SELECT COUNT(*) AS total FROM loan WHERE is_lent=1 AND is_return=0");
-    const total = countRows[0].total;
-    logHoliday(`📊 Found ${total} active loans`);
-
-    if (total === 0) {
-      await conn.commit();
-      conn.release();
-      return;
-    }
-
-    let updatedCount = 0;
-    for (let offset = 0; offset < total; offset += CHUNK_SIZE) {
-      const [batch] = await conn.query(
-        `SELECT loan_id, loan_date, due_date, loan_rules_id FROM loan 
-         WHERE is_lent=1 AND is_return=0 LIMIT ? OFFSET ?`,
-        [CHUNK_SIZE, offset]
-      );
-
-      const promises = batch.map(async (loan) => {
-        const [[rule]] = await conn.query(
-          "SELECT loan_periode FROM mst_loan_rules WHERE loan_rules_id=?",
-          [loan.loan_rules_id]
-        );
-        if (!rule) return;
-
-        const newDue = calculateDueDate(loan.loan_date, rule.loan_periode, holidays);
-        if (newDue !== loan.due_date) {
-          await conn.query("UPDATE loan SET due_date=?, last_update=NOW() WHERE loan_id=?", [newDue, loan.loan_id]);
-          updatedCount++;
-        }
-      });
-
-      await Promise.all(promises);
-    }
-
-    await conn.commit();
-    logHoliday(`✅ ${updatedCount} loans updated due to holiday change`);
-    fineEmitter.emit("dueDateChanged");
-  } catch (e) {
-    await conn.rollback();
-    logHoliday(`❌ Update failed: ${e.message}`);
-  } finally {
-    conn.release();
-  }
-}
-
-// ======================================================
-// 💰 Live Fine Recalculation Service
-// ======================================================
-async function recalcFines() {
-  logFine("💰 Starting fine recalculation...");
-
-  try {
     const holidays = await fetchHolidays();
-    const today = dayjs().tz().format("YYYY-MM-DD");
-    logFine(`📅 Today: ${today}, Holidays loaded: ${holidays.length}`);
+    const today = dayjs().tz().startOf("day");
 
     // PERBAIKAN: Filter hanya loan yang terlambat untuk efisiensi
     const [countRows] = await db.query(
@@ -270,55 +296,77 @@ async function recalcFines() {
     await queue.onIdle();
     logFine(`✅ Fine recalculation complete: ${processedCount} processed, ${updatedCount} updated, ${insertedCount} inserted, ${errorCount} errors`);
   } catch (err) {
-    logFine(`❌ Fine recalculation failed: ${err.message}`);
-    logFine(`Stack: ${err.stack}`);
+    logFine(`❌ Error perhitungan denda: ${err.message}`, true);
+    logFine(`Stack trace: ${err.stack}`, true);
+  } finally {
+    conn.release();
+    isFineRunning = false;
   }
 }
 
 // ======================================================
-// 🔍 Detect Holiday Delta
+// 🔍 DETEKSI PERUBAHAN HARI LIBUR
 // ======================================================
 async function detectHolidayDelta() {
-  const [rows] = await db.query("SELECT holiday_id, holiday_date FROM holiday ORDER BY holiday_id ASC");
-  const current = Object.fromEntries(rows.map((r) => [String(r.holiday_id), dayjs(r.holiday_date).format("YYYY-MM-DD")]));
+  try {
+    const [rows] = await db.query(
+      "SELECT holiday_id, holiday_date FROM holiday WHERE holiday_date IS NOT NULL ORDER BY holiday_id ASC"
+    );
+    const current = {};
+    for (const r of rows) {
+      const date = dayjs(r.holiday_date).format("YYYY-MM-DD");
+      if (date !== "Invalid Date" && dayjs(date).isValid()) {
+        current[String(r.holiday_id)] = date;
+      }
+    }
 
-  const oldIds = new Set(Object.keys(lastHolidaySnapshot));
-  const newIds = new Set(Object.keys(current));
+    const oldIds = new Set(Object.keys(lastHolidaySnapshot));
+    const newIds = new Set(Object.keys(current));
+    const inserted = [...newIds].filter((id) => !oldIds.has(id));
+    const deleted = [...oldIds].filter((id) => !newIds.has(id));
+    const updated = [...newIds].filter(
+      (id) => oldIds.has(id) && lastHolidaySnapshot[id] !== current[id]
+    );
 
-  const inserted = [...newIds].filter((id) => !oldIds.has(id));
-  const deleted = [...oldIds].filter((id) => !newIds.has(id));
-  const updated = [...newIds].filter((id) => oldIds.has(id) && lastHolidaySnapshot[id] !== current[id]);
+    if (inserted.length === 0 && deleted.length === 0 && updated.length === 0) return;
 
-  if (inserted.length === 0 && deleted.length === 0 && updated.length === 0) {
-    logHoliday("🕒 No holiday change detected.");
-    return;
+    if (inserted.length > 0)
+      logHoliday(`➕ Hari libur baru: ${inserted.map((id) => current[id]).join(", ")}`);
+    if (deleted.length > 0)
+      logHoliday(`➖ Hari libur dihapus: ${deleted.map((id) => lastHolidaySnapshot[id]).join(", ")}`);
+    if (updated.length > 0)
+      logHoliday(`🔄 Hari libur diubah: ${updated.map((id) => `${lastHolidaySnapshot[id]}→${current[id]}`).join(", ")}`);
+
+    lastHolidaySnapshot = current;
+    saveSnapshot(current);
+  } catch (e) {
+    logHoliday(`Error mendeteksi perubahan hari libur: ${e.message}`, true);
   }
-
-  const changedDates = [
-    ...inserted.map((id) => current[id]),
-    ...updated.map((id) => current[id]),
-  ];
-
-  await updateDueDatesForChange(changedDates, Object.values(current));
-  lastHolidaySnapshot = current;
-  saveSnapshot(current);
 }
 
 // ======================================================
-// 🚀 Start Service
+// 🚀 START MONITOR
 // ======================================================
 (async function startMonitor() {
-  logHoliday("🚀 Integrated Live Monitor started (Holiday + Fine + Schedule)");
+  console.log("\n" + "=".repeat(80));
+  console.log("🚀 LAYANAN LIVE MONITOR DIMULAI");
+  console.log("=".repeat(80));
+  console.log(`📅 Interval cek hari libur : ${POLL_INTERVAL / 1000}s`);
+  console.log(`💰 Interval recalc denda   : ${FINE_INTERVAL / 1000 / 60 / 60} jam`);
+  console.log("=".repeat(80));
 
   loadSnapshot();
 
-  // Event-driven recalculation (holiday changed)
+  try {
+    logFine(`🕐 Menjalankan perhitungan denda awal saat startup...`);
+    await recalcFines();
+  } catch (e) {
+    logFine(`❌ Perhitungan denda awal gagal: ${e.message}`, true);
+  }
+
   fineEmitter.on("dueDateChanged", async () => {
-    try {
-      await recalcFines();
-    } catch (e) {
-      logFine(`❌ Fine recalculation error: ${e.message}`);
-    }
+    logFine(`📡 Event: due_date berubah, jalankan recalc ulang...`);
+    await recalcFines();
   });
 
   // Polling for fine recalculation every 30s
@@ -334,16 +382,17 @@ async function detectHolidayDelta() {
     }
   }, FINE_POLL_INTERVAL);
 
-  // Polling for holiday delta every 30s
   setInterval(async () => {
-    if (isRunning) return;
-    isRunning = true;
+    if (isHolidayRunning) return;
+    isHolidayRunning = true;
     try {
       await detectHolidayDelta();
     } catch (e) {
-      logHoliday(`❌ Holiday monitor loop error: ${e.message}`);
+      logHoliday(`Error monitor hari libur: ${e.message}`, true);
     } finally {
-      isRunning = false;
+      isHolidayRunning = false;
     }
   }, POLL_INTERVAL);
+
+  console.log("✅ Semua monitor berhasil diinisialisasi\n");
 })();

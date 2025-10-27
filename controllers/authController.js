@@ -122,11 +122,12 @@ exports.login = async (req, res) => {
         //  Login berhasil → set session member
         req.session.user = {
             id: member.member_id,
-            member_id: member.member_id, 
+            member_id: member.member_id,
             name: member.member_name,
             role: 'member',
             email: member.member_email,
             memberType: member.member_type_name || '-',
+            member_type_id: member.member_type_id,
         };
 
         console.log(`✅ ${member.member_name} login sebagai member (${member.member_type_name})`);
@@ -169,7 +170,7 @@ exports.validateLogout = async (req, res) => {
         if (!user || user.role !== 'pustakawan') {
             return res.status(403).json({
                 success: false,
-                message: 'Akses ditolak. Hanya pustakawan yang memerlukan validasi password.'
+                message: 'Akses ditolak. Hanya pustakawan yang memerlukan validasi password.',
             });
         }
 
@@ -177,7 +178,7 @@ exports.validateLogout = async (req, res) => {
         if (!password) {
             return res.status(400).json({
                 success: false,
-                message: 'Password harus diisi untuk logout.'
+                message: 'Password harus diisi untuk logout.',
             });
         }
 
@@ -187,7 +188,7 @@ exports.validateLogout = async (req, res) => {
         if (userRows.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'User tidak ditemukan.'
+                message: 'User tidak ditemukan.',
             });
         }
 
@@ -204,7 +205,7 @@ exports.validateLogout = async (req, res) => {
         if (!isPasswordCorrect) {
             return res.status(401).json({
                 success: false,
-                message: 'Password yang Anda masukkan salah.'
+                message: 'Password yang Anda masukkan salah.',
             });
         }
 
@@ -213,22 +214,21 @@ exports.validateLogout = async (req, res) => {
             if (err) {
                 return res.status(500).json({
                     success: false,
-                    message: 'Terjadi kesalahan saat logout.'
+                    message: 'Terjadi kesalahan saat logout.',
                 });
             }
             res.clearCookie('sibudi_session_id');
             return res.json({
                 success: true,
                 message: 'Logout berhasil.',
-                redirect: '/login'
+                redirect: '/login',
             });
         });
-
     } catch (err) {
         console.error('❌ Error saat validasi logout:', err);
         return res.status(500).json({
             success: false,
-            message: 'Terjadi kesalahan pada server.'
+            message: 'Terjadi kesalahan pada server.',
         });
     }
 };

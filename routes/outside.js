@@ -8,6 +8,7 @@ const profileController = require('../controllers/outside/profileController');
 const perpanjanganController = require('../controllers/outside/perpanjanganController');
 const dendaController = require('../controllers/outside/dendaController');
 const changePasswordController = require('../controllers/outside/changePasswordController');
+const rulesPinjamController = require('../controllers/outside/rulesPinjamController');
 
 // Middleware
 const { requireLogin, requireRole } = require('../middleware/sessionCheck');
@@ -27,6 +28,9 @@ router.post('/updateProfile', requireLogin, requireRole('member'), profileContro
 // Halaman Ubah Password
 router.get('/changePassword', requireLogin, requireRole('member'), changePasswordController.renderChangePassword);
 router.post('/changePassword', requireLogin, requireRole('member'), changePasswordController.updatePassword);
+
+// Halaman Aturan Peminjaman
+router.get('/rulesPinjam', requireLogin, requireRole('member'), rulesPinjamController.renderRulesPinjam);
 
 // =====================================================
 // 📚 HALAMAN DETAIL PEMINJAMAN & PERPANJANGAN
@@ -49,10 +53,10 @@ router.get('/denda', requireLogin, requireRole('member'), dendaController.render
 // 📄 HALAMAN ABOUT
 // =====================================================
 router.get('/about', (req, res) => {
-    res.render('outside/about', { 
+    res.render('outside/about', {
         title: 'Tentang SiBuDi (Member)',
         activeNav: 'About',
-        user: req.session.user
+        user: req.session.user,
     });
 });
 
@@ -62,7 +66,7 @@ router.get('/about', (req, res) => {
 router.get('/rulesPinjam', requireLogin, requireRole('member'), async (req, res) => {
     try {
         const db = require('../config/db');
-        
+
         // Ambil aturan peminjaman dari database
         const [rulesRows] = await db.query(
             `SELECT 
@@ -83,7 +87,7 @@ router.get('/rulesPinjam', requireLogin, requireRole('member'), async (req, res)
             title: 'Aturan Peminjaman',
             rules: rulesRows,
             activeNav: 'RulesPinjam',
-            user: req.session.user
+            user: req.session.user,
         });
     } catch (err) {
         console.error('❌ Error renderRulesPinjam:', err);
@@ -92,7 +96,7 @@ router.get('/rulesPinjam', requireLogin, requireRole('member'), async (req, res)
             rules: [],
             activeNav: 'RulesPinjam',
             user: req.session.user,
-            error: 'Terjadi kesalahan saat memuat aturan peminjaman.'
+            error: 'Terjadi kesalahan saat memuat aturan peminjaman.',
         });
     }
 });
