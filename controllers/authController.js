@@ -148,13 +148,89 @@ exports.login = async (req, res) => {
 };
 
 // =====================================================
-// GET /logout
+// GET /logout (untuk member - langsung logout)
 // =====================================================
 exports.logout = (req, res) => {
     req.session.destroy(() => {
         res.clearCookie('sibudi_session_id'); // cookie session
         res.redirect('/login');
     });
+};
+
+// =====================================================
+// POST /logout-validate (untuk pustakawan - validasi password)
+// =====================================================
+exports.validateLogout = async (req, res) => {
+    try {
+        const { password } = req.body;
+        const user = req.session.user;
+
+        // Cek apakah user adalah pustakawan
+        if (!user || user.role !== 'pustakawan') {
+            return res.status(403).json({
+                success: false,
+                message: 'Akses ditolak. Hanya pustakawan yang memerlukan validasi password.'
+            });
+        }
+
+        // Validasi input password
+        if (!password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password harus diisi untuk logout.'
+            });
+        }
+
+        // Ambil data user dari database
+        const [userRows] = await db.query('SELECT * FROM user WHERE user_id = ?', [user.id]);
+
+        if (userRows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User tidak ditemukan.'
+            });
+        }
+
+        const userData = userRows[0];
+        let isPasswordCorrect = false;
+
+        // Cek password (bcrypt atau plaintext)
+        if (typeof userData.passwd === 'string' && userData.passwd.match(/^\$2[aby]\$/)) {
+            isPasswordCorrect = await bcrypt.compare(password, userData.passwd);
+        } else {
+            isPasswordCorrect = password === userData.passwd;
+        }
+
+        if (!isPasswordCorrect) {
+            return res.status(401).json({
+                success: false,
+                message: 'Password yang Anda masukkan salah.'
+            });
+        }
+
+        // Password benar, lakukan logout
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Terjadi kesalahan saat logout.'
+                });
+            }
+            res.clearCookie('sibudi_session_id');
+            return res.json({
+                success: true,
+                message: 'Logout berhasil.',
+                redirect: '/login'
+            });
+        });
+
+    } catch (err) {
+        console.error('❌ Error saat validasi logout:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Terjadi kesalahan pada server.'
+        });
+    }
 };
 
 // =====================================================

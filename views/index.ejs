@@ -1,4 +1,21 @@
-<%- include('partials/header-simple', { title: 'SiBuDi - Sistem Informasi Perpanjangan Peminjaman Buku Mandiri' }) %>
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <!-- Preline UI CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/preline@1.0.0/dist/preline.min.css" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/input.css" />
+  </head>
+  <body>
+    <%- include('partials/navbarHome', { activeNav: activeNav, user: user }) %>
 
 <!-- Hero Section -->
 <section class="hero">
@@ -120,3 +137,5 @@
 </main>
 
 <%- include('partials/footer-simple') %>
+  </body>
+</html>

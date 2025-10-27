@@ -902,3 +902,101 @@ body {
     padding: 0.8rem 1rem;
   }
 }
+
+/* =====================================================
+   LOGIN PAGE - ANIMATED BACKGROUND
+   ===================================================== */
+
+/* Animated Gradient Background */
+.animated-bg {
+  background: linear-gradient(-45deg, #2F7A33, #3d9943, #ffffff, #2F7A33);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating Particles - Lebih besar dan tidak ramai */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  animation: float linear infinite;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Geometric shapes floating - Login page */
+.login-shape {
+  position: absolute;
+  opacity: 0.12;
+  animation: floatShape 20s ease-in-out infinite;
+}
+
+@keyframes floatShape {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(50px, -50px) rotate(90deg);
+  }
+  50% {
+    transform: translate(0, -100px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-50px, -50px) rotate(270deg);
+  }
+}
+
+.login-shape-1 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  top: 10%;
+  left: 10%;
+  animation-duration: 25s;
+}
+
+.login-shape-2 {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(135deg, #2F7A33 0%, transparent 100%);
+  border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+  top: 60%;
+  right: 15%;
+  animation-duration: 20s;
+  animation-delay: -5s;
+}
+
+.login-shape-3 {
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+  border-radius: 30% 70% 53% 47% / 44% 48% 52% 56%;
+  bottom: 15%;
+  left: 20%;
+  animation-duration: 30s;
+  animation-delay: -10s;
+}

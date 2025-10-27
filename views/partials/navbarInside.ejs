@@ -46,12 +46,12 @@
           <span class="text-gray-700">
             <strong><%= user.realname || user.username || user.id %></strong>
           </span>
-          <a
-            href="/logout"
+          <button
+            id="btn-logout-desktop"
             class="px-4 py-1 bg-[#2F7A33] text-white rounded-lg text-sm font-medium hover:bg-[#256328] transition"
           >
             Logout
-          </a>
+          </button>
         <% } else { %>
           <a
             href="/login"
@@ -121,12 +121,12 @@
           <div class="mb-3 text-gray-700">
             <strong><%= user.realname || user.username || user.id %></strong>
           </div>
-          <a
-            href="/logout"
+          <button
+            id="btn-logout-mobile"
             class="block w-full text-center py-2 bg-[#2F7A33] text-white font-bold rounded-lg hover:bg-[#256328] transition"
           >
             Logout
-          </a>
+          </button>
         <% } else { %>
           <a
             href="/login"
@@ -180,6 +180,140 @@
           link.classList.add("nav-active");
         }
       });
+
+      // Logout button handlers
+      const btnLogoutDesktop = document.getElementById("btn-logout-desktop");
+      const btnLogoutMobile = document.getElementById("btn-logout-mobile");
+      const logoutModal = document.getElementById("logout-modal");
+      const btnCloseModal = document.getElementById("btn-close-modal");
+      const btnCancelLogout = document.getElementById("btn-cancel-logout");
+      const btnConfirmLogout = document.getElementById("btn-confirm-logout");
+      const passwordInput = document.getElementById("logout-password");
+      const errorMsg = document.getElementById("logout-error-msg");
+
+      // Open modal
+      const openModal = () => {
+        logoutModal?.classList.remove("hidden");
+        passwordInput.value = "";
+        errorMsg.classList.add("hidden");
+        passwordInput.focus();
+      };
+
+      // Close modal
+      const closeModal = () => {
+        logoutModal?.classList.add("hidden");
+        passwordInput.value = "";
+        errorMsg.classList.add("hidden");
+      };
+
+      btnLogoutDesktop?.addEventListener("click", openModal);
+      btnLogoutMobile?.addEventListener("click", openModal);
+      btnCloseModal?.addEventListener("click", closeModal);
+      btnCancelLogout?.addEventListener("click", closeModal);
+
+      // Handle logout confirmation
+      btnConfirmLogout?.addEventListener("click", async () => {
+        const password = passwordInput.value.trim();
+
+        if (!password) {
+          errorMsg.textContent = "Password harus diisi!";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+        // Disable button
+        btnConfirmLogout.disabled = true;
+        btnConfirmLogout.textContent = "Memproses...";
+
+        try {
+          const response = await fetch("/logout-validate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            window.location.href = data.redirect || "/login";
+          } else {
+            errorMsg.textContent = data.message || "Password salah!";
+            errorMsg.classList.remove("hidden");
+            btnConfirmLogout.disabled = false;
+            btnConfirmLogout.textContent = "Logout";
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          errorMsg.textContent = "Terjadi kesalahan. Silakan coba lagi.";
+          errorMsg.classList.remove("hidden");
+          btnConfirmLogout.disabled = false;
+          btnConfirmLogout.textContent = "Logout";
+        }
+      });
+
+      // Handle Enter key
+      passwordInput?.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          btnConfirmLogout?.click();
+        }
+      });
     });
   </script>
 </nav>
+
+<!-- Modal Konfirmasi Logout -->
+<div id="logout-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
+    <!-- Close button -->
+    <button id="btn-close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Modal content -->
+    <div class="text-center mb-6">
+      <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
+        <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Konfirmasi Logout</h3>
+      <p class="text-sm text-gray-600 mb-4">Masukkan password Anda untuk logout dari sistem kios</p>
+    </div>
+
+    <!-- Password input -->
+    <div class="mb-4">
+      <label for="logout-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+      <input
+        type="password"
+        id="logout-password"
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F7A33] focus:border-transparent"
+        placeholder="Masukkan password Anda"
+      />
+    </div>
+
+    <!-- Error message -->
+    <div id="logout-error-msg" class="hidden mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+      Password salah!
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex gap-3">
+      <button
+        id="btn-cancel-logout"
+        class="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
+      >
+        Batal
+      </button>
+      <button
+        id="btn-confirm-logout"
+        class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
