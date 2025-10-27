@@ -26,22 +26,41 @@ function calculateDueDate(startDate, days, holidays = []) {
   
   // Validasi parsing
   if (!date.isValid()) {
+    console.log(`⚠️ calculateDueDate: Invalid date format "${startDate}", using today as fallback`);
     date = dayjs(); // fallback ke today jika parsing gagal
   }
 
-  let daysAdded = 0;
+  console.log(`🧮 calculateDueDate START:`);
+  console.log(`   - startDate: ${startDate}`);
+  console.log(`   - parsed date: ${date.format('YYYY-MM-DD')}`);
+  console.log(`   - days to add: ${days}`);
+  console.log(`   - holidays count: ${holidays.length}`);
 
-  while (daysAdded < days) {
+  let daysAdded = 0;
+  let iterations = 0;
+  const maxIterations = 365; // Safety limit
+
+  while (daysAdded < days && iterations < maxIterations) {
+    iterations++;
     date = date.add(1, 'day');
     const formatted = date.format('YYYY-MM-DD');
+    const dayOfWeek = date.day(); // 0 = Sunday, 6 = Saturday
+    const isHoliday = holidays.includes(formatted);
     
     // Skip jika hari Minggu (day() === 0) atau tanggal libur
-    if (date.day() !== 0 && !holidays.includes(formatted)) {
+    if (dayOfWeek !== 0 && !isHoliday) {
       daysAdded++;
+      console.log(`   ✓ Day ${daysAdded}/${days}: ${formatted} (${date.format('ddd')})`);
+    } else {
+      const reason = dayOfWeek === 0 ? 'Sunday' : 'Holiday';
+      console.log(`   ✗ Skip: ${formatted} (${date.format('ddd')}) - ${reason}`);
     }
   }
 
-  return date.format('YYYY-MM-DD');
+  const result = date.format('YYYY-MM-DD');
+  console.log(`🧮 calculateDueDate END: ${result} (${iterations} iterations)`);
+  
+  return result;
 }
 
 // =====================================================

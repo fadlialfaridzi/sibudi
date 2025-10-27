@@ -338,8 +338,16 @@ exports.extendLoan = async (req, res) => {
     
     const [loanRows] = await db.query(
       `SELECT 
-        loan.*,
-        item.item_code,
+        loan.loan_id,
+        loan.member_id,
+        loan.item_code,
+        loan.loan_date,
+        loan.due_date,
+        loan.return_date,
+        loan.renewed,
+        loan.is_lent,
+        loan.is_return,
+        loan.loan_rules_id,
         mlr.reborrow_limit,
         mlr.loan_periode
       FROM loan 
@@ -371,9 +379,12 @@ exports.extendLoan = async (req, res) => {
 
     const loan = loanRows[0];
     console.log(`[${timestamp}] ✅ Loan ditemukan:`);
+    console.log(`   - loan_id: ${loan.loan_id}`);
     console.log(`   - item_code: ${loan.item_code}`);
+    console.log(`   - loan_date: ${loan.loan_date}`);
+    console.log(`   - due_date (CURRENT): ${loan.due_date}`);
+    console.log(`   - renewed (CURRENT): ${loan.renewed}`);
     console.log(`   - reborrow_limit: ${loan.reborrow_limit}`);
-    console.log(`   - renewed: ${loan.renewed}`);
     console.log(`   - loan_periode: ${loan.loan_periode}`);
 
     // 3️⃣ Validasi Denda
@@ -463,26 +474,53 @@ exports.extendLoan = async (req, res) => {
 
     // 7️⃣ Hitung Due Date Baru
     console.log(`\n[${timestamp}] 📅 Menghitung due date baru...`);
-    console.log(`   - Due date lama: ${loan.due_date}`);
-    console.log(`   - Loan periode: ${loan.loan_periode} hari`);
+    
+    // PERBAIKAN KRITIS: Format due_date ke YYYY-MM-DD sebelum dikirim ke calculateDueDate
+    const currentDueDate = dayjs(loan.due_date).format('YYYY-MM-DD');
+    console.log(`   - Due date saat ini (raw): ${loan.due_date}`);
+    console.log(`   - Due date saat ini (formatted): ${currentDueDate}`);
+    console.log(`   - Perpanjangan ke: ${loan.renewed + 1}`);
+    console.log(`   - Loan periode: ${loan.loan_periode} hari kerja`);
     
     const holidays = await loadHolidays(db);
     console.log(`   - Holidays loaded: ${holidays.length} hari libur`);
     
-    const newDueDate = calculateDueDate(loan.due_date, loan.loan_periode, holidays);
+    // PERBAIKAN: Gunakan currentDueDate yang sudah diformat
+    // Ini memastikan perpanjangan ke-2 menambah dari hasil perpanjangan ke-1
+    const newDueDate = calculateDueDate(currentDueDate, loan.loan_periode, holidays);
     console.log(`   - Due date baru: ${newDueDate}`);
+    
+    // Hitung selisih hari untuk validasi
+    const daysDiff = dayjs(newDueDate).diff(dayjs(currentDueDate), 'day');
+    console.log(`   - Selisih kalender: ${daysDiff} hari (termasuk weekend & holiday yang di-skip)`);
 
     // 8️⃣ Update Database
     console.log(`\n[${timestamp}] 💾 Updating database...`);
+    console.log(`   - UPDATE loan SET due_date = '${newDueDate}', renewed = ${loan.renewed + 1} WHERE loan_id = ${loan.loan_id}`);
     
-    await db.query(
+    const [updateResult] = await db.query(
       'UPDATE loan SET due_date = ?, renewed = renewed + 1, last_update = NOW() WHERE loan_id = ?',
       [newDueDate, loan.loan_id]
     );
 
-    console.log(`[${timestamp}] ✅ Database updated successfully`);
+    console.log(`[${timestamp}] ✅ Database UPDATE result:`);
+    console.log(`   - affectedRows: ${updateResult.affectedRows}`);
+    console.log(`   - changedRows: ${updateResult.changedRows}`);
     console.log(`   - New due_date: ${newDueDate}`);
     console.log(`   - New renewed: ${loan.renewed + 1}`);
+    
+    // Verify update dengan SELECT
+    const [verifyRows] = await db.query(
+      'SELECT due_date, renewed FROM loan WHERE loan_id = ?',
+      [loan.loan_id]
+    );
+    
+    if (verifyRows.length > 0) {
+      console.log(`\n[${timestamp}] 🔍 Verifikasi data setelah UPDATE:`);
+      console.log(`   - due_date di DB: ${verifyRows[0].due_date}`);
+      console.log(`   - renewed di DB: ${verifyRows[0].renewed}`);
+      console.log(`   - Match dengan expected? ${verifyRows[0].due_date === newDueDate ? '✅ YES' : '❌ NO'}`);
+    }
 
     // 9️⃣ Reload Data
     console.log(`\n[${timestamp}] 🔄 Reloading loans data...`);
