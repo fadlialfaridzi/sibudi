@@ -4,33 +4,34 @@ const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 const { calculateWorkingDaysOverdue, loadHolidays } = require('../inside/peminjamanController');
+const { createLogger } = require('../../utils/logger');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+const logDenda = createLogger('fines.log', { defaultPrefix: '💰' });
 
 // =====================================================
 // RENDER INFORMASI DENDA (untuk detailPinjam.ejs)
 // =====================================================
 exports.renderDenda = async (req, res) => {
   const timestamp = dayjs().tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss');
-  console.log(`\n${'='.repeat(60)}`);
-  console.log(`[${timestamp}] 🚀 START: renderDenda`);
-  console.log(`${'='.repeat(60)}`);
+  logDenda(`START: renderDenda`, 'INFO');
 
   try {
     // Validasi session
     if (!req.session.user || req.session.user.role !== 'member') {
-      console.log(`[${timestamp}] ❌ User tidak login atau bukan member`);
+      logDenda(`User tidak login atau bukan member`, 'WARN');
       return res.redirect('/login');
     }
 
     const memberId = req.session.user.member_id;
-    console.log(`[${timestamp}] ✅ Member ID: ${memberId}`);
+    logDenda(`Member ID: ${memberId}`, 'INFO');
 
     // =============================
     // 1️⃣ Ambil Aturan Denda per Kategori dari mst_loan_rules
     // =============================
-    console.log(`\n[${timestamp}] 📋 Mengambil aturan denda per kategori...`);
+    logDenda(`Mengambil aturan denda per kategori...`, 'INFO');
     
     const [rulesRows] = await db.query(
       `SELECT 
@@ -47,7 +48,7 @@ exports.renderDenda = async (req, res) => {
       ORDER BY mlr.loan_rules_id ASC`
     );
 
-    console.log(`[${timestamp}] ✅ Aturan denda ditemukan: ${rulesRows.length} kategori`);
+    logDenda(`Aturan denda ditemukan: ${rulesRows.length} kategori`, 'INFO');
 
     // Format aturan denda
     const fineRules = rulesRows.map(rule => ({
@@ -63,7 +64,7 @@ exports.renderDenda = async (req, res) => {
     // =============================
     // 2️⃣ Ambil Daftar Peminjaman Aktif
     // =============================
-    console.log(`\n[${timestamp}] 📚 Mengambil peminjaman aktif...`);
+    logDenda(`Mengambil peminjaman aktif...`, 'INFO');
     
     const [loanRows] = await db.query(
       `SELECT 
@@ -85,14 +86,14 @@ exports.renderDenda = async (req, res) => {
       [memberId]
     );
 
-    console.log(`[${timestamp}] ✅ Peminjaman aktif: ${loanRows.length} buku`);
+    logDenda(`Peminjaman aktif: ${loanRows.length} buku`, 'INFO');
 
     // =============================
     // 3️⃣ Ambil Data Denda dari Tabel fines (SUDAH DIHITUNG oleh liveMonitor.js)
     // CATATAN: Tabel fines TIDAK punya kolom item_code
     // Kita extract item_code dari description yang formatnya: "Denda keterlambatan buku B001234"
     // =============================
-    console.log(`\n[${timestamp}] 💰 Mengambil data denda dari tabel fines...`);
+    logDenda(`Mengambil data denda dari tabel fines...`, 'INFO');
     
     const [finesRows] = await db.query(
       `SELECT 
@@ -107,13 +108,13 @@ exports.renderDenda = async (req, res) => {
       [memberId]
     );
 
-    console.log(`[${timestamp}] ✅ Denda ditemukan: ${finesRows.length} record`);
+    logDenda(`Denda ditemukan: ${finesRows.length} record`, 'INFO');
 
     // Hitung total denda (debet - credit)
     const totalFines = finesRows.reduce((sum, fine) => 
       sum + ((fine.debet || 0) - (fine.credit || 0)), 0
     );
-    console.log(`[${timestamp}] 💵 Total denda: Rp ${totalFines.toLocaleString('id-ID')}`);
+    logDenda(`Total denda: Rp ${totalFines.toLocaleString('id-ID')}`, 'INFO');
 
     // Parse item_code dari description dan ambil info buku
     const finesWithDetails = await Promise.all(
@@ -152,22 +153,20 @@ exports.renderDenda = async (req, res) => {
     // =============================
     // 4️⃣ Load Holidays untuk Perhitungan Hari Kerja
     // =============================
-    console.log(`\n[${timestamp}] 📅 Loading holidays...`);
+    logDenda(`Loading holidays...`, 'INFO');
     const connection = await db.getConnection();
     const holidays = await loadHolidays(connection);
     connection.release();
-    console.log(`[${timestamp}] ✅ Holidays loaded: ${holidays.length} dates`);
+    logDenda(`Holidays loaded: ${holidays.length} dates`, 'INFO');
 
     // =============================
     // 5️⃣ Proses Data untuk Setiap Peminjaman
     // =============================
-    console.log(`\n[${timestamp}] 🔄 Memproses data peminjaman...`);
+    logDenda(`Memproses data peminjaman...`, 'INFO');
     const today = dayjs().tz('Asia/Jakarta').format('YYYY-MM-DD');
     
     const loansWithFines = loanRows.map((loan, index) => {
-      console.log(`\n[${timestamp}] 📖 Processing loan ${index + 1}/${loanRows.length}:`);
-      console.log(`   - item_code: ${loan.item_code}`);
-      console.log(`   - due_date: ${loan.due_date}`);
+      logDenda(`Processing loan ${index + 1}/${loanRows.length}: item_code: ${loan.item_code}, due_date: ${loan.due_date}`, 'INFO');
       
       // ✅ Cari denda yang SUDAH DIHITUNG oleh liveMonitor.js di tabel fines
       const existingFine = finesRows.find(f => 
@@ -190,12 +189,12 @@ exports.renderDenda = async (req, res) => {
         fineDate = existingFine.fines_date;
         hasFineRecord = true;
         
-        console.log(`   ✅ Has fine record: Rp ${calculatedFine.toLocaleString('id-ID')} (${workingDaysOverdue} working days)`);
+        logDenda(`Has fine record: Rp ${calculatedFine.toLocaleString('id-ID')} (${workingDaysOverdue} working days)`, 'INFO');
       } else if (workingDaysOverdue > 0) {
         // ⚠️ Terlambat tapi belum ada record denda (belum diproses liveMonitor)
-        console.log(`   ⚠️ Overdue ${workingDaysOverdue} working days, but no fine record yet`);
+        logDenda(`Overdue ${workingDaysOverdue} working days, but no fine record yet`, 'WARN');
       } else {
-        console.log(`   ✅ On time (no fine record)`);
+        logDenda(`On time (no fine record)`, 'INFO');
       }
       
       return {
@@ -219,10 +218,7 @@ exports.renderDenda = async (req, res) => {
     // =============================
     // 6️⃣ Render ke View
     // =============================
-    console.log(`\n[${timestamp}] 🎨 Rendering view...`);
-    console.log(`   - fineRules: ${fineRules.length} categories`);
-    console.log(`   - loansWithFines: ${loansWithFines.length} loans`);
-    console.log(`   - totalFines: Rp ${totalFines.toLocaleString('id-ID')}`);
+    logDenda(`Rendering view...`, 'INFO');
     
     res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman',
@@ -235,16 +231,10 @@ exports.renderDenda = async (req, res) => {
       user: req.session.user
     });
 
-    console.log(`[${timestamp}] ✅ Render berhasil`);
-    console.log(`${'='.repeat(60)}\n`);
+    logDenda(`Render berhasil`, 'INFO');
 
   } catch (err) {
-    console.error(`\n[${timestamp}] ❌❌❌ ERROR di renderDenda:`);
-    console.error(`   Error Name: ${err.name}`);
-    console.error(`   Error Message: ${err.message}`);
-    console.error(`   Error Stack:`);
-    console.error(err.stack);
-    console.log(`${'='.repeat(60)}\n`);
+    logDenda(`ERROR di renderDenda: ${err.message}`, 'ERROR');
 
     res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman',
@@ -292,11 +282,11 @@ exports.getFineInfo = async (memberId, itemCode) => {
       fineDate: null
     };
   } catch (err) {
-    console.error('❌ Error getFineInfo:', err);
+    logDenda(`Error getFineInfo: ${err.message}`, 'ERROR');
     return {
       hasFine: false,
       totalFine: 0,
       fineDate: null
     };
   }
-}; 
+};

@@ -2,6 +2,10 @@
 const bcrypt = require('bcrypt');
 const db = require('../config/db'); // mysql2/promise pool
 const dayjs = require('dayjs');
+const { createLogger } = require('../utils/logger');
+
+// Inisialisasi logger khusus untuk otentikasi
+const logAuth = createLogger('auth.log', { defaultPrefix: '🔒' });
 
 // =====================================================
 // POST /login
@@ -9,9 +13,11 @@ const dayjs = require('dayjs');
 exports.login = async (req, res) => {
     try {
         const { nim, password } = req.body;
+        const ip = req.ip;
 
         //  Validasi input kosong
         if (!nim || !password) {
+            logAuth(`Login attempt failed: Empty NIM or password from IP: ${ip}`, 'WARN');
             return res.status(400).render('auth/login', {
                 popup: {
                     type: 'warning',
@@ -38,6 +44,7 @@ exports.login = async (req, res) => {
             }
 
             if (!isMatch) {
+                logAuth(`Login failed: Incorrect password for user '${nim}' from IP: ${ip}`, 'WARN');
                 return res.status(401).render('auth/login', {
                     popup: {
                         type: 'error',
@@ -56,10 +63,10 @@ exports.login = async (req, res) => {
                 email: user.email || '-',
             };
 
-            console.log(`✅ ${user.username} berhasil login sebagai pustakawan/admin`);
+            logAuth(`Login successful: User '${user.username}' (pustakawan) logged in from IP: ${ip}`, 'INFO');
 
             // Update waktu login & IP pustakawan/admin
-            await db.query('UPDATE user SET last_login = NOW(), last_login_ip = ? WHERE user_id = ?', [req.ip, user.user_id]);
+            await db.query('UPDATE user SET last_login = NOW(), last_login_ip = ? WHERE user_id = ?', [ip, user.user_id]);
 
             return res.redirect('/inside/peminjaman');
         }
@@ -78,6 +85,7 @@ exports.login = async (req, res) => {
         );
 
         if (memberRows.length === 0) {
+            logAuth(`Login failed: Account not found for NIM/Username '${nim}' from IP: ${ip}`, 'WARN');
             return res.status(404).render('auth/login', {
                 popup: {
                     type: 'error',
@@ -98,6 +106,7 @@ exports.login = async (req, res) => {
         }
 
         if (!isPasswordCorrect) {
+            logAuth(`Login failed: Incorrect password for member '${nim}' from IP: ${ip}`, 'WARN');
             return res.status(401).render('auth/login', {
                 popup: {
                     type: 'error',
@@ -110,6 +119,7 @@ exports.login = async (req, res) => {
         //  Cek keanggotaan expired
         const today = dayjs().format('YYYY-MM-DD');
         if (member.expire_date && dayjs(member.expire_date).isBefore(today)) {
+            logAuth(`Login failed: Expired membership for member '${nim}' from IP: ${ip}`, 'WARN');
             return res.status(403).render('auth/login', {
                 popup: {
                     type: 'warning',
@@ -130,14 +140,15 @@ exports.login = async (req, res) => {
             member_type_id: member.member_type_id,
         };
 
-        console.log(`✅ ${member.member_name} login sebagai member (${member.member_type_name})`);
+        logAuth(`Login successful: Member '${member.member_name}' (${nim}) logged in from IP: ${ip}`, 'INFO');
 
         //  Update waktu login & IP member
-        await db.query('UPDATE member SET last_login = NOW(), last_login_ip = ? WHERE member_id = ?', [req.ip, member.member_id]);
+        await db.query('UPDATE member SET last_login = NOW(), last_login_ip = ? WHERE member_id = ?', [ip, member.member_id]);
 
         return res.redirect('/outside/dashboard');
     } catch (err) {
-        console.error('❌ Error saat proses login:', err);
+        logAuth(`Server error during login process for '${req.body.nim}': ${err.message}`, 'ERROR');
+        console.error('❌ Error saat proses login:', err); // Keep console for immediate visibility
         return res.status(500).render('auth/login', {
             popup: {
                 type: 'error',
@@ -149,9 +160,18 @@ exports.login = async (req, res) => {
 };
 
 // =====================================================
-// GET /logout (untuk member - langsung logout)
+// GET /logout (untuk member & pustakawan tanpa validasi)
 // =====================================================
 exports.logout = (req, res) => {
+    const user = req.session.user;
+    const ip = req.ip;
+
+    if (user) {
+        logAuth(`Logout successful: User '${user.username || user.name}' (${user.role}) logged out from IP: ${ip}.`, 'INFO');
+    } else {
+        logAuth(`Logout attempt from a session without user data from IP: ${ip}.`, 'WARN');
+    }
+
     req.session.destroy(() => {
         res.clearCookie('sibudi_session_id'); // cookie session
         res.redirect('/login');
@@ -162,12 +182,15 @@ exports.logout = (req, res) => {
 // POST /logout-validate (untuk pustakawan - validasi password)
 // =====================================================
 exports.validateLogout = async (req, res) => {
+    const user = req.session.user;
+    const ip = req.ip;
+
     try {
         const { password } = req.body;
-        const user = req.session.user;
 
         // Cek apakah user adalah pustakawan
         if (!user || user.role !== 'pustakawan') {
+            logAuth(`Logout validation failed: Attempt by non-pustakawan user or no session from IP: ${ip}`, 'WARN');
             return res.status(403).json({
                 success: false,
                 message: 'Akses ditolak. Hanya pustakawan yang memerlukan validasi password.',
@@ -176,6 +199,7 @@ exports.validateLogout = async (req, res) => {
 
         // Validasi input password
         if (!password) {
+            logAuth(`Logout validation failed: Empty password for user '${user.username}' from IP: ${ip}`, 'WARN');
             return res.status(400).json({
                 success: false,
                 message: 'Password harus diisi untuk logout.',
@@ -186,6 +210,7 @@ exports.validateLogout = async (req, res) => {
         const [userRows] = await db.query('SELECT * FROM user WHERE user_id = ?', [user.id]);
 
         if (userRows.length === 0) {
+            logAuth(`Logout validation failed: User '${user.username}' not found in DB for validation. IP: ${ip}`, 'ERROR');
             return res.status(404).json({
                 success: false,
                 message: 'User tidak ditemukan.',
@@ -203,6 +228,7 @@ exports.validateLogout = async (req, res) => {
         }
 
         if (!isPasswordCorrect) {
+            logAuth(`Logout validation failed: Incorrect password for user '${user.username}' from IP: ${ip}`, 'WARN');
             return res.status(401).json({
                 success: false,
                 message: 'Password yang Anda masukkan salah.',
@@ -210,8 +236,10 @@ exports.validateLogout = async (req, res) => {
         }
 
         // Password benar, lakukan logout
+        logAuth(`Logout validation successful for user '${user.username}'. Proceeding to log out. IP: ${ip}`, 'INFO');
         req.session.destroy((err) => {
             if (err) {
+                logAuth(`Server error during session destruction for '${user.username}': ${err.message}`, 'ERROR');
                 return res.status(500).json({
                     success: false,
                     message: 'Terjadi kesalahan saat logout.',
@@ -225,7 +253,9 @@ exports.validateLogout = async (req, res) => {
             });
         });
     } catch (err) {
-        console.error('❌ Error saat validasi logout:', err);
+        const username = user ? user.username : 'unknown';
+        logAuth(`Server error during logout validation for '${username}': ${err.message}`, 'ERROR');
+        console.error('❌ Error saat validasi logout:', err); // Keep console for immediate visibility
         return res.status(500).json({
             success: false,
             message: 'Terjadi kesalahan pada server.',
