@@ -4,23 +4,11 @@
 ========================================================= %>
 
 <%
-    // ✅ Helper: pastikan ambil foto profil dari DB atau fallback default
-    function resolveProfileImage(user) {
-        if (!user || !user.member_image) {
-            return '/images/profile-avatar.png';
-        }
-        const fs = require('fs');
-        const path = require('path');
-        const localPath = path.join(__dirname, '../../public/uploads/profiles', user.member_image);
-        if (fs.existsSync(localPath)) {
-            return `/uploads/profiles/${user.member_image}`;
-        } else {
-            return '/images/profile-avatar.png';
-        }
-    }
-
-    const profileImageUrl = resolveProfileImage(user);
+    const profileImageUrl = user && user.member_image
+        ? `/uploads/profiles/${user.member_image}`
+        : '/images/profile-avatar.png';
 %>
+
 
 <nav class="fixed top-0 left-0 w-full bg-[#F8FFF8] shadow-sm z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

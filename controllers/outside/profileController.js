@@ -47,7 +47,7 @@ exports.renderProfile = async (req, res) => {
         if (rows.length === 0) {
             return res.render('outside/profile', {
                 title: 'Profil Member',
-                member: {},
+                member: memberData,
                 error: 'Data member tidak ditemukan.',
             });
         }
@@ -59,14 +59,14 @@ exports.renderProfile = async (req, res) => {
 
         // Handle member image
         let memberImagePath = '/images/profile-avatar.png'; // Default
-        
+
         if (memberData.member_image) {
             // Path gambar di server
-            const imagePath = path.join(__dirname, '../../public/uploads', memberData.member_image);
-            
+            const imagePath = path.join(__dirname, '../../public/uploads/profiles/', memberData.member_image);
+
             // Cek apakah file ada di server
             if (fs.existsSync(imagePath)) {
-                memberImagePath = `/uploads/${memberData.member_image}`;
+                memberImagePath = `/uploads/profiles/${memberData.member_image}`;
             } else {
                 console.log(`⚠️ Image not found on server: ${imagePath}, using default`);
             }
@@ -75,24 +75,16 @@ exports.renderProfile = async (req, res) => {
         memberData.profile_image_url = memberImagePath;
 
         // Format tanggal ke bahasa Indonesia
-        memberData.birth_date_formatted = memberData.birth_date 
-            ? formatDateIndonesia(memberData.birth_date) 
-            : '-';
-        memberData.member_since_date_formatted = memberData.member_since_date 
-            ? formatDateIndonesia(memberData.member_since_date) 
-            : '-';
-        memberData.register_date_formatted = memberData.register_date 
-            ? formatDateIndonesia(memberData.register_date) 
-            : '-';
-        memberData.expire_date_formatted = memberData.expire_date 
-            ? formatDateIndonesia(memberData.expire_date) 
-            : '-';
+        memberData.birth_date_formatted = memberData.birth_date ? formatDateIndonesia(memberData.birth_date) : '-';
+        memberData.member_since_date_formatted = memberData.member_since_date ? formatDateIndonesia(memberData.member_since_date) : '-';
+        memberData.register_date_formatted = memberData.register_date ? formatDateIndonesia(memberData.register_date) : '-';
+        memberData.expire_date_formatted = memberData.expire_date ? formatDateIndonesia(memberData.expire_date) : '-';
 
         res.render('outside/profile', {
             title: 'Profil Member',
             member: memberData,
             activeNav: 'Profile',
-            user: req.session.user
+            user: req.session.user,
         });
     } catch (err) {
         console.error('❌ Error renderProfile:', err);
@@ -101,7 +93,7 @@ exports.renderProfile = async (req, res) => {
             member: {},
             error: 'Terjadi kesalahan saat memuat data profil.',
             activeNav: 'Profile',
-            user: req.session.user
+            user: req.session.user,
         });
     }
 };
@@ -109,19 +101,16 @@ exports.renderProfile = async (req, res) => {
 // Helper function untuk format tanggal Indonesia
 function formatDateIndonesia(dateString) {
     if (!dateString) return '-';
-    
+
     const date = new Date(dateString);
     if (isNaN(date)) return '-';
-    
-    const months = [
-        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    ];
-    
+
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
     const day = date.getDate();
     const month = months[date.getMonth()];
     const year = date.getFullYear();
-    
+
     return `${day} ${month} ${year}`;
 }
 
@@ -158,7 +147,7 @@ exports.renderEditProfile = async (req, res) => {
         // Handle member image
         let memberImagePath = '/images/profile-avatar.png';
         if (memberData.member_image) {
-            const imagePath = path.join(__dirname, '../../public/uploads/profiles', memberData.member_image);
+            const imagePath = path.join(__dirname, '../../public/uploads/profiles/', memberData.member_image);
             if (fs.existsSync(imagePath)) {
                 memberImagePath = `/uploads/profiles/${memberData.member_image}`;
             }
@@ -166,9 +155,7 @@ exports.renderEditProfile = async (req, res) => {
         memberData.profile_image_url = memberImagePath;
 
         // Format tanggal lahir
-        memberData.birth_date_formatted = memberData.birth_date 
-            ? formatDateIndonesia(memberData.birth_date) 
-            : '-';
+        memberData.birth_date_formatted = memberData.birth_date ? formatDateIndonesia(memberData.birth_date) : '-';
 
         res.render('outside/editProfile', {
             title: 'Edit Profil Member',
@@ -176,7 +163,7 @@ exports.renderEditProfile = async (req, res) => {
             activeNav: 'Profile',
             user: req.session.user,
             error: req.flash('error'),
-            success: req.flash('success')
+            success: req.flash('success'),
         });
     } catch (err) {
         console.error('❌ Error renderEditProfile:', err);
@@ -216,14 +203,15 @@ exports.updateProfile = async (req, res) => {
         // Upload baru?
         if (req.file) {
             if (oldData[0]?.member_image) {
-                const oldPath = path.join(__dirname, '../../public/uploads/profiles', oldData[0].member_image);
+                const oldPath = path.join(__dirname, '../../public/uploads/profiles/', oldData[0].member_image);
                 if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
             }
             memberImage = req.file.filename;
         }
 
         // Update DB
-        await db.query(`
+        await db.query(
+            `
             UPDATE member 
             SET member_phone = ?, 
                 member_email = ?, 
@@ -231,13 +219,18 @@ exports.updateProfile = async (req, res) => {
                 member_image = ?, 
                 last_update = NOW() 
             WHERE member_id = ?
-        `, [member_phone, member_email, member_address, memberImage, member.id]);
+        `,
+            [member_phone, member_email, member_address, memberImage, member.id]
+        );
 
         // 🔄 Refresh data terbaru dari DB untuk session
-        const [updatedRows] = await db.query(`
+        const [updatedRows] = await db.query(
+            `
             SELECT member_id, member_name, member_email, member_phone, member_image 
             FROM member WHERE member_id = ?
-        `, [member.id]);
+        `,
+            [member.id]
+        );
 
         if (updatedRows.length > 0) {
             req.session.user = {
@@ -245,7 +238,7 @@ exports.updateProfile = async (req, res) => {
                 member_name: updatedRows[0].member_name,
                 member_email: updatedRows[0].member_email,
                 member_phone: updatedRows[0].member_phone,
-                member_image: updatedRows[0].member_image
+                member_image: updatedRows[0].member_image,
             };
         }
 
