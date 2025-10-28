@@ -133,7 +133,21 @@ exports.renderEditProfile = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const [rows] = await db.query('SELECT * FROM member WHERE member_id = ?', [member.id]);
+        const [rows] = await db.query(
+            `SELECT 
+                m.member_id,
+                m.member_name,
+                m.gender,
+                m.birth_date,
+                m.member_phone,
+                m.member_email,
+                m.member_address,
+                m.member_image
+            FROM member m
+            WHERE m.member_id = ?`,
+            [member.id]
+        );
+
         if (rows.length === 0) {
             return res.redirect('/outside/profile');
         }
@@ -141,11 +155,28 @@ exports.renderEditProfile = async (req, res) => {
         const memberData = rows[0];
         memberData.gender_text = memberData.gender === 1 ? 'Laki-laki' : 'Perempuan';
 
+        // Handle member image
+        let memberImagePath = '/images/profile-avatar.png';
+        if (memberData.member_image) {
+            const imagePath = path.join(__dirname, '../../public/uploads/profiles', memberData.member_image);
+            if (fs.existsSync(imagePath)) {
+                memberImagePath = `/uploads/profiles/${memberData.member_image}`;
+            }
+        }
+        memberData.profile_image_url = memberImagePath;
+
+        // Format tanggal lahir
+        memberData.birth_date_formatted = memberData.birth_date 
+            ? formatDateIndonesia(memberData.birth_date) 
+            : '-';
+
         res.render('outside/editProfile', {
             title: 'Edit Profil Member',
             member: memberData,
             activeNav: 'Profile',
-            user: req.session.user
+            user: req.session.user,
+            error: req.flash('error'),
+            success: req.flash('success')
         });
     } catch (err) {
         console.error('❌ Error renderEditProfile:', err);
@@ -161,27 +192,68 @@ exports.updateProfile = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const { member_name, gender_text, member_phone, member_email, member_address } = req.body;
+        const { member_phone, member_email, member_address } = req.body;
 
-        // Convert gender text ke numeric
-        const gender = gender_text === 'Laki-laki' ? 1 : 2;
+        // Validasi nomor telepon (hanya angka)
+        if (member_phone && !/^[0-9]+$/.test(member_phone)) {
+            req.flash('error', 'Nomor telepon hanya boleh berisi angka!');
+            return res.redirect('/outside/editProfile');
+        }
 
+        // Validasi panjang nomor telepon
+        if (member_phone && (member_phone.length < 10 || member_phone.length > 15)) {
+            req.flash('error', 'Nomor telepon harus antara 10-15 digit!');
+            return res.redirect('/outside/editProfile');
+        }
+
+        // Validasi format email
+        if (member_email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(member_email)) {
+            req.flash('error', 'Format email tidak valid! Gunakan format seperti user@gmail.com');
+            return res.redirect('/outside/editProfile');
+        }
+
+        // Ambil data member lama untuk mendapatkan foto lama
+        const [oldData] = await db.query(
+            'SELECT member_image FROM member WHERE member_id = ?',
+            [member.id]
+        );
+
+        let memberImage = oldData[0]?.member_image || null;
+
+        // Jika ada file baru diupload
+        if (req.file) {
+            // Hapus foto lama jika ada
+            if (oldData[0]?.member_image) {
+                const oldImagePath = path.join(__dirname, '../../public/uploads/profiles', oldData[0].member_image);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                    console.log('✅ Old image deleted:', oldData[0].member_image);
+                }
+            }
+
+            // Simpan nama file baru (hanya nama file, bukan path lengkap)
+            memberImage = req.file.filename;
+            console.log('✅ New image uploaded:', memberImage);
+        }
+
+        // Update database
         await db.query(
             `UPDATE member 
-             SET member_name = ?, 
-                 gender = ?, 
-                 member_phone = ?, 
+             SET member_phone = ?, 
                  member_email = ?, 
                  member_address = ?, 
+                 member_image = ?,
                  last_update = NOW()
              WHERE member_id = ?`,
-            [member_name, gender, member_phone, member_email, member_address, member.id]
+            [member_phone, member_email, member_address, memberImage, member.id]
         );
 
         console.log('✅ Profil berhasil diperbarui untuk:', member.id);
+        req.flash('success', 'Profil berhasil diperbarui!');
         res.redirect('/outside/profile');
     } catch (err) {
         console.error('❌ Error updateProfile:', err);
-        res.status(500).send('Gagal memperbarui profil.');
+        req.flash('error', 'Gagal memperbarui profil. Silakan coba lagi.');
+        res.redirect('/outside/editProfile');
     }
 };

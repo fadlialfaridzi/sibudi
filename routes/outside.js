@@ -12,6 +12,7 @@ const rulesPinjamController = require('../controllers/outside/rulesPinjamControl
 
 // Middleware
 const { requireLogin, requireRole } = require('../middleware/sessionCheck');
+const { upload, handleUploadError } = require('../middleware/uploadMiddleware');
 
 // =====================================================
 // ROUTES untuk ROLE: Member / Peminjam (Outside)
@@ -23,7 +24,15 @@ router.get('/dashboard', requireLogin, requireRole('member'), dashboardControlle
 // Halaman Profile
 router.get('/profile', requireLogin, requireRole('member'), profileController.renderProfile);
 router.get('/editProfile', requireLogin, requireRole('member'), profileController.renderEditProfile);
-router.post('/updateProfile', requireLogin, requireRole('member'), profileController.updateProfile);
+// Update Profile dengan Upload Image
+router.post(
+    '/updateProfile', 
+    requireLogin, 
+    requireRole('member'), 
+    upload.single('member_image'),
+    handleUploadError,
+    profileController.updateProfile
+);
 
 // Halaman Ubah Password
 router.get('/changePassword', requireLogin, requireRole('member'), changePasswordController.renderChangePassword);

@@ -1,122 +1,266 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
+    <title><%= title %> - SiBuDi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/css/output.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f9fafb;
-      }
-    </style>
-  </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Custom Profile Styling -->
+    <link rel="stylesheet" href="/css/profile-style.css" />
+</head>
 
-  <body class="min-h-screen flex flex-col">
-    <%- include('../partials/navbarOutside', { title: 'Edit Profil - SiBuDi' }) %>
+<body class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <%- include('../partials/navbarOutside', { activeNav: 'Profile' }) %>
 
-    <main class="flex-grow pt-24 pb-16 bg-gray-50">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
-          <h1 class="text-2xl font-bold text-[#2F7A33] mb-6">
-            Edit Profil Member
-          </h1>
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-16">
+        <div class="profile-container">
+            
+            <!-- Profile Card -->
+            <div class="profile-card">
+                
+                <!-- Header -->
+                <div class="profile-header">
+                    <h1>Edit Profil Member</h1>
+                    <p>Perbarui informasi akun Anda</p>
+                </div>
 
-          <form action="/outside/updateProfile" method="POST" class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Nama Lengkap</label
-              >
-              <input
-                type="text"
-                name="member_name"
-                value="<%= member.member_name || '' %>"
-                class="block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#FFD700]"
-                required
-              />
+                <!-- Body -->
+                <div class="profile-body">
+                    
+                    <!-- Flash Messages -->
+                    <% if (error && error.length > 0) { %>
+                        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-circle-exclamation text-red-500 mr-3"></i>
+                                <p class="text-red-700 text-sm"><%= error %></p>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <% if (success && success.length > 0) { %>
+                        <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-circle-check text-green-500 mr-3"></i>
+                                <p class="text-green-700 text-sm"><%= success %></p>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Form -->
+                    <form action="/outside/updateProfile" method="POST" enctype="multipart/form-data">
+                        
+                        <!-- Avatar Section dengan Preview -->
+                        <div class="profile-avatar-section">
+                            <div class="profile-avatar-wrapper">
+                                <img 
+                                    id="profileImagePreview"
+                                    src="<%= member.profile_image_url %>" 
+                                    alt="Foto Profil" 
+                                    class="profile-avatar"
+                                    onerror="this.src='/images/profile-avatar.png'"
+                                />
+                            </div>
+                            
+                            <h2 class="profile-name"><%= member.member_name || '-' %></h2>
+                            <p class="profile-nim">NIM: <%= member.member_id || '-' %></p>
+                            
+                            <!-- Upload Foto -->
+                            <div class="mt-4 w-full max-w-md">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">
+                                    <i class="fa-solid fa-camera mr-1"></i> Ubah Foto Profil
+                                </label>
+                                <input 
+                                    type="file" 
+                                    name="member_image" 
+                                    id="memberImageInput"
+                                    accept="image/jpeg,image/jpg,image/png,image/gif"
+                                    class="block w-full text-sm text-gray-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 file:cursor-pointer cursor-pointer border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
+                                />
+                                <p class="text-xs text-gray-500 mt-2 text-center">
+                                    Format: JPG, PNG, GIF (Maks. 2MB)
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Data yang Tidak Bisa Diubah -->
+                        <div class="profile-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                                Informasi Tetap
+                            </h3>
+                            
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label class="info-label">Nama Lengkap</label>
+                                    <input 
+                                        type="text" 
+                                        value="<%= member.member_name || '-' %>"
+                                        readonly
+                                        class="info-value w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-600 cursor-not-allowed"
+                                    />
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">Jenis Kelamin</label>
+                                    <input 
+                                        type="text" 
+                                        value="<%= member.gender_text || '-' %>"
+                                        readonly
+                                        class="info-value w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-600 cursor-not-allowed"
+                                    />
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">Tanggal Lahir</label>
+                                    <input 
+                                        type="text" 
+                                        value="<%= member.birth_date_formatted %>"
+                                        readonly
+                                        class="info-value w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-600 cursor-not-allowed"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data yang Bisa Diubah -->
+                        <div class="profile-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </span>
+                                Informasi yang Dapat Diubah
+                            </h3>
+                            
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label class="info-label" for="member_phone">Nomor Telepon</label>
+                                    <input 
+                                        type="text" 
+                                        name="member_phone" 
+                                        id="member_phone"
+                                        value="<%= member.member_phone || '' %>"
+                                        placeholder="Contoh: 081234567890"
+                                        pattern="[0-9]+"
+                                        title="Hanya boleh berisi angka"
+                                        class="info-value w-full border-2 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+                                    />
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label" for="member_email">Email</label>
+                                    <input 
+                                        type="email" 
+                                        name="member_email" 
+                                        id="member_email"
+                                        value="<%= member.member_email || '' %>"
+                                        placeholder="Contoh: email@gmail.com"
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                        title="Format email tidak valid (contoh: user@gmail.com)"
+                                        class="info-value w-full border-2 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+                                    />
+                                </div>
+                                
+                                <div class="info-item" style="grid-column: 1 / -1;">
+                                    <label class="info-label" for="member_address">Alamat</label>
+                                    <textarea 
+                                        name="member_address" 
+                                        id="member_address"
+                                        rows="3"
+                                        placeholder="Masukkan alamat lengkap Anda"
+                                        class="info-value w-full border-2 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition resize-none"
+                                    ><%= member.member_address || '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-gray-200">
+                            <a 
+                                href="/outside/profile" 
+                                class="btn-profile bg-gray-200 hover:bg-gray-300 text-gray-800 text-center"
+                            >
+                                <i class="fa-solid fa-arrow-left"></i>
+                                Batal
+                            </a>
+                            <button 
+                                type="submit" 
+                                class="btn-profile btn-secondary"
+                            >
+                                <i class="fa-solid fa-save"></i>
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Jenis Kelamin</label
-              >
-              <select
-                name="gender_text"
-                class="block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#FFD700]"
-              >
-                <option value="">Pilih</option>
-                <option value="Laki-laki" <%= member.gender === 1 ? 'selected' : '' %>>
-                  Laki-laki
-                </option>
-                <option value="Perempuan" <%= member.gender === 2 ? 'selected' : '' %>>
-                  Perempuan
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Nomor Telepon</label
-              >
-              <input
-                type="text"
-                name="member_phone"
-                value="<%= member.member_phone || '' %>"
-                class="block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#FFD700]"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Email</label
-              >
-              <input
-                type="email"
-                name="member_email"
-                value="<%= member.member_email || '' %>"
-                class="block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#FFD700]"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Alamat</label
-              >
-              <textarea
-                name="member_address"
-                rows="3"
-                class="block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#FFD700]"
-              ><%= member.member_address || '' %></textarea>
-            </div>
-
-            <div class="flex justify-end gap-3">
-              <a
-                href="/outside/profile"
-                class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium"
-                >Batal</a
-              >
-              <button
-                type="submit"
-                class="px-4 py-2 rounded-lg bg-[#2F7A33] text-white font-medium hover:bg-[#256528] focus:ring-2 focus:ring-[#FFD700]"
-              >
-                Simpan Perubahan
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
     </main>
 
+    <!-- Footer -->
     <%- include('../partials/footer-simple') %>
-  </body>
+
+    <!-- Preview Image Script -->
+    <script>
+        // Preview image before upload
+        const imageInput = document.getElementById('memberImageInput');
+        const imagePreview = document.getElementById('profileImagePreview');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Validasi ukuran file (2MB)
+                const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+                if (file.size > maxSize) {
+                    alert('Ukuran file terlalu besar! Maksimal 2MB.');
+                    imageInput.value = '';
+                    return;
+                }
+
+                // Validasi tipe file
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Format file tidak didukung! Gunakan JPG, PNG, atau GIF.');
+                    imageInput.value = '';
+                    return;
+                }
+
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const phone = document.getElementById('member_phone').value.trim();
+            const email = document.getElementById('member_email').value.trim();
+
+            // Basic validation
+            if (phone && !/^[0-9+\-\s()]+$/.test(phone)) {
+                e.preventDefault();
+                alert('Format nomor telepon tidak valid!');
+                return false;
+            }
+
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                e.preventDefault();
+                alert('Format email tidak valid!');
+                return false;
+            }
+        });
+    </script>
+</body>
 </html>
