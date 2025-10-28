@@ -299,4 +299,4 @@ exports.getFineInfo = async (memberId, itemCode) => {
       fineDate: null
     };
   }
-};
+}; 
