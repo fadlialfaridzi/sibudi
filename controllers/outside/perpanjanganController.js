@@ -522,7 +522,7 @@ exports.extendLoan = async (req, res) => {
           message: 'Jenis koleksi ini tidak dapat diperpanjang.'
         },
         activeNav: 'DetailPinjam',
-        user: req.session.user
+        user: req.session.user 
       });
     }
 
