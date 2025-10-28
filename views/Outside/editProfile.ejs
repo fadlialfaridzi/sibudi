@@ -82,7 +82,7 @@
                                     class="block w-full text-sm text-gray-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 file:cursor-pointer cursor-pointer border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
                                 />
                                 <p class="text-xs text-gray-500 mt-2 text-center">
-                                    Format: JPG, PNG, GIF (Maks. 2MB)
+                                    Format: JPG, PNG (Maks. 2MB)
                                 </p>
                             </div>
                         </div>
@@ -138,47 +138,56 @@
                                 Informasi yang Dapat Diubah
                             </h3>
                             
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <label class="info-label" for="member_phone">Nomor Telepon</label>
-                                    <input 
-                                        type="text" 
-                                        name="member_phone" 
-                                        id="member_phone"
-                                        value="<%= member.member_phone || '' %>"
-                                        placeholder="Contoh: 081234567890"
-                                        pattern="[0-9]+"
-                                        title="Hanya boleh berisi angka"
-                                        class="info-value w-full border-2 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
-                                    />
-                                </div>
-                                
-                                <div class="info-item">
-                                    <label class="info-label" for="member_email">Email</label>
-                                    <input 
-                                        type="email" 
-                                        name="member_email" 
-                                        id="member_email"
-                                        value="<%= member.member_email || '' %>"
-                                        placeholder="Contoh: email@gmail.com"
-                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                        title="Format email tidak valid (contoh: user@gmail.com)"
-                                        class="info-value w-full border-2 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
-                                    />
-                                </div>
-                                
-                                <div class="info-item" style="grid-column: 1 / -1;">
-                                    <label class="info-label" for="member_address">Alamat</label>
-                                    <textarea 
-                                        name="member_address" 
-                                        id="member_address"
-                                        rows="3"
-                                        placeholder="Masukkan alamat lengkap Anda"
-                                        class="info-value w-full border-2 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition resize-none"
-                                    ><%= member.member_address || '' %></textarea>
-                                </div>
-                            </div>
-                        </div>
+                            <div class="info-grid grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <!-- Nomor Telepon -->
+                              <div class="flex flex-col w-full">
+                                  <label class="text-sm font-semibold text-gray-700 mb-2" for="member_phone">
+                                      NOMOR TELEPON
+                                  </label>
+                                  <input 
+                                      type="text" 
+                                      name="member_phone" 
+                                      id="member_phone"
+                                      value="<%= member.member_phone || '' %>"
+                                      placeholder="Contoh: 081234567890"
+                                      pattern="[0-9]+"
+                                      title="Hanya boleh berisi angka"
+                                      class="w-full border-2 border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+                                  />
+                              </div>
+                          
+                              <!-- Email -->
+                              <div class="flex flex-col w-full">
+                                  <label class="text-sm font-semibold text-gray-700 mb-2" for="member_email">
+                                      EMAIL
+                                  </label>
+                                  <input 
+                                      type="email" 
+                                      name="member_email" 
+                                      id="member_email"
+                                      value="<%= member.member_email || '' %>"
+                                      placeholder="Contoh: email@gmail.com"
+                                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                      title="Format email tidak valid (contoh: user@gmail.com)"
+                                      class="w-full border-2 border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+                                  />
+                              </div>
+                          
+                              <!-- Alamat -->
+                              <div class="col-span-1 md:col-span-2 flex flex-col">
+                                  <label class="text-sm font-semibold text-gray-700 mb-2" for="member_address">
+                                      ALAMAT
+                                  </label>
+                                  <textarea 
+                                      name="member_address" 
+                                      id="member_address"
+                                      rows="3"
+                                      placeholder="Masukkan alamat lengkap Anda"
+                                      class="w-full border-2 border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition resize-none"
+                                  ><%= member.member_address || '' %></textarea>
+                              </div>
+                          </div>
+                          
 
                         <!-- Action Buttons -->
                         <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-gray-200">
@@ -229,7 +238,7 @@
                 // Validasi tipe file
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
                 if (!allowedTypes.includes(file.type)) {
-                    alert('Format file tidak didukung! Gunakan JPG, PNG, atau GIF.');
+                    alert('Format file tidak didukung! Gunakan JPG, PNG.');
                     imageInput.value = '';
                     return;
                 }
@@ -248,17 +257,42 @@
             const phone = document.getElementById('member_phone').value.trim();
             const email = document.getElementById('member_email').value.trim();
 
-            // Basic validation
-            if (phone && !/^[0-9+\-\s()]+$/.test(phone)) {
+            // Validasi nomor telepon - hanya angka
+            if (phone && !/^[0-9]+$/.test(phone)) {
                 e.preventDefault();
-                alert('Format nomor telepon tidak valid!');
+                alert('Nomor telepon hanya boleh berisi angka!');
                 return false;
             }
 
-            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            // Validasi panjang nomor telepon
+            if (phone && (phone.length < 10 || phone.length > 15)) {
                 e.preventDefault();
-                alert('Format email tidak valid!');
+                alert('Nomor telepon harus antara 10-15 digit!');
                 return false;
+            }
+
+            // Validasi email - harus ada domain yang valid
+            if (email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+                e.preventDefault();
+                alert('Format email tidak valid! Contoh: user@gmail.com atau user@outlook.com');
+                return false;
+            }
+        });
+
+        // Real-time validation untuk nomor telepon (hanya angka)
+        document.getElementById('member_phone').addEventListener('input', function(e) {
+            // Hapus semua karakter non-digit
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // Real-time validation untuk email
+        document.getElementById('member_email').addEventListener('blur', function(e) {
+            const email = this.value.trim();
+            if (email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+                this.setCustomValidity('Format email tidak valid!');
+                this.reportValidity();
+            } else {
+                this.setCustomValidity('');
             }
         });
     </script>

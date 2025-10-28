@@ -1,6 +1,7 @@
+
 <%# =========================================================
     Detail Peminjaman Page - SiBuDi
-    Full page dengan carousel list buku + detail card
+    CAROUSEL 3D HORIZONTAL - Responsive & Complete Data Display
 ========================================================= %>
 
 <%- include('../partials/header-simple.ejs', { title: title || 'Detail Peminjaman' }) %>
@@ -12,151 +13,251 @@
     <div class="max-w-7xl mx-auto">
       
       <!-- Header Section -->
-      <div class="text-center mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-[#2F7A33] mb-2">
+      <div class="text-center mb-6 md:mb-8">
+        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-[#2F7A33] mb-2">
           <i class="fa-solid fa-book-open mr-2"></i>
           Detail Peminjaman Buku
         </h1>
-        <p class="text-gray-600">Kelola perpanjangan dan lihat detail buku yang Anda pinjam</p>
+        <p class="text-sm md:text-base text-gray-600">Kelola perpanjangan dan lihat detail buku yang Anda pinjam</p>
       </div>
 
       <% if (loans && loans.length > 0) { %>
       
-      <!-- Main Container -->
-      <div id="main-container" class="grid grid-cols-1 lg:grid-cols-3 gap-6 transition-all duration-700">
-        
-        <!-- LEFT SIDE: Carousel List Buku -->
-        <div class="lg:col-span-1 space-y-4">
-          <div class="bg-white rounded-2xl shadow-lg p-6 border border-green-100">
-            <h2 class="text-xl font-bold text-[#2F7A33] mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-layer-group"></i>
-              <span>Buku Dipinjam</span>
-              <span class="ml-auto bg-[#FFD700] text-[#2F7A33] px-3 py-1 rounded-full text-sm font-bold">
-                <%= loans.length %> buku aktif
-              </span>
-            </h2>
+      <!-- CAROUSEL 3D - HORIZONTAL (DI ATAS) -->
+      <div class="mb-6 md:mb-8">
+        <div class="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-green-100">
+          <h2 class="text-lg md:text-xl font-bold text-[#2F7A33] mb-4 md:mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Buku Dipinjam</span>
+            <span class="ml-auto bg-[#FFD700] text-[#2F7A33] px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-bold">
+              <%= loans.length %>
+            </span>
+          </h2>
 
-            <!-- Carousel Container -->
-            <div class="relative">
-              <div id="loan-carousel" class="overflow-hidden">
-                <div id="loan-list" class="space-y-3">
-                  <% loans.forEach((loan, index) => { %>
-                  <div class="loan-item card-3d cursor-pointer rounded-xl border-2 border-gray-200 p-4 transition-all duration-300 hover:border-[#2F7A33] hover:shadow-lg bg-gradient-to-br from-white to-green-50 <%= index === 0 ? 'active ring-2 ring-[#2F7A33]' : '' %>" 
-                       data-index="<%= index %>"
-                       style="min-height: 120px;">
+          <!-- 3D Carousel Container -->
+          <div class="carousel-3d-wrapper">
+            <div class="carousel-3d-scene" id="carousel-3d-scene">
+              <div class="carousel-3d-container" id="carousel-3d-container">
+                <% loans.forEach((loan, index) => { %>
+                <div class="carousel-3d-item <%= index === 0 ? 'active' : '' %>" 
+                     data-index="<%= index %>"
+                     style="--item-index: <%= index %>;">
+                  
+                  <div class="carousel-card">
+                    <!-- Reflection Effect -->
+                    <div class="carousel-reflection"></div>
                     
-                    <div class="flex gap-4">
+                    <!-- Card Content -->
+                    <div class="carousel-card-inner">
                       <!-- Book Image -->
-                      <div class="flex-shrink-0">
+                      <div class="carousel-image-wrapper">
                         <img src="<%= loan.image || '/images/buku.png' %>" 
                              alt="<%= loan.title %>" 
-                             class="w-20 h-28 object-cover rounded-lg shadow-md border border-gray-200">
+                             class="carousel-book-image">
                       </div>
 
                       <!-- Book Info -->
-                      <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-2">
+                      <div class="carousel-info">
+                        <h3 class="carousel-title">
                           <%= loan.title || 'Tanpa Judul' %>
                         </h3>
                         
-                        <div class="space-y-1 text-xs text-gray-600">
-                          <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-barcode text-[#2F7A33] w-4"></i>
-                            <span class="font-mono"><%= loan.item_code %></span>
+                        <div class="carousel-meta">
+                          <div class="meta-item">
+                            <i class="fa-solid fa-barcode text-[#2F7A33]"></i>
+                            <span><%= loan.item_code %></span>
                           </div>
                           
-                          <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-check text-[#2F7A33] w-4"></i>
-                            <span><%= new Date(loan.loan_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) %></span>
+                          <div class="meta-item">
+                            <i class="fa-solid fa-calendar-check text-[#2F7A33]"></i>
+                            <span><%= new Date(loan.loan_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) %></span>
                           </div>
                           
-                          <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-clock text-yellow-600 w-4"></i>
-                            <span class="font-semibold text-yellow-700">
-                              <% 
-                              // Gunakan days_overdue dari controller (hari kerja, skip Minggu & holiday)
-                              const workingDaysOverdue = loan.days_overdue || 0;
-                              const daysColor = workingDaysOverdue > 0 ? 'text-red-600' : 'text-green-600';
-                              %>
-                              <span class="<%= daysColor %>">
-                                <%= workingDaysOverdue > 0 ? `${workingDaysOverdue} hari terlambat` : 'Tepat waktu' %>
-                              </span>
+                          <div class="meta-item">
+                            <i class="fa-solid fa-clock text-yellow-600"></i>
+                            <% 
+                            const workingDaysOverdue = loan.days_overdue || 0;
+                            const daysColor = workingDaysOverdue > 0 ? 'text-red-600' : 'text-green-600';
+                            %>
+                            <span class="font-semibold <%= daysColor %>">
+                              <%= workingDaysOverdue > 0 ? `${workingDaysOverdue} hari` : 'Tepat waktu' %>
                             </span>
                           </div>
                         </div>
 
-                        <!-- Badge Perpanjangan atau No Reborrow -->
-                        <div class="mt-2">
+                        <!-- Badge -->
+                        <div class="carousel-badge">
                           <% if (loan.noReborrow) { %>
-                          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+                          <span class="badge badge-gray">
                             <i class="fa-solid fa-ban"></i>
-                            Tidak bisa diperpanjang
+                            No Reborrow
                           </span>
                           <% } else { %>
-                          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold <%= loan.renewed >= loan.reborrow_limit ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' %>">
+                          <span class="badge <%= loan.renewed >= loan.reborrow_limit ? 'badge-red' : 'badge-green' %>">
                             <i class="fa-solid fa-arrows-rotate"></i>
-                            <%= loan.renewed || 0 %>/<%= loan.reborrow_limit || 2 %> perpanjangan
+                            <%= loan.renewed || 0 %>/<%= loan.reborrow_limit || 2 %>
                           </span>
                           <% } %>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Active Indicator -->
-                    <div class="absolute top-2 right-2 w-3 h-3 rounded-full bg-[#2F7A33] opacity-0 transition-opacity duration-300 active-indicator"></div>
+                    <!-- Active Ring Indicator -->
+                    <div class="active-ring"></div>
                   </div>
-                  <% }); %>
                 </div>
-              </div>
-
-              <!-- Carousel Navigation (if more than 3 books) -->
-              <% if (loans.length > 3) { %>
-              <div class="flex justify-center gap-3 mt-4">
-                <button id="carousel-prev" class="w-10 h-10 rounded-full bg-[#2F7A33] text-white hover:bg-[#256328] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                  <i class="fa-solid fa-chevron-up"></i>
-                </button>
-                <button id="carousel-next" class="w-10 h-10 rounded-full bg-[#2F7A33] text-white hover:bg-[#256328] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                  <i class="fa-solid fa-chevron-down"></i>
-                </button>
-              </div>
-              <% } %>
-            </div>
-          </div>
-        </div>
-
-        <!-- RIGHT SIDE: Detail Buku dengan Hero Image -->
-        <div class="lg:col-span-2 space-y-6">
-          
-          <!-- Hero Image Section -->
-          <div class="bg-gradient-to-br from-[#2F7A33] to-[#1a4d1e] rounded-2xl shadow-2xl overflow-hidden relative" style="height: 280px;">
-            <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.03) 10px, rgba(255,255,255,.03) 20px);"></div>
-            
-            <div class="relative h-full flex items-center justify-center p-8">
-              <div class="text-center">
-                <div class="relative inline-block hero-tilt">
-                  <img id="hero-image" 
-                       src="<%= loans[0].image || '/images/buku.png' %>" 
-                       alt="Book Cover" 
-                       class="w-40 h-56 object-cover rounded-xl shadow-2xl border-4 border-white transform transition-all duration-500"
-                       style="box-shadow: 0 20px 60px rgba(0,0,0,0.4);">
-                  
-                  <!-- Floating Decorations -->
-                  <div class="absolute -top-4 -right-4 w-16 h-16 bg-[#FFD700] rounded-full opacity-30 blur-xl animate-pulse"></div>
-                  <div class="absolute -bottom-4 -left-4 w-20 h-20 bg-yellow-300 rounded-full opacity-20 blur-xl animate-pulse" style="animation-delay: 0.5s;"></div>
-                </div>
+                <% }); %>
               </div>
             </div>
-          </div>
 
-          <!-- Detail Content (akan di-render oleh JS) -->
-          <div id="book-detail" class="space-y-4">
-            <!-- Content will be dynamically inserted here -->
+            <!-- Navigation Buttons -->
+            <% if (loans.length > 1) { %>
+            <button id="carousel-prev-3d" class="carousel-nav-btn carousel-nav-prev">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="carousel-next-3d" class="carousel-nav-btn carousel-nav-next">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <% } %>
+
+            <!-- Indicators -->
+            <% if (loans.length > 1) { %>
+            <div class="carousel-indicators">
+              <% loans.forEach((loan, index) => { %>
+              <button class="indicator <%= index === 0 ? 'active' : '' %>" data-index="<%= index %>"></button>
+              <% }); %>
+            </div>
+            <% } %>
           </div>
         </div>
-
       </div>
 
-      <!-- Hidden Data -->
+      <!-- MAIN CONTENT - RESPONSIVE GRID -->
+      <div id="main-container" class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 transition-all duration-700">
+        
+        <!-- LEFT: Hero Image + Informasi Buku -->
+        <div class="space-y-4 md:space-y-6">
+         
+          <!-- Informasi Buku Card -->
+          <div class="mb-6 md:mb-8">
+          <div id="book-info-card" class="card-3d bg-white rounded-2xl shadow-lg border border-green-100 p-4 md:p-6">
+            <h3 class="text-lg md:text-xl font-bold text-[#2F7A33] mb-3 md:mb-4 flex items-center gap-2">
+              <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+                <i class="fa-solid fa-book text-green-600 text-sm md:text-base"></i>
+              </div>
+              <span>Informasi Buku</span>
+            </h3>
+
+            <div class="space-y-3">
+              <!-- Title & Author -->
+              <div class="border-b border-gray-100 pb-3">
+                <h2 id="detail-title" class="text-lg md:text-xl font-bold text-gray-800 mb-1">
+                  <%= loans[0].title || 'Tanpa Judul' %>
+                </h2>
+                <% if (loans[0].author) { %>
+                <p id="detail-author" class="text-sm text-gray-600">
+                  <i class="fa-solid fa-user mr-2"></i><%= loans[0].author %>
+                </p>
+                <% } %>
+              </div>
+
+              <!-- Book Details Grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <% if (loans[0].publish_year) { %>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-calendar-alt text-blue-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-500">Tahun Terbit</p>
+                    <p id="detail-year" class="font-semibold text-gray-800 truncate"><%= loans[0].publish_year %></p>
+                  </div>
+                </div>
+                <% } %>
+
+                <% if (loans[0].collation_pages) { %>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-file-alt text-yellow-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-500">Jumlah Halaman</p>
+                    <p id="detail-pages" class="font-semibold text-gray-800 truncate"><%= loans[0].collation_pages %></p>
+                  </div>
+                </div>
+                <% } %>
+
+                <% if (loans[0].collation_size) { %>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-ruler-combined text-green-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-500">Ukuran Buku</p>
+                    <p id="detail-size" class="font-semibold text-gray-800 truncate"><%= loans[0].collation_size %></p>
+                  </div>
+                </div>
+                <% } %>
+
+                <% if (loans[0].language) { %>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-language text-indigo-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-500">Bahasa</p>
+                    <p id="detail-language" class="font-semibold text-gray-800 truncate"><%= loans[0].language %></p>
+                  </div>
+                </div>
+                <% } %>
+
+                <% if (loans[0].publisher) { %>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <div class="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-building text-pink-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-500">Penerbit</p>
+                    <p id="detail-publisher" class="font-semibold text-gray-800 truncate"><%= loans[0].publisher %></p>
+                  </div>
+                </div>
+                <% } %>
+
+                <% if (loans[0].coll_type) { %>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-bookmark text-teal-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-500">Jenis Koleksi</p>
+                    <p id="detail-coll-type" class="font-semibold text-gray-800 truncate"><%= loans[0].coll_type %></p>
+                  </div>
+                </div>
+                <% } %>
+
+                <% if (loans[0].location) { %>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-map-marker-alt text-orange-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-500">Lokasi</p>
+                    <p id="detail-location" class="font-semibold text-gray-800 truncate"><%= loans[0].location %></p>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Detail Content (Status, Aturan, Aksi) -->
+        <div id="book-detail" class="space-y-4 md:space-y-6">
+          <!-- Content will be dynamically inserted by main.js -->
+        </div>
+      </div>
+
+      <!-- Hidden Data for JavaScript -->
       <script type="application/json" id="loans-data">
         <%- JSON.stringify(loans.map(loan => ({
           loan_id: loan.loan_id,
@@ -168,11 +269,16 @@
           pages: loan.collation_pages,
           size: loan.collation_size,
           language_id: loan.language,
+          publisher: loan.publisher,
+          coll_type: loan.coll_type,
+          location: loan.location,
           image: loan.image,
           loan_date: loan.loan_date,
           due_date: loan.due_date,
           renewed: loan.renewed,
           reborrow_limit: loan.reborrow_limit,
+          loan_periode: loan.loan_periode,
+          fine_per_day: loan.fine_per_day,
           noReborrow: loan.noReborrow,
           days_overdue: loan.days_overdue,
           calculated_fine: loan.calculated_fine
@@ -184,13 +290,13 @@
       
       <!-- Empty State -->
       <div class="max-w-2xl mx-auto">
-        <div class="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-200">
-          <div class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
-            <i class="fa-solid fa-book-open text-6xl text-gray-400"></i>
+        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center border border-gray-200">
+          <div class="w-24 h-24 md:w-32 md:h-32 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+            <i class="fa-solid fa-book-open text-4xl md:text-6xl text-gray-400"></i>
           </div>
-          <h2 class="text-2xl font-bold text-gray-800 mb-3">Belum Ada Peminjaman Aktif</h2>
-          <p class="text-gray-600 mb-6">Anda belum memiliki buku yang sedang dipinjam. Kunjungi katalog untuk meminjam buku.</p>
-          <a href="/outside/dashboard" class="inline-flex items-center gap-2 px-6 py-3 bg-[#2F7A33] text-white rounded-xl font-semibold hover:bg-[#256328] transition-colors shadow-lg">
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Belum Ada Peminjaman Aktif</h2>
+          <p class="text-sm md:text-base text-gray-600 mb-6">Anda belum memiliki buku yang sedang dipinjam. Kunjungi katalog untuk meminjam buku.</p>
+          <a href="/outside/dashboard" class="inline-flex items-center gap-2 px-6 py-3 bg-[#2F7A33] text-white rounded-xl font-semibold hover:bg-[#256328] transition-colors shadow-lg text-sm md:text-base">
             <i class="fa-solid fa-home"></i>
             Kembali ke Dashboard
           </a>
@@ -204,21 +310,21 @@
 
   <!-- Popup Notification -->
   <% if (popup) { %>
-  <div id="popup-notification" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden transform animate-slideUp">
-      <div class="p-6">
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center <%= popup.type === 'success' ? 'bg-green-100' : popup.type === 'error' ? 'bg-red-100' : 'bg-yellow-100' %>">
-            <i class="fa-solid <%= popup.type === 'success' ? 'fa-circle-check text-green-600' : popup.type === 'error' ? 'fa-circle-xmark text-red-600' : 'fa-triangle-exclamation text-yellow-600' %> text-2xl"></i>
+  <div id="popup-notification" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform animate-slideUp">
+      <div class="p-4 md:p-6">
+        <div class="flex items-start gap-3 md:gap-4">
+          <div class="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center <%= popup.type === 'success' ? 'bg-green-100' : popup.type === 'error' ? 'bg-red-100' : 'bg-yellow-100' %>">
+            <i class="fa-solid <%= popup.type === 'success' ? 'fa-circle-check text-green-600' : popup.type === 'error' ? 'fa-circle-xmark text-red-600' : 'fa-triangle-exclamation text-yellow-600' %> text-lg md:text-2xl"></i>
           </div>
           <div class="flex-1">
-            <h3 class="text-lg font-bold text-gray-800 mb-2"><%= popup.title %></h3>
-            <p class="text-gray-600 text-sm"><%- popup.message %></p>
+            <h3 class="text-base md:text-lg font-bold text-gray-800 mb-2"><%= popup.title %></h3>
+            <p class="text-xs md:text-sm text-gray-600"><%- popup.message %></p>
           </div>
         </div>
       </div>
-      <div class="bg-gray-50 px-6 py-4 flex justify-end gap-3">
-        <button onclick="closePopup()" class="px-6 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition-colors">
+      <div class="bg-gray-50 px-4 md:px-6 py-3 md:py-4 flex justify-end gap-3">
+        <button onclick="closePopup()" class="px-4 md:px-6 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition-colors text-sm md:text-base">
           Tutup
         </button>
       </div>
@@ -237,69 +343,15 @@
 
   <!-- Link CSS Animasi 3D -->
   <link rel="stylesheet" href="/css/animasi3d.css">
-
-  <style>
-    /* Carousel Styling */
-    .loan-item.active {
-      border-color: #2F7A33;
-      background: linear-gradient(135deg, #f8fff8 0%, #e8f5e9 100%);
-      box-shadow: 0 8px 20px rgba(47, 122, 51, 0.15);
-    }
-
-    .loan-item.active .active-indicator {
-      opacity: 1;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes fadeOut {
-      to { opacity: 0; }
-    }
-
-    .animate-fadeIn { animation: fadeIn 0.3s ease; }
-    .animate-slideUp { animation: slideUp 0.4s ease; }
-    .animate-fadeOut { animation: fadeOut 0.3s ease; }
-
-    /* Line Clamp */
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* Smooth Transitions */
-    #main-container[data-active="true"] {
-      animation: slideIn 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    @keyframes slideIn {
-      from { 
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to { 
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Hero Image Hover Effect */
-    #hero-image:hover {
-      transform: scale(1.05) rotateY(5deg);
-    }
-  </style>
+  <link rel="stylesheet" href="/css/carousel.css">
+  
 
   <!-- Main JavaScript -->
   <script src="/js/main.js"></script>
-</body>
-</html>
+
+  <!-- // =====================================================
+  // CAROUSEL 3D NAVIGATION SCRIPT
+  // Complete implementation with responsive 3D transforms
+  // =====================================================
+   -->
+   <script src="/js/carousel.js"></script>

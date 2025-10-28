@@ -36,11 +36,11 @@
                     <div class="profile-avatar-section">
                         <div class="profile-avatar-wrapper">
                             <img 
-                                src="<%= member.profile_image_url %>" 
-                                alt="Foto Profil" 
-                                class="profile-avatar"
-                                onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
-                            />
+                            src="<%= member.profile_image_url || '/images/profile-avatar.png' %>"
+                            alt="Foto Profil"
+                            class="profile-avatar"
+                            onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
+                          />
                         </div>
                         
                         <h2 class="profile-name"><%= member.member_name || '-' %></h2>

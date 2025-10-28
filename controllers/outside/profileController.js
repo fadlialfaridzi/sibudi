@@ -185,6 +185,7 @@ exports.renderEditProfile = async (req, res) => {
 };
 
 // --- Proses Update Profil ---
+// --- Proses Update Profil ---
 exports.updateProfile = async (req, res) => {
     try {
         const member = req.session.user;
@@ -194,66 +195,65 @@ exports.updateProfile = async (req, res) => {
 
         const { member_phone, member_email, member_address } = req.body;
 
-        // Validasi nomor telepon (hanya angka)
+        // Validasi input
         if (member_phone && !/^[0-9]+$/.test(member_phone)) {
             req.flash('error', 'Nomor telepon hanya boleh berisi angka!');
             return res.redirect('/outside/editProfile');
         }
-
-        // Validasi panjang nomor telepon
         if (member_phone && (member_phone.length < 10 || member_phone.length > 15)) {
             req.flash('error', 'Nomor telepon harus antara 10-15 digit!');
             return res.redirect('/outside/editProfile');
         }
-
-        // Validasi format email
         if (member_email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(member_email)) {
-            req.flash('error', 'Format email tidak valid! Gunakan format seperti user@gmail.com');
+            req.flash('error', 'Format email tidak valid!');
             return res.redirect('/outside/editProfile');
         }
 
-        // Ambil data member lama untuk mendapatkan foto lama
-        const [oldData] = await db.query(
-            'SELECT member_image FROM member WHERE member_id = ?',
-            [member.id]
-        );
-
+        // Ambil data lama
+        const [oldData] = await db.query('SELECT member_image FROM member WHERE member_id = ?', [member.id]);
         let memberImage = oldData[0]?.member_image || null;
 
-        // Jika ada file baru diupload
+        // Upload baru?
         if (req.file) {
-            // Hapus foto lama jika ada
             if (oldData[0]?.member_image) {
-                const oldImagePath = path.join(__dirname, '../../public/uploads/profiles', oldData[0].member_image);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
-                    console.log('✅ Old image deleted:', oldData[0].member_image);
-                }
+                const oldPath = path.join(__dirname, '../../public/uploads/profiles', oldData[0].member_image);
+                if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
             }
-
-            // Simpan nama file baru (hanya nama file, bukan path lengkap)
             memberImage = req.file.filename;
-            console.log('✅ New image uploaded:', memberImage);
         }
 
-        // Update database
-        await db.query(
-            `UPDATE member 
-             SET member_phone = ?, 
-                 member_email = ?, 
-                 member_address = ?, 
-                 member_image = ?,
-                 last_update = NOW()
-             WHERE member_id = ?`,
-            [member_phone, member_email, member_address, memberImage, member.id]
-        );
+        // Update DB
+        await db.query(`
+            UPDATE member 
+            SET member_phone = ?, 
+                member_email = ?, 
+                member_address = ?, 
+                member_image = ?, 
+                last_update = NOW() 
+            WHERE member_id = ?
+        `, [member_phone, member_email, member_address, memberImage, member.id]);
 
-        console.log('✅ Profil berhasil diperbarui untuk:', member.id);
+        // 🔄 Refresh data terbaru dari DB untuk session
+        const [updatedRows] = await db.query(`
+            SELECT member_id, member_name, member_email, member_phone, member_image 
+            FROM member WHERE member_id = ?
+        `, [member.id]);
+
+        if (updatedRows.length > 0) {
+            req.session.user = {
+                ...req.session.user,
+                member_name: updatedRows[0].member_name,
+                member_email: updatedRows[0].member_email,
+                member_phone: updatedRows[0].member_phone,
+                member_image: updatedRows[0].member_image
+            };
+        }
+
         req.flash('success', 'Profil berhasil diperbarui!');
         res.redirect('/outside/profile');
     } catch (err) {
         console.error('❌ Error updateProfile:', err);
-        req.flash('error', 'Gagal memperbarui profil. Silakan coba lagi.');
+        req.flash('error', 'Terjadi kesalahan saat memperbarui profil.');
         res.redirect('/outside/editProfile');
     }
 };
