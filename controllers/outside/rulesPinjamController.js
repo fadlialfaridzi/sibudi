@@ -1,13 +1,18 @@
 // controllers/outside/rulesPinjamController.js
 const db = require('../../config/db');
+const { createLogger } = require('../../utils/logger');
+
+const logger = createLogger('rules-pinjam.log');
 
 exports.renderRulesPinjam = async (req, res) => {
+    logger('START: renderRulesPinjam', 'INFO');
     try {
         // Ambil data user dari session
         const user = req.session.user;
 
         // Validasi session
         if (!user || user.role !== 'member') {
+            logger('Sesi tidak valid atau pengguna bukan member. Mengalihkan ke halaman login.', 'WARN');
             req.session.popup = {
                 type: 'error',
                 title: 'Sesi Berakhir',
@@ -18,7 +23,7 @@ exports.renderRulesPinjam = async (req, res) => {
 
         // Ambil tipe member dari session
         const memberTypeId = user.member_type_id;
-        console.log(`👤 Member login: ${user.id} (${memberTypeId})`);
+        logger(`Mengambil aturan peminjaman untuk member ID: ${user.id} (tipe: ${memberTypeId})`, 'INFO');
 
         // Query aturan peminjaman berdasarkan tipe member
         const [loanRules] = await db.query(
@@ -46,8 +51,9 @@ exports.renderRulesPinjam = async (req, res) => {
             [memberTypeId]
         );
 
-        console.log(`📚 Total aturan ditemukan untuk member_type_id=${memberTypeId}: ${loanRules.length}`);
+        logger(`Berhasil menemukan ${loanRules.length} aturan untuk member_type_id=${memberTypeId}.`, 'INFO');
 
+        logger('Rendering halaman rulesPinjam...', 'INFO');
         res.render('outside/rulesPinjam', {
             title: 'Aturan Peminjaman - SIBUDI',
             user,
@@ -56,8 +62,10 @@ exports.renderRulesPinjam = async (req, res) => {
         });
 
         delete req.session.popup;
+        logger('Halaman rulesPinjam berhasil dirender.', 'INFO');
+
     } catch (error) {
-        console.error('❌ Error di rulesPinjamController:', error);
+        logger(`ERROR di renderRulesPinjam: ${error.message}`, 'ERROR');
 
         // Fallback jika terjadi error
         res.render('outside/rulesPinjam', {
