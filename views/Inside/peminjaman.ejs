@@ -116,12 +116,12 @@
         <h3 class="text-xl font-bold flex items-center gap-2">
           <i class="fas fa-user-lock"></i> Autentikasi Peminjam
         </h3>
-        <p class="text-green-100 text-sm mt-1">Masukkan NIM dan Password anggota</p>
+        <p class="text-green-100 text-sm mt-1">Masukkan NIM/NIP dan Password anggota</p>
       </div>
 
       <form id="authForm" class="p-6 space-y-5">
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">NIM Anggota</label>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">NIM/NIP Anggota</label>
           <input 
             type="text" 
             id="borrowerNim" 
@@ -314,7 +314,7 @@
           window.showPopup({
             type: 'warning',
             title: 'Data Tidak Lengkap',
-            message: 'NIM dan Password harus diisi.'
+            message: 'NIM/NIP dan Password harus diisi.'
           });
         }
         return;

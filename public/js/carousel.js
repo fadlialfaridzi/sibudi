@@ -1,23 +1,27 @@
+// public/js/carousel.js
 document.addEventListener('DOMContentLoaded', function() {
     const carouselItems = document.querySelectorAll('.carousel-3d-item');
     const prevBtn = document.getElementById('carousel-prev-3d');
     const nextBtn = document.getElementById('carousel-next-3d');
     const indicators = document.querySelectorAll('.indicator');
-    const loansData = document.getElementById('loans-data');
+    const loansDataEl = document.getElementById('loans-data');
     let currentIndex = 0;
     let loans = [];
   
     // Parse loans data
-    if (loansData) {
+    if (loansDataEl) {
       try {
-        loans = JSON.parse(loansData.textContent);
+        loans = JSON.parse(loansDataEl.textContent);
+        console.log('📚 Carousel.js: Loaded', loans.length, 'loans');
       } catch (err) {
-        console.error('Error parsing loans data:', err);
+        console.error('❌ Carousel.js: Error parsing loans data:', err);
       }
     }
   
     function updateCarousel(newIndex) {
       if (newIndex < 0 || newIndex >= carouselItems.length) return;
+      
+      console.log('🎠 Carousel updating to index:', newIndex);
       
       // Remove active class
       carouselItems.forEach(item => item.classList.remove('active'));
@@ -29,43 +33,33 @@ document.addEventListener('DOMContentLoaded', function() {
         let transform = '';
         let opacity = 1;
         let zIndex = 1;
-        let scale = 1;
-        let rotateY = 0;
-        let translateX = 0;
         
         if (diff === 0) {
-          // Active item (center)
           transform = 'translate(-50%, -50%) translateX(0) rotateY(0deg) scale(1)';
           opacity = 1;
           zIndex = 10;
           item.classList.add('active');
         } else if (diff === -1) {
-          // One item to the left
           transform = 'translate(-50%, -50%) translateX(-200px) rotateY(15deg) scale(0.92)';
           opacity = 0.8;
           zIndex = 2;
         } else if (diff === -2) {
-          // Two items to the left
           transform = 'translate(-50%, -50%) translateX(-400px) rotateY(25deg) scale(0.85)';
           opacity = 0.6;
           zIndex = 1;
         } else if (diff === 1) {
-          // One item to the right
           transform = 'translate(-50%, -50%) translateX(200px) rotateY(-15deg) scale(0.92)';
           opacity = 0.8;
           zIndex = 2;
         } else if (diff === 2) {
-          // Two items to the right
           transform = 'translate(-50%, -50%) translateX(400px) rotateY(-25deg) scale(0.85)';
           opacity = 0.6;
           zIndex = 1;
         } else if (diff < -2) {
-          // Hidden items on the left
           transform = 'translate(-50%, -50%) translateX(-600px) rotateY(35deg) scale(0.7)';
           opacity = 0;
           zIndex = 0;
         } else {
-          // Hidden items on the right
           transform = 'translate(-50%, -50%) translateX(600px) rotateY(-35deg) scale(0.7)';
           opacity = 0;
           zIndex = 0;
@@ -84,45 +78,16 @@ document.addEventListener('DOMContentLoaded', function() {
       
       currentIndex = newIndex;
       
-      // Update detail section (sync with main.js)
-      if (loans[newIndex] && typeof window.showDetail === 'function') {
+      // ✅ PERBAIKAN: Panggil selectBook dari detailPinjam.ejs
+      if (typeof window.selectBook === 'function') {
+        console.log('✅ Calling selectBook from carousel.js');
+        window.selectBook(newIndex);
+      } else if (typeof window.showDetail === 'function') {
+        console.log('✅ Calling showDetail (fallback) from carousel.js');
         window.showDetail(newIndex);
       } else {
-        updateDetailSection(newIndex);
+        console.warn('⚠️ No selectBook or showDetail function found!');
       }
-    }
-  
-    // Update detail section manually if showDetail not available
-    function updateDetailSection(index) {
-      const loan = loans[index];
-      if (!loan) return;
-  
-      // Update hero image
-      const heroImage = document.getElementById('hero-image');
-      if (heroImage) {
-        heroImage.style.opacity = '0';
-        setTimeout(() => {
-          heroImage.src = loan.image || '/images/buku.png';
-          heroImage.style.opacity = '1';
-        }, 200);
-      }
-  
-      // Update book info
-      const titleEl = document.getElementById('detail-title');
-      const authorEl = document.getElementById('detail-author');
-      const yearEl = document.getElementById('detail-year');
-      const editionEl = document.getElementById('detail-edition');
-      const pagesEl = document.getElementById('detail-pages');
-      const sizeEl = document.getElementById('detail-size');
-      const languageEl = document.getElementById('detail-language');
-  
-      if (titleEl) titleEl.textContent = loan.title || 'Tanpa Judul';
-      if (authorEl) authorEl.innerHTML = `<i class="fa-solid fa-user mr-2"></i>${loan.author || '-'}`;
-      if (yearEl) yearEl.textContent = loan.publish_year || '-';
-      if (editionEl) editionEl.textContent = loan.edition || '-';
-      if (pagesEl) pagesEl.textContent = loan.pages || '-';
-      if (sizeEl) sizeEl.textContent = loan.size || '-';
-      if (languageEl) languageEl.textContent = loan.language_id || 'Indonesia';
     }
   
     // Previous button
@@ -148,14 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   
-    // Carousel item click (untuk non-active items)
-    carouselItems.forEach((item, index) => {
-      item.addEventListener('click', function() {
-        if (!item.classList.contains('active')) {
-          updateCarousel(index);
-        }
-      });
-    });
+    // Carousel item click sudah di-handle oleh event delegation di detailPinjam.ejs
+    // Tidak perlu duplikat listener di sini
   
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
@@ -189,11 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
         if (Math.abs(diff) > swipeThreshold) {
           if (diff > 0) {
-            // Swipe left - go to next
             const newIndex = currentIndex < carouselItems.length - 1 ? currentIndex + 1 : 0;
             updateCarousel(newIndex);
           } else {
-            // Swipe right - go to previous
             const newIndex = currentIndex > 0 ? currentIndex - 1 : carouselItems.length - 1;
             updateCarousel(newIndex);
           }
@@ -201,27 +158,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   
-    // Auto-play (optional - comment out if not needed)
-    // let autoplayInterval = setInterval(() => {
-    //   const newIndex = currentIndex < carouselItems.length - 1 ? currentIndex + 1 : 0;
-    //   updateCarousel(newIndex);
-    // }, 5000);
-  
-    // // Pause autoplay on hover
-    // if (carouselWrapper) {
-    //   carouselWrapper.addEventListener('mouseenter', () => {
-    //     clearInterval(autoplayInterval);
-    //   });
-    //   carouselWrapper.addEventListener('mouseleave', () => {
-    //     autoplayInterval = setInterval(() => {
-    //       const newIndex = currentIndex < carouselItems.length - 1 ? currentIndex + 1 : 0;
-    //       updateCarousel(newIndex);
-    //     }, 5000);
-    //   });
-    // }
-  
     // Initialize carousel
     if (carouselItems.length > 0) {
+      console.log('🎠 Initializing carousel with', carouselItems.length, 'items');
       updateCarousel(0);
     }
   
@@ -234,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let transform = '';
         
         if (windowWidth <= 768) {
-          // Mobile layout - less separation
           if (diff === 0) {
             transform = 'translate(-50%, -50%) translateX(0) rotateY(0deg) scale(1)';
           } else if (diff === -1) {
@@ -247,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
             transform = 'translate(-50%, -50%) translateX(300px) rotateY(-30deg) scale(0.7)';
           }
         } else if (windowWidth <= 1024) {
-          // Tablet layout
           if (diff === 0) {
             transform = 'translate(-50%, -50%) translateX(0) rotateY(0deg) scale(1)';
           } else if (diff === -1) {
@@ -271,26 +208,11 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   
-    // Listen to window resize
     window.addEventListener('resize', handleResponsive);
     handleResponsive();
-  });
   
-  // Export untuk digunakan oleh main.js
-  window.carouselUpdateIndex = function(index) {
-    const indicators = document.querySelectorAll('.indicator');
-    const carouselItems = document.querySelectorAll('.carousel-3d-item');
-    
-    // Remove active from all
-    carouselItems.forEach(item => item.classList.remove('active'));
-    indicators.forEach(ind => ind.classList.remove('active'));
-    
-    // Add active to selected
-    if (carouselItems[index]) {
-      carouselItems[index].classList.add('active');
-    }
-    if (indicators[index]) {
-      indicators[index].classList.add('active');
-    }
-  };
-
+    // Export untuk digunakan oleh main.js
+    window.carouselUpdateIndex = function(index) {
+      updateCarousel(index);
+    };
+});

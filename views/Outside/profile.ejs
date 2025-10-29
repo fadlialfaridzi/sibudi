@@ -1,163 +1,153 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %> - SiBuDi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Custom Profile Styling -->
-    <link rel="stylesheet" href="/css/profile-style.css" />
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= title %> - SiBuDi</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
-<body class="min-h-screen flex flex-col">
-    <!-- Navbar -->
-    <%- include('../partials/navbarOutside', { activeNav: 'Profile' }) %>
+        <!-- Custom Profile Styling -->
+        <link rel="stylesheet" href="/css/profile-style.css" />
+    </head>
 
-    <!-- Main Content -->
-    <main class="flex-grow pt-24 pb-16">
-        <div class="profile-container">
-            
-            <!-- Profile Card -->
-            <div class="profile-card">
-                
-                <!-- Header -->
-                <div class="profile-header">
-                    <h1>Profil Member</h1>
-                    <p>Informasi akun dan data keanggotaan Anda</p>
-                </div>
+    <body class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <%- include('../partials/navbarOutside', { activeNav: 'Profile' }) %>
 
-                <!-- Body -->
-                <div class="profile-body">
-                    
-                    <!-- Avatar Section -->
-                    <div class="profile-avatar-section">
-                        <div class="profile-avatar-wrapper">
-                            <img 
-                            src="<%= member.profile_image_url || '/images/profile-avatar.png' %>"
-                            alt="Foto Profil"
-                            class="profile-avatar"
-                            onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
-                          />
-                        </div>
-                        
-                        <h2 class="profile-name"><%= member.member_name || '-' %></h2>
-                        <p class="profile-nim">NIM: <%= member.member_id || '-' %></p>
-                        <p class="profile-expire">Masa aktif hingga <%= member.expire_date_formatted %></p>
-                        
-                        <!-- Action Buttons -->
-                        <div class="profile-actions">
-                            <a href="/outside/editProfile" class="btn-profile btn-primary">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                                Edit Profil
-                            </a>
-                            <a href="/outside/changePassword" class="btn-profile btn-secondary">
-                                <i class="fa-solid fa-key"></i>
-                                Ganti Password
-                            </a>
-                        </div>
+        <!-- Main Content -->
+        <main class="flex-grow pt-24 pb-16">
+            <div class="profile-container">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <!-- Header -->
+                    <div class="profile-header">
+                        <h1>Profil Member</h1>
+                        <p>Informasi akun dan data keanggotaan Anda</p>
                     </div>
 
-                    <!-- Informasi Pribadi -->
-                    <div class="profile-section">
-                        <h3 class="section-title">
-                            <span class="section-icon">
-                                <i class="fa-solid fa-user"></i>
-                            </span>
-                            Informasi Pribadi
-                        </h3>
-                        
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">Nama Lengkap</span>
-                                <span class="info-value"><%= member.member_name || '-' %></span>
+                    <!-- Body -->
+                    <div class="profile-body">
+                        <!-- Avatar Section -->
+                        <div class="profile-avatar-section">
+                            <div class="profile-avatar-wrapper">
+                                <img src="<%= member.profile_image_url || '/images/profile-avatar.png' %>" alt="Foto Profil" class="profile-avatar" onerror="this.onerror=null; this.src='/images/profile-avatar.png';" />
                             </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Jenis Kelamin</span>
-                                <span class="info-value"><%= member.gender_text || '-' %></span>
-                            </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Tanggal Lahir</span>
-                                <span class="info-value"><%= member.birth_date_formatted %></span>
-                            </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Nomor Telepon</span>
-                                <span class="info-value"><%= member.member_phone || '-' %></span>
-                            </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Email</span>
-                                <span class="info-value"><%= member.member_email || '-' %></span>
-                            </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Alamat</span>
-                                <span class="info-value"><%= member.member_address || '-' %></span>
+
+                            <h2 class="profile-name"><%= member.member_name || '-' %></h2>
+                            <p class="profile-nim">NIM: <%= member.member_id || '-' %></p>
+                            <p class="profile-expire">Masa aktif hingga <%= member.expire_date_formatted %></p>
+
+                            <!-- Action Buttons -->
+                            <div class="profile-actions">
+                                <a href="/outside/editProfile" class="btn-profile btn-primary">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    Edit Profil
+                                </a>
+                                <a href="/outside/changePassword" class="btn-profile btn-secondary">
+                                    <i class="fa-solid fa-key"></i>
+                                    Ganti Password
+                                </a>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Informasi Akademik -->
-                    <div class="profile-section">
-                        <h3 class="section-title">
-                            <span class="section-icon">
-                                <i class="fa-solid fa-graduation-cap"></i>
-                            </span>
-                            Informasi Akademik
-                        </h3>
-                        
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">Fakultas</span>
-                                <span class="info-value"><%= member.fak_name || '-' %></span>
-                            </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Program Studi / Jurusan</span>
-                                <span class="info-value"><%= member.pin || '-' %></span>
+                        <!-- Informasi Pribadi -->
+                        <div class="profile-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                                Informasi Pribadi
+                            </h3>
+
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Nama Lengkap</span>
+                                    <span class="info-value"><%= member.member_name || '-' %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Jenis Kelamin</span>
+                                    <span class="info-value"><%= member.gender_text || '-' %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal Lahir</span>
+                                    <span class="info-value"><%= member.birth_date_formatted %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Nomor Telepon</span>
+                                    <span class="info-value"><%= member.member_phone || '-' %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Email</span>
+                                    <span class="info-value"><%= member.member_email || '-' %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Alamat</span>
+                                    <span class="info-value"><%= member.member_address || '-' %></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Status Akun -->
-                    <div class="profile-section">
-                        <h3 class="section-title">
-                            <span class="section-icon">
-                                <i class="fa-solid fa-id-card"></i>
-                            </span>
-                            Status Akun
-                        </h3>
-                        
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">Tanggal Bergabung</span>
-                                <span class="info-value"><%= member.member_since_date_formatted %></span>
+                        <!-- Informasi Akademik -->
+                        <div class="profile-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </span>
+                                Informasi Akademik
+                            </h3>
+
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Fakultas</span>
+                                    <span class="info-value"><%= member.fak_name || '-' %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Program Studi / Jurusan</span>
+                                    <span class="info-value"><%= member.pin || '-' %></span>
+                                </div>
                             </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Tanggal Registrasi</span>
-                                <span class="info-value"><%= member.register_date_formatted %></span>
-                            </div>
-                            
-                            <div class="info-item">
-                                <span class="info-label">Tanggal Kadaluarsa</span>
-                                <span class="info-value"><%= member.expire_date_formatted %></span>
+                        </div>
+
+                        <!-- Status Akun -->
+                        <div class="profile-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">
+                                    <i class="fa-solid fa-id-card"></i>
+                                </span>
+                                Status Akun
+                            </h3>
+
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal Bergabung</span>
+                                    <span class="info-value"><%= member.member_since_date_formatted %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal Registrasi</span>
+                                    <span class="info-value"><%= member.register_date_formatted %></span>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal Kadaluarsa</span>
+                                    <span class="info-value"><%= member.expire_date_formatted %></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+        </main>
 
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <%- include('../partials/footer-simple') %>
-</body>
+        <!-- Footer -->
+        <%- include('../partials/footer-simple') %>
+    </body>
 </html>
