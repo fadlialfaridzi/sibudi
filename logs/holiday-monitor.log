@@ -142,3 +142,9 @@
 [28/10/2025 22:51:48] 📅 Snapshot berhasil dimuat (977 hari libur)
 [28/10/2025 22:51:50] 📅 Snapshot berhasil dimuat (977 hari libur)
 [28/10/2025 22:51:58] 📅 Snapshot berhasil dimuat (977 hari libur)
+[29/10/2025 00:14:11] 📅 Snapshot berhasil dimuat (974 hari libur)
+[29/10/2025 00:14:42] ❌ Error mendeteksi perubahan hari libur: connect ECONNREFUSED 127.0.0.1:3306
+[29/10/2025 00:15:12] ❌ Error mendeteksi perubahan hari libur: connect ECONNREFUSED 127.0.0.1:3306
+[29/10/2025 01:05:24] 📅 Snapshot berhasil dimuat (974 hari libur)
+[29/10/2025 01:14:23] 📅 Snapshot berhasil dimuat (974 hari libur)
+[29/10/2025 01:29:42] 📅 Snapshot berhasil dimuat (974 hari libur)

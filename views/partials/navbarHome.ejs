@@ -16,8 +16,7 @@
             <div class="hidden md:flex items-center space-x-8 relative nav-container">
                 <div id="nav-slider" class="absolute bg-[#2F7A33]/10 rounded-lg transition-all duration-300 ease-in-out"></div>
                 <a href="/" class="nav-link relative z-10 text-gray-700 hover:text-[#2F7A33] font-medium transition py-2 px-3" data-name="Home" data-url="/" data-index="0"> Home </a>
-                <a href="/about" class="nav-link relative z-10 text-gray-700 hover:text-[#2F7A33] font-medium transition py-2 px-3" data-name="About" data-url="/about" data-index="1"> About </a>
-                <a href="/panduan" class="nav-link relative z-10 text-gray-700 hover:text-[#2F7A33] font-medium transition py-2 px-3" data-name="Panduan" data-url="/panduan" data-index="2"> Panduan Pengguna </a>
+                <a href="#about" class="nav-link relative z-10 text-gray-700 hover:text-[#2F7A33] font-medium transition py-2 px-3" data-name="About" data-url="#about" data-index="1"> About </a>
             </div>
 
             <!-- Login/User Button -->
@@ -63,7 +62,7 @@
 
                 <div class="flex flex-col space-y-4 mt-8">
                     <a href="/" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Home">Home</a>
-                    <a href="/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">About</a>
+                    <a href="#about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">About</a>
                     <a href="/panduan" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Panduan">Panduan Pengguna</a>
                 </div>
             </div>
@@ -213,8 +212,17 @@
                 mobileMenu.classList.add('translate-x-full');
             });
 
-            // Active nav highlighting
+            // Active nav highlighting + helpers
             const activeName = "<%= typeof activeNav !== 'undefined' ? activeNav : '' %>";
+            const desktopLinks = Array.from(document.querySelectorAll('.nav-link'));
+            const mobileLinks = Array.from(document.querySelectorAll('.nav-link-mobile'));
+
+            function setActiveByName(name) {
+                desktopLinks.forEach(l => l.classList.toggle('nav-active', l.dataset.name === name));
+                mobileLinks.forEach(l => l.classList.toggle('nav-active', l.dataset.name === name));
+                const link = document.querySelector(`.nav-link[data-name="${name}"]`);
+                if (link) updateSliderPosition(link);
+            }
 
             // Update navbar slider position
             function updateSliderPosition(activeLink) {
@@ -250,6 +258,7 @@
             document.querySelectorAll('.nav-link').forEach((link) => {
                 const name = link.dataset.name;
                 const url = link.dataset.url;
+                const href = link.getAttribute('href') || '';
                 
                 // Set active state
                 if (name.toLowerCase() === activeName.toLowerCase()) {
@@ -258,30 +267,25 @@
                 
                 // Add click handler untuk smooth transition
                 link.addEventListener('click', (e) => {
-                    // Update slider position dengan animasi
-                    updateSliderPosition(link);
-                    
-                    // Show loading animation immediately
-                    const loader = document.getElementById('page-loader');
-                    if (loader) {
-                        loader.classList.add('show');
-                        // Prevent user from clicking again
+                    const isAnchor = href.startsWith('#');
+                    if (isAnchor) {
                         e.preventDefault();
-                        
-                        // Store the target URL
-                        const targetUrl = url;
-                        
-                        // Smooth scroll to top
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
-                        
-                        // Navigate after animation delay
-                        setTimeout(() => {
-                            window.location.href = targetUrl;
-                        }, 600);
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            setActiveByName(name);
+                        }
+                        return;
                     }
+                    // Non-anchor: keep existing behavior
+                    updateSliderPosition(link);
+                    const loader = document.getElementById('page-loader');
+                    if (!loader) return;
+                    loader.classList.add('show');
+                    e.preventDefault();
+                    const targetUrl = url;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => { window.location.href = targetUrl; }, 600);
                 });
                 
                 // Add hover effect untuk preview slider position
@@ -327,6 +331,7 @@
             // Handle mobile nav clicks
             document.querySelectorAll('.nav-link-mobile').forEach((link) => {
                 const name = link.dataset.name;
+                const href = link.getAttribute('href') || '';
                 
                 // Set active state
                 if (name.toLowerCase() === activeName.toLowerCase()) {
@@ -334,16 +339,41 @@
                 }
                 
                 link.addEventListener('click', (e) => {
-                    // Show loading animation for mobile
-                    const loader = document.getElementById('page-loader');
-                    if (loader) {
-                        loader.classList.add('show');
+                    const isAnchor = href.startsWith('#');
+                    if (isAnchor) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            setActiveByName(name);
+                        }
+                        mobileMenu.classList.add('translate-x-full');
+                        return;
                     }
-                    
-                    // Close mobile menu immediately
+                    // Non-anchor: show loader and close
+                    const loader = document.getElementById('page-loader');
+                    if (loader) loader.classList.add('show');
                     mobileMenu.classList.add('translate-x-full');
                 });
             });
+
+            // Scroll spy: set About active when #about intersects
+            const aboutSection = document.querySelector('#about');
+            if (aboutSection) {
+                const spyObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setActiveByName('About');
+                        } else {
+                            // If near top, highlight Home
+                            if (window.scrollY < (aboutSection.offsetTop - 100)) {
+                                setActiveByName('Home');
+                            }
+                        }
+                    });
+                }, { threshold: 0.3 });
+                spyObserver.observe(aboutSection);
+            }
         });
     </script>
 </nav>
