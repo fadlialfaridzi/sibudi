@@ -1,21 +1,14 @@
 <%# =========================================================
     Navbar Outside (Member/Peminjam) - SiBuDi
-    Tema: Hijau Unand (#2F7A33), Kuning (#FFD700)
-    Framework: Tailwind + Preline
-    Fitur: Dropdown user profile icon dengan foto dari database
+    Fitur: Gambar profil otomatis dari DB dengan fallback
 ========================================================= %>
 
 <%
-    // Helper function untuk mendapatkan profile image URL
-    function getProfileImageUrl(user) {
-        if (!user || !user.member_image) {
-            return '/images/profile-avatar.png';
-        }
-        return `/uploads/profiles/${user.member_image}`;
-    }
-
-    const profileImageUrl = getProfileImageUrl(user);
+    const profileImageUrl = user && user.member_image
+        ? `/uploads/profiles/${user.member_image}`
+        : '/images/profile-avatar.png';
 %>
+
 
 <nav class="fixed top-0 left-0 w-full bg-[#F8FFF8] shadow-sm z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,7 +39,7 @@
                         class="w-8 h-8 rounded-full object-cover border-2 border-[#2F7A33]"
                         onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
                     />
-                    <span class="text-sm font-medium"><%= user.name || user.member_name %></span>
+                    <span class="text-sm font-medium"><%= user.member_name || user.name %></span>
                     <i class="fa-solid fa-chevron-down text-xs"></i>
                 </button>
 
@@ -71,54 +64,8 @@
             </div>
         </div>
     </div>
+</nav>
 
-    <!-- Mobile Sidebar Menu -->
-    <div id="nav-outside-menu" class="fixed top-0 right-0 h-full w-3/4 bg-[#F8FFF8] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
-        <div class="flex flex-col h-full justify-between">
-            <div class="p-6 space-y-6">
-                <!-- Header -->
-                <div class="flex justify-between items-center">
-                    <h2 class="text-2xl font-bold text-[#2F7A33]">SIBUDI</h2>
-                    <button id="nav-outside-close" class="text-[#2F7A33] focus:outline-none">
-                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Profile Section -->
-                <% if (user) { %>
-                <div class="flex flex-col items-center text-center mt-6 border-b pb-4">
-                    <img 
-                        src="<%= profileImageUrl %>" 
-                        alt="Profile" 
-                        class="w-20 h-20 rounded-full border-2 border-[#2F7A33] mb-3 object-cover" 
-                        onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
-                    />
-                    <h3 class="text-lg font-semibold text-[#2F7A33]"><%= user.member_name || user.name %></h3>
-                    <p class="text-gray-600 text-sm"><%= user.member_id || user.email %></p>
-                    <a href="/outside/profile" class="mt-3 px-4 py-1 text-sm bg-[#FFD700] text-[#2F7A33] rounded-lg font-medium hover:bg-yellow-400 transition">Lihat Profil</a>
-                </div>
-                <% } %>
-
-                <!-- Navigation Menu -->
-                <div class="flex flex-col space-y-4 mt-6">
-                    <a href="/outside/dashboard" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Dashboard">Dashboard</a>
-                    <a href="/outside/rulesPinjam" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="RulesPinjam">Aturan Peminjaman</a>
-                    <a href="/outside/detailPinjam" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="DetailPinjam">Detail Peminjaman</a>
-                    <a href="/outside/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">Tentang System</a>
-                </div>
-            </div>
-
-            <div class="p-6 border-t">
-                <% if (user) { %>
-                <a href="/logout" class="block w-full text-center py-2 bg-[#2F7A33] text-white font-bold rounded-lg hover:bg-[#256328] transition">Logout</a>
-                <% } else { %>
-                <a href="/login" class="block w-full text-center py-2 bg-[#FFD700] text-[#2F7A33] font-bold rounded-lg hover:bg-yellow-400 transition">Login</a>
-                <% } %>
-            </div>
-        </div>
-    </div>
 
     <style>
         .nav-active {
