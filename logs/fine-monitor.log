@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [29/10/2025 10:33:20] 💰 ⚠️ Skip HBH14UA0787: loan rule not found (rule_id: 0)
 [29/10/2025 10:33:20] 💰 ⚠️ Skip 33801298502: loan rule not found (rule_id: 0)
 [29/10/2025 10:33:20] 💰 ⚠️ Skip 17020030960: loan rule not found (rule_id: 0)
@@ -998,3 +999,1005 @@
 [31/10/2025 20:50:53] 💰 ✅ Fine recalculation complete: 431 processed, 0 updated, 211 inserted, 0 errors
 [31/10/2025 20:51:53] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
 [31/10/2025 20:52:53] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+=======
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 20128M04192: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 20128M03609: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13HBMUA0775: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 140/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 17020030201: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 12HBM1W1576: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 34100332504: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 34100339501: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM15UA2136: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 57400432513: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 57400428102: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM15UA4878: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip Q2012904212: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 91001023204: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 150/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM15UA3724: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM15UA2706: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 17020030186: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 17020030514: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 12BOPTN2955: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 17020030563: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 64100639405: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 18000210054: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 51900438002: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 59500440701: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 160/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 32000367804: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13BOPTN1269: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 17020030312: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip SIRPUSAT073: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13BOPTN4478: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 16BOPTN0695: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM17UA1627: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 20128M00059: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 18100052001: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 00100048001: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 170/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 15boptn0572: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip Q2012901231: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBH14UA0514: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM16UA1262: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 18000223998: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 17020030149: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM17UA2687: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 33900148601: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 32000339403: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 54300444606: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 180/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBH14UA0787: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 33801298502: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 17020030960: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM17UA4764: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip Q2012905068: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip Q2012904514: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 18000221717: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 19000220393: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 34501243801: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13HBMUA1384: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 190/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 2X700086303: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip SIRPUSAT198: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 12REPAIR273: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip Q2012903360: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip BPS16UA0059: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13boptn1349: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13boptn9413: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip BPS16UA0021: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip BPS16UA0017: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 30200327105: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 200/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 20000221532: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip SIRPUSAT162: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip P2012804603: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 21000222076: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 18000220998: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 39800346103: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 12HBM1W1763: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 12BOPTN1470: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 12hbm1w1228: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 21000224129: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 210/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 20000221084: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 19000220126: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 23000220335: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM15UA0873: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13BOPTN1971: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13boptn4156: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 19000223469: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 24000223297: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 30101201601: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 21000222240: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 📊 Progress: 220/221 loans processed...
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 23000221985: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 24000221449: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 24000223296: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 22000223114: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip CIND300X011: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip HBM17UA4508: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 23000223554: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 24000225153: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 13BOPTN5109: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 ⚠️ Skip 12BOPTN0944: loan rule not found (rule_id: 0)
+[29/10/2025 10:24:14] 💰 💵 HBM15UA3121: 3 working days overdue × Rp1000 = Rp3000
+[29/10/2025 10:24:14] 💰 ✅ Fine recalculation complete: 221 processed, 0 updated, 0 inserted, 0 errors
+[29/10/2025 10:25:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:26:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:27:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:28:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:29:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:30:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:31:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:32:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:33:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:34:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:35:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:36:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:37:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:38:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:39:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:40:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:41:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:42:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:43:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:44:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:45:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:46:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:47:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:48:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:49:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:50:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:51:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:52:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:53:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:54:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:55:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:56:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:57:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:58:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 10:59:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:00:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:01:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:02:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:03:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:04:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:05:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:06:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:07:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:08:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:09:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:10:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:11:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:12:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:13:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:14:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:15:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:16:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:17:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:18:14] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:19:15] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:20:15] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:21:02] 💰 🕐 Menjalankan perhitungan denda awal saat startup...
+[29/10/2025 11:21:02] 💰 ================================================================================
+[29/10/2025 11:21:02] 💰 PERHITUNGAN ULANG DENDA DIMULAI
+[29/10/2025 11:21:02] 💰 Mode: Per-Item (berdasarkan item_code)
+[29/10/2025 11:21:02] 💰 📊 Found 222 overdue loans (filtered from active loans)
+[29/10/2025 11:21:02] 💰 🔄 Processing 222 overdue loans in batches of 10000...
+[29/10/2025 11:21:02] 💰 📦 Batch 1: Processing loans 1 to 222
+[29/10/2025 11:21:02] 💰 📊 Progress: 10/222 loans processed...
+[29/10/2025 11:21:02] 💰 ⚠️ Skip 65701097003: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip 65800913804: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip P2012800300: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip 33000182203: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip Q2012900230: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip 10000064001: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip P2012804663: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip 53000595801: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:02] 💰 ⚠️ Skip P2012804456: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 53000417213: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 20/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 57400413710: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M05990: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 54100416907: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012800606: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN3856: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M04252: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 32300178501: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 53000417905: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 61600680201: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip Q2012900587: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 30/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 62100892804: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 54700420912: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 57400434213: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN3442: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 30200327106: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012805627: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 58100431518: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012804236: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17101112801: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 57601228301: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 40/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M04704: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 33600134103: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M03058: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 57100604307: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M03441: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W2064: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN1786: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 33600351806: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 65701093703: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 51000596802: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 50/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 51200424707: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 53000428303: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012804782: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 30101199001: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN3548: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M05340: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34700342903: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 51500599707: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34500328102: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN2706: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 60/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W0037: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 57400597901: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 59100442603: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA1443: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA1264: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN0089: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34400331302: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34400353501: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN2238: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W1280: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 70/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 65800914306: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip Q2012900507: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 10900066801: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 53000415705: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012804300: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 4X000403014: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 4X000396907: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN4913: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 53000593408: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012805815: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 80/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA1162: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA1857: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 54000423710: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 29701325601: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34500328105: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34200145502: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN7616: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA0516: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W5547: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA1183: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 90/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 51500599604: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M05439: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 4X001157702: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W4980: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN5311: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012800587: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM15UA2316: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN6171: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 50000424808: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM16UA1344: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 100/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM17UA2944: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 00300008405: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM17UA0989: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M04326: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000222518: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 53001292104: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 53000430806: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBH2015WN23: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM15UA4023: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 63600633508: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 110/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM17UA2856: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 32300338401: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012803684: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M02118: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN2573: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 32300368301: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN1257: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 63100902904: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 63000632106: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000223559: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 120/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000225113: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 58100426505: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W3825: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN7608: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN1251: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 30100114504: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 32000181601: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip SIRPUSAT029: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip CIND500B460: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 55100606906: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 130/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012804793: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000225571: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 32300182002: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M02411: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W0240: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012804287: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 30100355605: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M04192: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M03609: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA0775: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 140/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17020030201: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W1576: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34100332504: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34100339501: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM15UA2136: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 57400432513: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 57400428102: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM15UA4878: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip Q2012904212: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 91001023204: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 150/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM15UA3724: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM15UA2706: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17020030186: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17020030514: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN2955: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17020030563: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 64100639405: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000210054: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 51900438002: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 59500440701: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 160/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 32000367804: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN1269: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17020030312: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip SIRPUSAT073: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN4478: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 16BOPTN0695: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM17UA1627: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20128M00059: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18100052001: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 00100048001: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 170/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 15boptn0572: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip Q2012901231: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBH14UA0514: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM16UA1262: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000223998: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17020030149: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM17UA2687: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 33900148601: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 32000339403: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 54300444606: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 180/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBH14UA0787: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 33801298502: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 17020030960: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM17UA4764: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip Q2012905068: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip Q2012904514: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000221717: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 19000220393: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 34501243801: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13HBMUA1384: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 190/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 2X700086303: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip SIRPUSAT198: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12REPAIR273: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip Q2012903360: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip BPS16UA0059: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13boptn1349: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13boptn9413: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip BPS16UA0021: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip BPS16UA0017: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 30200327105: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 200/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20000221532: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip SIRPUSAT162: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip P2012804603: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 21000222076: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 18000220998: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 39800346103: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12HBM1W1763: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN1470: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12hbm1w1228: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 21000224129: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 210/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 20000221084: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 19000220126: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 23000220335: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM15UA0873: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN1971: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13boptn4156: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 19000223469: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 24000223297: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 30101201601: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 21000222240: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 📊 Progress: 220/222 loans processed...
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 23000221985: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 24000221449: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 24000223296: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 22000223114: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip CIND300X011: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip HBM17UA4508: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 23000223554: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 24000225153: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 13BOPTN5109: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 ⚠️ Skip 12BOPTN0944: loan rule not found (rule_id: 0)
+[29/10/2025 11:21:03] 💰 💵 HBM15UA3121: 3 working days overdue × Rp1000 = Rp3000
+[29/10/2025 11:21:03] 💰 ✅ Fine recalculation complete: 222 processed, 0 updated, 0 inserted, 0 errors
+[29/10/2025 11:22:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:23:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:24:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:25:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:26:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:27:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:28:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:29:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:30:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:31:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:32:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:33:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:34:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:35:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:36:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:37:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:38:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:39:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:40:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:41:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:42:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:43:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:44:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:45:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:46:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:47:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:48:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:49:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:50:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:51:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 11:52:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:04:44] 💰 🕐 Menjalankan perhitungan denda awal saat startup...
+[29/10/2025 18:04:44] 💰 ================================================================================
+[29/10/2025 18:04:44] 💰 PERHITUNGAN ULANG DENDA DIMULAI
+[29/10/2025 18:04:44] 💰 Mode: Per-Item (berdasarkan item_code)
+[29/10/2025 18:04:44] 💰 📊 Found 222 overdue loans (filtered from active loans)
+[29/10/2025 18:04:44] 💰 🔄 Processing 222 overdue loans in batches of 10000...
+[29/10/2025 18:04:44] 💰 📦 Batch 1: Processing loans 1 to 222
+[29/10/2025 18:04:44] 💰 📊 Progress: 10/222 loans processed...
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 65701097003: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 65800913804: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip P2012800300: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 33000182203: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip Q2012900230: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 10000064001: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip P2012804663: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 53000595801: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip P2012804456: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 53000417213: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 📊 Progress: 20/222 loans processed...
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 57400413710: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 20128M05990: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 54100416907: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip P2012800606: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 12BOPTN3856: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 20128M04252: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 32300178501: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 53000417905: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip Q2012900587: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 62100892804: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 📊 Progress: 30/222 loans processed...
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 54700420912: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 57400434213: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 12BOPTN3442: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 30200327106: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip P2012805627: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 58100431518: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip P2012804236: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 33600351806: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 65701093703: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 51000596802: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 📊 Progress: 40/222 loans processed...
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 51200424707: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 53000428303: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip P2012804782: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 61600680201: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 30101199001: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 17101112801: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 57601228301: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 20128M04704: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 33600134103: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 20128M03058: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 📊 Progress: 50/222 loans processed...
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 57100604307: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:44] 💰 ⚠️ Skip 20128M03441: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W2064: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN1786: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN3548: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M05340: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34700342903: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 51500599707: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34500328102: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN2706: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 60/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W0037: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 57400597901: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 59100442603: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA1443: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA1264: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN0089: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34400331302: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34400353501: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN2238: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W1280: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 70/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 65800914306: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip Q2012900507: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 10900066801: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 53000415705: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip P2012804300: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 4X000403014: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 4X000396907: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN4913: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 53000593408: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip P2012805815: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 80/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA1162: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA1857: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 54000423710: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 29701325601: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34500328105: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34200145502: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN7616: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA0516: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W5547: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA1183: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 90/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 51500599604: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M05439: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 4X001157702: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W4980: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN5311: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip P2012800587: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM15UA2316: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN6171: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 50000424808: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM16UA1344: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 100/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM17UA2944: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 00300008405: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM17UA0989: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M04326: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000222518: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 53001292104: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 53000430806: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBH2015WN23: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM15UA4023: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 63600633508: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 110/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM17UA2856: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 32300338401: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip P2012803684: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M02118: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN2573: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 32300368301: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN1257: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 63100902904: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 63000632106: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000223559: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 120/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000225113: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 58100426505: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W3825: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN7608: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN1251: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 30100114504: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 32000181601: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip SIRPUSAT029: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip CIND500B460: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 55100606906: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 130/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip P2012804793: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000225571: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 32300182002: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M02411: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W0240: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip P2012804287: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 30100355605: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M04192: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M03609: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA0775: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 140/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 17020030201: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W1576: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34100332504: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34100339501: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM15UA2136: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 57400432513: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 57400428102: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM15UA4878: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip Q2012904212: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 91001023204: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 150/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM15UA3724: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM15UA2706: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 17020030186: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 17020030514: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN2955: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 17020030563: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 64100639405: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000210054: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 51900438002: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 59500440701: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 160/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 32000367804: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN1269: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 17020030312: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip SIRPUSAT073: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN4478: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 16BOPTN0695: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM17UA1627: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20128M00059: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18100052001: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 00100048001: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 170/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 15boptn0572: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip Q2012901231: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBH14UA0514: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM16UA1262: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000223998: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 17020030149: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM17UA2687: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 33900148601: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 32000339403: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 54300444606: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 180/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBH14UA0787: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 33801298502: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 17020030960: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM17UA4764: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip Q2012905068: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip Q2012904514: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000221717: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 19000220393: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 34501243801: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13HBMUA1384: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 190/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 2X700086303: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip SIRPUSAT198: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12REPAIR273: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip Q2012903360: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip BPS16UA0059: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13boptn1349: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13boptn9413: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip BPS16UA0021: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip BPS16UA0017: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 30200327105: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 200/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20000221532: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip SIRPUSAT162: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip P2012804603: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 21000222076: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 18000220998: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 39800346103: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12HBM1W1763: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN1470: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12hbm1w1228: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 21000224129: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 210/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 20000221084: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 19000220126: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 23000220335: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM15UA0873: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN1971: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13boptn4156: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 19000223469: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 24000223297: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 30101201601: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 21000222240: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 📊 Progress: 220/222 loans processed...
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 23000221985: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 24000221449: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 24000223296: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 22000223114: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip CIND300X011: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip HBM17UA4508: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 23000223554: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 24000225153: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 13BOPTN5109: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 ⚠️ Skip 12BOPTN0944: loan rule not found (rule_id: 0)
+[29/10/2025 18:04:45] 💰 💵 HBM15UA3121: 3 working days overdue × Rp1000 = Rp3000
+[29/10/2025 18:04:45] 💰 ✅ Fine recalculation complete: 222 processed, 0 updated, 0 inserted, 0 errors
+[29/10/2025 18:05:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:06:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:07:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:08:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:09:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:10:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:11:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:12:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:13:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:14:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:15:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:16:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:17:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:18:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:19:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:20:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:21:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:22:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:23:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:24:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:25:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:26:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:27:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:28:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:29:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:30:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:31:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:32:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:33:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:34:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:35:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:36:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:37:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:38:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:39:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:40:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:41:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:42:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:43:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:44:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:45:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:46:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:47:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:48:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:49:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:50:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:51:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:52:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[29/10/2025 18:53:45] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[30/10/2025 12:28:49] 💰 🕐 Menjalankan perhitungan denda awal saat startup...
+[30/10/2025 12:28:49] 💰 ================================================================================
+[30/10/2025 12:28:49] 💰 PERHITUNGAN ULANG DENDA DIMULAI
+[30/10/2025 12:28:49] 💰 Mode: Per-Item (berdasarkan item_code)
+[30/10/2025 12:28:49] ❌ ❌ Perhitungan denda awal gagal: Access denied for user ''@'localhost' (using password: NO)
+[30/10/2025 12:30:02] 💰 🕐 Menjalankan perhitungan denda awal saat startup...
+[30/10/2025 12:30:02] 💰 ================================================================================
+[30/10/2025 12:30:02] 💰 PERHITUNGAN ULANG DENDA DIMULAI
+[30/10/2025 12:30:02] 💰 Mode: Per-Item (berdasarkan item_code)
+[30/10/2025 12:30:02] 💰 📊 Found 222 overdue loans (filtered from active loans)
+[30/10/2025 12:30:02] 💰 🔄 Processing 222 overdue loans in batches of 10000...
+[30/10/2025 12:30:02] 💰 📦 Batch 1: Processing loans 1 to 222
+[30/10/2025 12:30:02] 💰 📊 Progress: 10/222 loans processed...
+[30/10/2025 12:30:02] 💰 ⚠️ Skip 65701097003: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 65800913804: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012800300: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 33000182203: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012900230: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 10000064001: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804663: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53000595801: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804456: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53000417213: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 20/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 57400413710: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M05990: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 54100416907: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012800606: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN3856: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M04252: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 32300178501: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53000417905: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012900587: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 62100892804: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 30/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 54700420912: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 57400434213: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN3442: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 30200327106: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012805627: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 58100431518: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804236: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 33600351806: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 65701093703: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 51000596802: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 40/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 51200424707: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53000428303: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804782: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 61600680201: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 30101199001: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17101112801: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 57601228301: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M04704: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 33600134103: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M03058: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 50/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 57100604307: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M03441: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W2064: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN1786: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN3548: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M05340: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34700342903: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 51500599707: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34500328102: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN2706: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 60/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W0037: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 57400597901: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 59100442603: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA1443: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA1264: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN0089: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34400331302: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34400353501: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN2238: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W1280: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 70/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 65800914306: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012900507: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 10900066801: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53000415705: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804300: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 4X000403014: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 4X000396907: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN4913: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53000593408: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012805815: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 80/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA1162: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA1857: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 54000423710: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 29701325601: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34500328105: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34200145502: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN7616: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA0516: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W5547: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA1183: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 90/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 51500599604: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M05439: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 4X001157702: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W4980: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN5311: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012800587: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM15UA2316: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN6171: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 50000424808: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM16UA1344: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 100/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM17UA2944: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 00300008405: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM17UA0989: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M04326: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000222518: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53001292104: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 53000430806: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBH2015WN23: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM15UA4023: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 63600633508: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 110/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM17UA2856: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 32300338401: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012803684: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M02118: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN2573: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 32300368301: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN1257: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 63100902904: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 63000632106: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000223559: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 120/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000225113: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 58100426505: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W3825: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN7608: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN1251: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 30100114504: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 32000181601: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip SIRPUSAT029: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip CIND500B460: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 55100606906: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 130/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804793: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000225571: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 32300182002: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M02411: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W0240: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804287: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 30100355605: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M04192: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M03609: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA0775: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 140/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17020030201: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W1576: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34100332504: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34100339501: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM15UA2136: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 57400432513: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 57400428102: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM15UA4878: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012904212: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 91001023204: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 150/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM15UA3724: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM15UA2706: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17020030186: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17020030514: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN2955: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17020030563: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 64100639405: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000210054: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 51900438002: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 59500440701: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 160/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 32000367804: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN1269: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17020030312: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip SIRPUSAT073: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN4478: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 16BOPTN0695: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM17UA1627: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20128M00059: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18100052001: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 00100048001: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 170/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 15boptn0572: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012901231: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBH14UA0514: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM16UA1262: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000223998: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17020030149: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM17UA2687: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 33900148601: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 32000339403: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 54300444606: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 180/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBH14UA0787: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 33801298502: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 17020030960: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM17UA4764: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012905068: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012904514: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000221717: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 19000220393: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 34501243801: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13HBMUA1384: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 190/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 2X700086303: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip SIRPUSAT198: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12REPAIR273: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip Q2012903360: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip BPS16UA0059: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13boptn1349: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13boptn9413: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip BPS16UA0021: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip BPS16UA0017: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 30200327105: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 200/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20000221532: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip SIRPUSAT162: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip P2012804603: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 21000222076: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 18000220998: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 39800346103: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12HBM1W1763: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN1470: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12hbm1w1228: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 21000224129: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 210/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 20000221084: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 19000220126: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 23000220335: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM15UA0873: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN1971: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13boptn4156: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 19000223469: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 24000223297: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 30101201601: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 21000222240: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 📊 Progress: 220/222 loans processed...
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 23000221985: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 24000221449: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 24000223296: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 22000223114: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip CIND300X011: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip HBM17UA4508: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 23000223554: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 24000225153: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 13BOPTN5109: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 ⚠️ Skip 12BOPTN0944: loan rule not found (rule_id: 0)
+[30/10/2025 12:30:03] 💰 💵 HBM15UA3121: 3 working days overdue × Rp1000 = Rp3000
+[30/10/2025 12:30:03] 💰 ✅ Fine recalculation complete: 222 processed, 0 updated, 0 inserted, 0 errors
+[30/10/2025 12:31:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+[30/10/2025 12:32:03] 💰 ⏸️ Dilewati: perhitungan denda sedang berjalan
+>>>>>>> 3fca69338bc94b70d0e325be16fb7a93fa143491
