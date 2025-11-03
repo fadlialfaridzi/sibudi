@@ -7,6 +7,11 @@ dayjs.extend(customParseFormat);
 
 const fs = require('fs');
 const path = require('path');
+const { createLogger } = require('../../utils/logger');
+
+// Inisialisasi logger khusus untuk peminjaman
+const logger = createLogger('peminjaman.log');
+
 
 // =====================================================
 // 🧮 HELPER: Calculate Due Date (Skip Minggu & Holidays)
@@ -26,15 +31,11 @@ function calculateDueDate(startDate, days, holidays = []) {
   
   // Validasi parsing
   if (!date.isValid()) {
-    console.log(`⚠️ calculateDueDate: Invalid date format "${startDate}", using today as fallback`);
+    logger(`calculateDueDate: Invalid date format "${startDate}", using today as fallback`, 'WARN');
     date = dayjs(); // fallback ke today jika parsing gagal
   }
 
-  console.log(`🧮 calculateDueDate START:`);
-  console.log(`   - startDate: ${startDate}`);
-  console.log(`   - parsed date: ${date.format('YYYY-MM-DD')}`);
-  console.log(`   - days to add: ${days}`);
-  console.log(`   - holidays count: ${holidays.length}`);
+  logger(`calculateDueDate START: startDate=${startDate}, days=${days}, holidays=${holidays.length}`, 'INFO');
 
   let daysAdded = 0;
   let iterations = 0;
@@ -50,15 +51,14 @@ function calculateDueDate(startDate, days, holidays = []) {
     // Skip jika hari Minggu (day() === 0) atau tanggal libur
     if (dayOfWeek !== 0 && !isHoliday) {
       daysAdded++;
-      console.log(`   ✓ Day ${daysAdded}/${days}: ${formatted} (${date.format('ddd')})`);
     } else {
       const reason = dayOfWeek === 0 ? 'Sunday' : 'Holiday';
-      console.log(`   ✗ Skip: ${formatted} (${date.format('ddd')}) - ${reason}`);
+      logger(`calculateDueDate: Skipping ${formatted} (${date.format('ddd')}) - ${reason}`, 'DEBUG');
     }
   }
 
   const result = date.format('YYYY-MM-DD');
-  console.log(`🧮 calculateDueDate END: ${result} (${iterations} iterations)`);
+  logger(`calculateDueDate END: Result=${result} after ${iterations} iterations`, 'INFO');
   
   return result;
 }
@@ -74,6 +74,7 @@ function calculateDueDate(startDate, days, holidays = []) {
  * @returns {Promise<Array<string>>} - Array tanggal libur format YYYY-MM-DD
  */
 async function loadHolidays(connection) {
+  logger('loadHolidays: Attempting to load holidays from snapshot.', 'INFO');
   try {
     const snapshotPath = path.join(__dirname, '../../logs/holiday-snapshot.json');
 
@@ -97,14 +98,15 @@ async function loadHolidays(connection) {
         })
         .filter(date => date !== null);
 
-      console.log(`📁 Menggunakan snapshot holiday versi baru, total: ${holidays.length}`);
+      logger(`loadHolidays: Successfully loaded ${holidays.length} holidays from snapshot.`, 'INFO');
       return holidays;
     }
   } catch (err) {
-    console.warn('⚠️ Gagal membaca snapshot holiday:', err.message);
+    logger(`loadHolidays: Failed to read or parse holiday snapshot. Error: ${err.message}`, 'WARN');
   }
 
   // 🔁 Fallback ke DB kalau snapshot tidak valid
+  logger('loadHolidays: Snapshot not found or invalid, falling back to database.', 'INFO');
   const [holidayRows] = await connection.query('SELECT holiday_date FROM holiday');
   const holidays = holidayRows
     .map(row => {
@@ -113,7 +115,7 @@ async function loadHolidays(connection) {
     })
     .filter(date => date !== null);
 
-  console.log(`📅 Snapshot tidak ditemukan, ambil dari DB: ${holidays.length}`);
+  logger(`loadHolidays: Loaded ${holidays.length} holidays from database.`, 'INFO');
   return holidays;
 }
 
@@ -161,15 +163,22 @@ function parseCollation(collation) {
 // Render halaman utama kios peminjaman
 // =====================================================
 exports.renderPeminjaman = (req, res) => {
+  const user = req.session.user;
+  const ip = req.ip;
+  logger(`START: renderPeminjaman for user: ${user ? user.username : 'Guest'} from IP: ${ip}`, 'INFO');
+
   // Validasi session pustakawan
-  if (!req.session.user || req.session.user.role !== 'pustakawan') {
+  if (!user || user.role !== 'pustakawan') {
+    logger(`Unauthorized access to renderPeminjaman from IP: ${ip}. Redirecting to login.`, 'WARN');
     return res.redirect('/login');
   }
 
+  logger(`Rendering peminjaman page for librarian: ${user.username}`, 'INFO');
   res.render('inside/peminjaman', {
     user: req.session.user,
     popup: null
   });
+  logger(`Successfully rendered peminjaman page for librarian: ${user.username}`, 'INFO');
 };
 
 // =====================================================
@@ -177,9 +186,15 @@ exports.renderPeminjaman = (req, res) => {
 // Mencari dan memvalidasi buku berdasarkan item_code
 // =====================================================
 exports.findBook = async (req, res) => {
+  const user = req.session.user;
+  const ip = req.ip;
+  const { item_code } = req.body;
+  logger(`START: findBook for item_code: '${item_code}' by user: ${user ? user.username : 'Guest'} from IP: ${ip}`, 'INFO');
+
   try {
     // 1️⃣ Validasi session pustakawan
-    if (!req.session.user || req.session.user.role !== 'pustakawan') {
+    if (!user || user.role !== 'pustakawan') {
+      logger(`Unauthorized findBook attempt from IP: ${ip}`, 'WARN');
       return res.status(401).json({
         success: false,
         type: 'error',
@@ -188,10 +203,9 @@ exports.findBook = async (req, res) => {
       });
     }
 
-    const { item_code } = req.body;
-
     // 2️⃣ Validasi input
     if (!item_code || item_code.trim() === '') {
+      logger(`findBook failed: Empty item_code from IP: ${ip}`, 'WARN');
       return res.status(400).json({
         success: false,
         type: 'warning',
@@ -201,23 +215,12 @@ exports.findBook = async (req, res) => {
     }
 
     // 3️⃣ Query buku dengan JOIN ke biblio & mst_item_status
+    logger(`Querying database for item_code: '${item_code.trim()}'`, 'INFO');
     const [rows] = await db.query(`
       SELECT 
-        i.item_id,
-        i.item_code,
-        i.biblio_id,
-        i.item_status_id,
-        i.coll_type_id,
-        i.location_id,
-        b.title,
-        b.sor AS author,
-        b.publish_year,
-        b.image,
-        b.collation,
-        b.language_id,
-        b.publisher_id,
-        ms.item_status_name,
-        ms.no_loan
+        i.item_id, i.item_code, i.biblio_id, i.item_status_id, i.coll_type_id, i.location_id,
+        b.title, b.sor AS author, b.publish_year, b.image, b.collation, b.language_id, b.publisher_id,
+        ms.item_status_name, ms.no_loan
       FROM item i
       LEFT JOIN biblio b ON i.biblio_id = b.biblio_id
       LEFT JOIN mst_item_status ms ON i.item_status_id = ms.item_status_id
@@ -226,6 +229,7 @@ exports.findBook = async (req, res) => {
 
     // ❌ Buku tidak ditemukan di database
     if (rows.length === 0) {
+      logger(`findBook failed: Item_code '${item_code.trim()}' not found in database.`, 'WARN');
       return res.status(404).json({
         success: false,
         type: 'error',
@@ -236,49 +240,21 @@ exports.findBook = async (req, res) => {
 
     const book = rows[0];
     const status = book.item_status_id;
+    logger(`Book found: '${book.title}' with status: '${status}'`, 'INFO');
 
     // =====================================================
     // 🚫 Validasi Status Buku
     // =====================================================
+    const invalidStatusMap = {
+      'MIS': { title: 'Buku Hilang', message: 'Buku ini berstatus hilang dan tidak dapat dipinjam.' },
+      'NL': { title: 'Buku Tidak Dapat Dipinjam', message: 'Buku ini hanya bisa dibaca di perpustakaan dan tidak dapat dipinjam.' },
+      'R': { title: 'Buku Rusak', message: 'Buku ini berstatus rusak dan tidak dapat dipinjam saat ini.' },
+      'DEL': { title: 'Buku Dihapus', message: 'Buku ini telah dihapus dari sistem dan tidak dapat dipinjam.' }
+    };
 
-    // 🔴 Status MIS: Buku hilang
-    if (status === 'MIS') {
-      return res.status(400).json({
-        success: false,
-        type: 'error',
-        title: 'Buku Hilang',
-        message: 'Buku ini berstatus hilang dan tidak dapat dipinjam.'
-      });
-    }
-
-    // 🔴 Status NL: Non-lending (baca di tempat)
-    if (status === 'NL') {
-      return res.status(400).json({
-        success: false,
-        type: 'warning',
-        title: 'Buku Tidak Dapat Dipinjam',
-        message: 'Buku ini hanya bisa dibaca di perpustakaan dan tidak dapat dipinjam.'
-      });
-    }
-
-    // 🔴 Status R: Rusak
-    if (status === 'R') {
-      return res.status(400).json({
-        success: false,
-        type: 'warning',
-        title: 'Buku Rusak',
-        message: 'Buku ini berstatus rusak dan tidak dapat dipinjam saat ini.'
-      });
-    }
-
-    // 🔴 Status DEL: Deleted
-    if (status === 'DEL') {
-      return res.status(400).json({
-        success: false,
-        type: 'error',
-        title: 'Buku Dihapus',
-        message: 'Buku ini telah dihapus dari sistem dan tidak dapat dipinjam.'
-      });
+    if (invalidStatusMap[status]) {
+      logger(`findBook failed: Book status is '${status}' for item_code: '${item_code.trim()}'`, 'WARN');
+      return res.status(400).json({ success: false, type: 'error', ...invalidStatusMap[status] });
     }
 
     // 🔴 Cek apakah buku sedang dipinjam (status PT atau cek loan aktif)
@@ -286,15 +262,13 @@ exports.findBook = async (req, res) => {
       SELECT l.loan_id, l.member_id, m.member_name
       FROM loan l
       LEFT JOIN member m ON l.member_id = m.member_id
-      WHERE l.item_code = ? 
-        AND l.is_lent = 1 
-        AND l.is_return = 0
-      ORDER BY l.loan_date DESC
-      LIMIT 1
+      WHERE l.item_code = ? AND l.is_lent = 1 AND l.is_return = 0
+      ORDER BY l.loan_date DESC LIMIT 1
     `, [item_code.trim()]);
 
     if (loanRows.length > 0) {
       const borrower = loanRows[0];
+      logger(`findBook failed: Book is already on loan to member '${borrower.member_id}'`, 'WARN');
       return res.status(400).json({
         success: false,
         type: 'warning',
@@ -305,6 +279,7 @@ exports.findBook = async (req, res) => {
 
     // 🔴 Validasi no_loan dari mst_item_status (1 = tidak bisa dipinjam)
     if (book.no_loan === 1) {
+      logger(`findBook failed: Book has 'no_loan' flag set for item_code: '${item_code.trim()}'`, 'WARN');
       return res.status(400).json({
         success: false,
         type: 'warning',
@@ -315,6 +290,7 @@ exports.findBook = async (req, res) => {
 
     // ✅ Status valid untuk dipinjam: 0 (tersedia), PT (tapi tidak ada loan aktif)
     if (!['0', 'PT'].includes(status)) {
+      logger(`findBook failed: Invalid status '${status}' for loan for item_code: '${item_code.trim()}'`, 'WARN');
       return res.status(400).json({
         success: false,
         type: 'warning',
@@ -326,14 +302,12 @@ exports.findBook = async (req, res) => {
     // =====================================================
     // ✅ Buku valid dan tersedia untuk dipinjam
     // =====================================================
+    logger(`Book '${item_code.trim()}' is valid for loan.`, 'INFO');
 
     // Cek cover image
     let coverImage = '/images/buku.png'; // default fallback
-    if (book.image) {
-      const imagePath = path.join(__dirname, '../../public', book.image);
-      if (fs.existsSync(imagePath)) {
-        coverImage = `/${book.image}`;
-      }
+    if (book.image && fs.existsSync(path.join(__dirname, '../../public', book.image))) {
+      coverImage = `/${book.image}`;
     }
 
     return res.status(200).json({
@@ -342,23 +316,17 @@ exports.findBook = async (req, res) => {
       title: 'Buku Ditemukan',
       message: 'Buku tersedia dan siap untuk dipinjam.',
       book: {
-        item_code: book.item_code,
-        item_id: book.item_id,
-        biblio_id: book.biblio_id,
-        coll_type_id: book.coll_type_id,
-        location_id: book.location_id,
-        title: book.title || 'Judul tidak tersedia',
-        author: book.author || 'Penulis tidak diketahui',
-        publish_year: book.publish_year || '-',
-        collation: book.collation || '-',
-        language_id: book.language_id,
-        publisher_id: book.publisher_id,
-        cover: coverImage,
-        status: status
+        item_code: book.item_code, item_id: book.item_id, biblio_id: book.biblio_id,
+        coll_type_id: book.coll_type_id, location_id: book.location_id,
+        title: book.title || 'Judul tidak tersedia', author: book.author || 'Penulis tidak diketahui',
+        publish_year: book.publish_year || '-', collation: book.collation || '-',
+        language_id: book.language_id, publisher_id: book.publisher_id,
+        cover: coverImage, status: status
       }
     });
 
   } catch (err) {
+    logger(`Server error in findBook for item_code '${item_code}': ${err.message}`, 'ERROR');
     console.error('❌ Error saat mencari buku:', err);
     return res.status(500).json({
       success: false,
@@ -375,414 +343,159 @@ exports.findBook = async (req, res) => {
 // =====================================================
 exports.borrowBookAPI = async (req, res) => {
   const connection = await db.getConnection();
+  const { item_code, borrower_id, borrower_password } = req.body;
+  const user = req.session.user;
+  const ip = req.ip;
+  logger(`START: borrowBookAPI for item_code: '${item_code}', borrower_id: '${borrower_id}' by user: ${user ? user.username : 'Guest'} from IP: ${ip}`, 'INFO');
   
   try {
-    // =====================================================
     // 1️⃣ Validasi Session Pustakawan
-    // =====================================================
-    if (!req.session.user || req.session.user.role !== 'pustakawan') {
+    if (!user || user.role !== 'pustakawan') {
+      logger(`Unauthorized borrowBookAPI attempt from IP: ${ip}`, 'WARN');
       return res.status(401).json({
-        success: false,
-        type: 'error',
-        title: 'Unauthorized',
+        success: false, type: 'error', title: 'Unauthorized',
         message: 'Hanya pustakawan yang dapat melakukan transaksi ini.'
       });
     }
 
-    const { item_code, borrower_id, borrower_password } = req.body;
-
-    // =====================================================
     // 2️⃣ Validasi Input
-    // =====================================================
     if (!item_code || !borrower_id || !borrower_password) {
+      logger(`borrowBookAPI failed: Missing required fields. item_code=${!!item_code}, borrower_id=${!!borrower_id}, password=${!!borrower_password}`, 'WARN');
       return res.status(400).json({
-        success: false,
-        type: 'warning',
-        title: 'Data Tidak Lengkap',
+        success: false, type: 'warning', title: 'Data Tidak Lengkap',
         message: 'Semua field wajib diisi: Kode Buku, ID Anggota, dan Password.'
       });
     }
 
-    // Start transaction
     await connection.beginTransaction();
+    logger('Database transaction started.', 'INFO');
 
-    // =====================================================
     // 3️⃣ Cek Buku di Database (Double Check)
-    // =====================================================
-    const [itemRows] = await connection.query(`
-      SELECT 
-        i.item_id,
-        i.item_code,
-        i.biblio_id,
-        i.item_status_id,
-        i.coll_type_id,
-        i.location_id,
-        b.title,
-        b.sor AS author,
-        b.publish_year,
-        b.image,
-        b.collation,
-        b.language_id,
-        b.publisher_id
-      FROM item i
-      LEFT JOIN biblio b ON i.biblio_id = b.biblio_id
-      WHERE i.item_code = ?
-    `, [item_code.trim()]);
-
+    const [itemRows] = await connection.query('SELECT i.*, b.title, b.sor AS author, b.publish_year, b.image, b.collation, b.language_id, b.publisher_id FROM item i LEFT JOIN biblio b ON i.biblio_id = b.biblio_id WHERE i.item_code = ?', [item_code.trim()]);
     if (itemRows.length === 0) {
       await connection.rollback();
-      return res.status(404).json({
-        success: false,
-        type: 'error',
-        title: 'Buku Tidak Ditemukan',
-        message: 'Kode buku tidak ditemukan di sistem.'
-      });
+      logger(`borrowBookAPI failed: Item_code '${item_code.trim()}' not found during transaction.`, 'ERROR');
+      return res.status(404).json({ success: false, type: 'error', title: 'Buku Tidak Ditemukan', message: 'Kode buku tidak ditemukan di sistem.' });
     }
-
     const book = itemRows[0];
 
-    // =====================================================
     // 4️⃣ Validasi Akun Anggota (Member)
-    // =====================================================
-    const [memberRows] = await connection.query(
-      'SELECT * FROM member WHERE member_id = ?',
-      [borrower_id.trim()]
-    );
-
+    const [memberRows] = await connection.query('SELECT * FROM member WHERE member_id = ?', [borrower_id.trim()]);
     if (memberRows.length === 0) {
       await connection.rollback();
-      return res.status(404).json({
-        success: false,
-        type: 'error',
-        title: 'Anggota Tidak Ditemukan',
-        message: 'ID anggota tidak ditemukan di sistem.'
-      });
+      logger(`borrowBookAPI failed: Borrower_id '${borrower_id.trim()}' not found.`, 'WARN');
+      return res.status(404).json({ success: false, type: 'error', title: 'Anggota Tidak Ditemukan', message: 'ID anggota tidak ditemukan di sistem.' });
     }
-
     const member = memberRows[0];
 
-    // 🔒 Validasi password member (support bcrypt & plaintext)
-    let isPasswordCorrect = false;
-    if (
-      typeof member.mpasswd === 'string' &&
-      (member.mpasswd.startsWith('$2a$') ||
-        member.mpasswd.startsWith('$2b$') ||
-        member.mpasswd.startsWith('$2y$'))
-    ) {
-      // Password terenkripsi dengan bcrypt
-      isPasswordCorrect = await bcrypt.compare(borrower_password, member.mpasswd);
-    } else {
-      // Password plaintext
-      isPasswordCorrect = borrower_password === member.mpasswd;
-    }
+    // 🔒 Validasi password member
+    const isPasswordCorrect = (typeof member.mpasswd === 'string' && member.mpasswd.match(/^\$2[aby]\$/))
+      ? await bcrypt.compare(borrower_password, member.mpasswd)
+      : borrower_password === member.mpasswd;
 
     if (!isPasswordCorrect) {
       await connection.rollback();
-      return res.status(401).json({
-        success: false,
-        type: 'error',
-        title: 'Password Salah',
-        message: 'Password yang Anda masukkan tidak sesuai.'
-      });
+      logger(`borrowBookAPI failed: Incorrect password for borrower_id '${borrower_id.trim()}'.`, 'WARN');
+      return res.status(401).json({ success: false, type: 'error', title: 'Password Salah', message: 'Password yang Anda masukkan tidak sesuai.' });
     }
+    logger(`Password validation successful for member '${member.member_id}'`, 'INFO');
 
-    // =====================================================
-    // 🆕 Validasi Denda (Member dengan denda aktif tidak boleh meminjam)
-    // =====================================================
-    const [fineRows] = await connection.query(
-      'SELECT SUM(debet - credit) AS total_denda FROM fines WHERE member_id = ?',
-      [member.member_id]
-    );
+    // 5️⃣ Validasi Denda
+    const [fineRows] = await connection.query('SELECT SUM(debet - credit) AS total_denda FROM fines WHERE member_id = ?', [member.member_id]);
     const totalFine = fineRows[0].total_denda || 0;
-
     if (totalFine > 0) {
       await connection.rollback();
-      return res.status(403).json({
-        success: false,
-        type: 'warning',
-        title: 'Masih Ada Denda',
-        message: `Anggota masih memiliki denda sebesar Rp ${totalFine.toLocaleString('id-ID')}. Harap lunasi terlebih dahulu sebelum meminjam buku.`
-      });
+      logger(`borrowBookAPI failed: Member '${member.member_id}' has an outstanding fine of ${totalFine}.`, 'WARN');
+      return res.status(403).json({ success: false, type: 'warning', title: 'Masih Ada Denda', message: `Anggota masih memiliki denda sebesar Rp ${totalFine.toLocaleString('id-ID')}. Harap lunasi terlebih dahulu.` });
     }
 
     // 📅 Cek keanggotaan expired
     const today = dayjs().format('YYYY-MM-DD');
     if (member.expire_date && dayjs(member.expire_date).isBefore(today)) {
       await connection.rollback();
-      return res.status(403).json({
-        success: false,
-        type: 'warning',
-        title: 'Keanggotaan Kedaluwarsa',
-        message: 'Keanggotaan telah kedaluwarsa. Silakan perpanjang keanggotaan terlebih dahulu.'
-      });
+      logger(`borrowBookAPI failed: Membership expired for member '${member.member_id}'. Expire date: ${member.expire_date}`, 'WARN');
+      return res.status(403).json({ success: false, type: 'warning', title: 'Keanggotaan Kedaluwarsa', message: 'Keanggotaan telah kedaluwarsa.' });
     }
 
-    // =====================================================
-    // 5️⃣ Ambil Aturan Peminjaman (mst_loan_rules)
-    // =====================================================
-    const [rulesRows] = await connection.query(`
-      SELECT * FROM mst_loan_rules
-      WHERE member_type_id = ? AND coll_type_id = ?
-      LIMIT 1
-    `, [member.member_type_id, book.coll_type_id]);
-
+    // 6️⃣ Ambil Aturan Peminjaman
+    const [rulesRows] = await connection.query('SELECT * FROM mst_loan_rules WHERE member_type_id = ? AND coll_type_id = ? LIMIT 1', [member.member_type_id, book.coll_type_id]);
     if (rulesRows.length === 0) {
       await connection.rollback();
-      return res.status(400).json({
-        success: false,
-        type: 'error',
-        title: 'Aturan Tidak Ditemukan',
-        message: 'Aturan peminjaman untuk tipe anggota dan koleksi ini tidak ditemukan. Hubungi administrator.'
-      });
+      logger(`borrowBookAPI failed: No loan rules found for member_type '${member.member_type_id}' and coll_type '${book.coll_type_id}'.`, 'ERROR');
+      return res.status(400).json({ success: false, type: 'error', title: 'Aturan Tidak Ditemukan', message: 'Aturan peminjaman untuk tipe anggota dan koleksi ini tidak ditemukan.' });
     }
-
     const loanRule = rulesRows[0];
+    logger(`Loan rule found: loan_limit=${loanRule.loan_limit}, loan_periode=${loanRule.loan_periode}`, 'INFO');
 
-    // =====================================================
-    // 🆕 6️⃣ Validasi Batas Peminjaman Per Tipe Koleksi
-    // =====================================================
-    
-    // Hitung jumlah buku aktif yang sedang dipinjam untuk coll_type_id yang sama
-    const [collTypeCountRows] = await connection.query(`
-      SELECT COUNT(*) as total
-      FROM loan l
-      INNER JOIN item i ON l.item_code = i.item_code
-      WHERE l.member_id = ? 
-        AND i.coll_type_id = ? 
-        AND l.is_return = 0
-    `, [member.member_id, book.coll_type_id]);
-
+    // 7️⃣ Validasi Batas Peminjaman
+    const [collTypeCountRows] = await connection.query('SELECT COUNT(*) as total FROM loan l INNER JOIN item i ON l.item_code = i.item_code WHERE l.member_id = ? AND i.coll_type_id = ? AND l.is_return = 0', [member.member_id, book.coll_type_id]);
     const currentCollTypeLoans = collTypeCountRows[0].total;
-
-    // Cek apakah sudah mencapai loan_limit untuk tipe koleksi ini
     if (currentCollTypeLoans >= loanRule.loan_limit) {
-      // Ambil nama tipe koleksi untuk pesan error
-      const [collTypeRows] = await connection.query(
-        'SELECT coll_type_name FROM mst_coll_type WHERE coll_type_id = ?',
-        [book.coll_type_id]
-      );
-      const collTypeName = collTypeRows.length > 0 ? collTypeRows[0].coll_type_name : 'tipe ini';
-
       await connection.rollback();
-      return res.status(400).json({
-        success: false,
-        type: 'warning',
-        title: 'Batas Peminjaman Tercapai',
-        message: `Kamu telah mencapai maksimal peminjaman untuk tipe buku ${collTypeName} ini. Segera kembalikan terlebih dahulu buku yang kamu pinjam.`
-      });
+      logger(`borrowBookAPI failed: Collection type loan limit reached for member '${member.member_id}'. Limit: ${loanRule.loan_limit}, Current: ${currentCollTypeLoans}`, 'WARN');
+      return res.status(400).json({ success: false, type: 'warning', title: 'Batas Peminjaman Tercapai', message: `Batas peminjaman untuk tipe buku ini telah tercapai.` });
     }
 
-    // =====================================================
-    // 7️⃣ Validasi Total Batas Peminjaman Keseluruhan
-    // =====================================================
-    
-    // Ambil semua aturan untuk member_type_id ini
-    const [allRulesRows] = await connection.query(
-      'SELECT loan_limit FROM mst_loan_rules WHERE member_type_id = ?',
-      [member.member_type_id]
-    );
-
-    // Hitung total maksimum dari semua loan_limit
+    const [allRulesRows] = await connection.query('SELECT loan_limit FROM mst_loan_rules WHERE member_type_id = ?', [member.member_type_id]);
     const totalMaxLoans = allRulesRows.reduce((sum, rule) => sum + (rule.loan_limit || 0), 0);
-
-    // Hitung total buku yang sedang dipinjam (semua tipe koleksi)
-    const [totalCountRows] = await connection.query(`
-      SELECT COUNT(*) as total
-      FROM loan
-      WHERE member_id = ? AND is_return = 0
-    `, [member.member_id]);
-
+    const [totalCountRows] = await connection.query('SELECT COUNT(*) as total FROM loan WHERE member_id = ? AND is_return = 0', [member.member_id]);
     const currentTotalLoans = totalCountRows[0].total;
-
-    // Cek apakah sudah mencapai batas total keseluruhan
     if (currentTotalLoans >= totalMaxLoans) {
       await connection.rollback();
-      return res.status(400).json({
-        success: false,
-        type: 'warning',
-        title: 'Batas Peminjaman Total Tercapai',
-        message: `Kamu telah mencapai batas maksimum total peminjaman (${totalMaxLoans} buku). Harap kembalikan buku terlebih dahulu.`
-      });
+      logger(`borrowBookAPI failed: Total loan limit reached for member '${member.member_id}'. Limit: ${totalMaxLoans}, Current: ${currentTotalLoans}`, 'WARN');
+      return res.status(400).json({ success: false, type: 'warning', title: 'Batas Peminjaman Total Tercapai', message: `Batas maksimum total peminjaman (${totalMaxLoans} buku) telah tercapai.` });
     }
+    logger(`Loan limit validation passed for member '${member.member_id}'`, 'INFO');
 
-    // =====================================================
-    // 8️⃣ Ambil Data Hari Libur (Holiday) - BLACKLIST
-    // =====================================================
+    // 8️⃣ Hitung Due Date
     const holidays = await loadHolidays(connection);
-
-    // =====================================================
-    // 9️⃣ Hitung Due Date (Skip Minggu & Holidays)
-    // =====================================================
     const loanDate = dayjs().format('YYYY-MM-DD');
     const dueDate = calculateDueDate(loanDate, loanRule.loan_periode, holidays);
+    logger(`Calculated due date: ${dueDate} from loan date: ${loanDate} with period: ${loanRule.loan_periode}`, 'INFO');
 
-    console.log(`📅 Loan Date: ${loanDate}, Due Date: ${dueDate} (${loanRule.loan_periode} hari kerja)`);
+    // 9️⃣ Insert Transaksi
+    const librarianUID = user.id;
+    await connection.query('INSERT INTO loan (member_id, item_code, loan_date, due_date, renewed, loan_rules_id, is_lent, is_return, input_date, last_update, uid) VALUES (?, ?, ?, ?, 0, ?, 1, 0, NOW(), NOW(), ?)', [member.member_id, item_code.trim(), loanDate, dueDate, loanRule.loan_rules_id, librarianUID]);
+    logger(`Loan transaction inserted successfully for item '${item_code.trim()}' by member '${member.member_id}'. Librarian: '${librarianUID}'`, 'INFO');
 
-    // =====================================================
-    // 🔟 Ambil UID Pustakawan dari Session
-    // =====================================================
-    const librarianUID = req.session.user.id || null; // username dari tabel user
-
-    if (!librarianUID) {
-      await connection.rollback();
-      return res.status(401).json({
-        success: false,
-        type: 'error',
-        title: 'Session Tidak Valid',
-        message: 'Session pustakawan tidak ditemukan. Silakan login ulang.'
-      });
-    }
-
-    console.log(`👤 Pustakawan UID: ${librarianUID}`);
-
-    // =====================================================
-    // 1️⃣1️⃣ Insert Transaksi ke Tabel Loan
-    // =====================================================
-    await connection.query(`
-      INSERT INTO loan (
-        member_id, item_code, loan_date, due_date, renewed,
-        loan_rules_id, is_lent, is_return, input_date, last_update, uid
-      )
-      VALUES (?, ?, ?, ?, 0, ?, 1, 0, NOW(), NOW(), ?)
-    `, [
-      member.member_id,
-      item_code.trim(),
-      loanDate,
-      dueDate,
-      loanRule.loan_rules_id,
-      librarianUID // UID pustakawan dari session
-    ]);
-
-    console.log(`✅ Transaksi peminjaman berhasil disimpan (UID: ${librarianUID})`);
-
-    // ⚠️ TIDAK MENGUBAH item_status_id (sesuai instruksi)
-    // Status buku tetap seperti semula, kontrol hanya dari tabel loan
-
-    // Commit transaction
     await connection.commit();
+    logger('Database transaction committed.', 'INFO');
 
-    // =====================================================
-    // 1️⃣2️⃣ Ambil Data Tambahan untuk Struk
-    // =====================================================
-
-    // Get language name
-    let languageName = '-';
-    if (book.language_id) {
-      const [langRows] = await connection.query(
-        'SELECT language_name FROM mst_language WHERE language_id = ?',
-        [book.language_id]
-      );
-      if (langRows.length > 0) languageName = langRows[0].language_name;
-    }
-
-    // Get publisher name
-    let publisherName = '-';
-    if (book.publisher_id) {
-      const [pubRows] = await connection.query(
-        'SELECT publisher_name FROM mst_publisher WHERE publisher_id = ?',
-        [book.publisher_id]
-      );
-      if (pubRows.length > 0) publisherName = pubRows[0].publisher_name;
-    }
-
-    // Get location name
-    let locationName = '-';
-    if (book.location_id) {
-      const [locRows] = await connection.query(
-        'SELECT location_name FROM mst_location WHERE location_id = ?',
-        [book.location_id]
-      );
-      if (locRows.length > 0) locationName = locRows[0].location_name;
-    }
-
-    // Get collection type name
-    let collTypeName = '-';
-    if (book.coll_type_id) {
-      const [collRows] = await connection.query(
-        'SELECT coll_type_name FROM mst_coll_type WHERE coll_type_id = ?',
-        [book.coll_type_id]
-      );
-      if (collRows.length > 0) collTypeName = collRows[0].coll_type_name;
-    }
-
-    // Get member type name (HANYA member_type_id dan member_type_name)
-    let memberTypeName = '-';
-    if (member.member_type_id) {
-      const [mtRows] = await connection.query(
-        'SELECT member_type_id, member_type_name FROM mst_member_type WHERE member_type_id = ?',
-        [member.member_type_id]
-      );
-      if (mtRows.length > 0) memberTypeName = mtRows[0].member_type_name;
-    }
-
-    // =====================================================
-    // 1️⃣3️⃣ Parse Collation (Pisah Edisi, Halaman, Ukuran)
-    // =====================================================
+    // 🔟 Siapkan data struk
+    const [langRows] = await connection.query('SELECT language_name FROM mst_language WHERE language_id = ?', [book.language_id]);
+    const [pubRows] = await connection.query('SELECT publisher_name FROM mst_publisher WHERE publisher_id = ?', [book.publisher_id]);
+    const [locRows] = await connection.query('SELECT location_name FROM mst_location WHERE location_id = ?', [book.location_id]);
+    const [collRows] = await connection.query('SELECT coll_type_name FROM mst_coll_type WHERE coll_type_id = ?', [book.coll_type_id]);
+    const [mtRows] = await connection.query('SELECT member_type_name FROM mst_member_type WHERE member_type_id = ?', [member.member_type_id]);
     const { edition, pages, size } = parseCollation(book.collation);
-
-    // =====================================================
-    // 1️⃣4️⃣ Cek Cover Image
-    // =====================================================
     let coverImage = '/images/buku.png';
-    if (book.image) {
-      const imagePath = path.join(__dirname, '../../public', book.image);
-      if (fs.existsSync(imagePath)) {
-        coverImage = `/${book.image}`;
-      }
+    if (book.image && fs.existsSync(path.join(__dirname, '../../public', book.image))) {
+      coverImage = `/${book.image}`;
     }
 
-    // =====================================================
-    // ✅ Return Success Response dengan Data Struk
-    // =====================================================
+    // ✅ Return Success
     return res.status(200).json({
-      success: true,
-      type: 'success',
-      title: 'Peminjaman Berhasil',
-      message: 'Transaksi peminjaman berhasil dilakukan.',
+      success: true, type: 'success', title: 'Peminjaman Berhasil', message: 'Transaksi peminjaman berhasil dilakukan.',
       receipt: {
-        // Book Info
-        book_title: book.title || 'Judul tidak tersedia',
-        author: book.author || 'Penulis tidak diketahui',
-        publish_year: book.publish_year || '-',
-        collation: book.collation || '-',
-        collation_pages: pages || '-',
-        collation_size: size || '-',
-        language: languageName,
-        publisher: publisherName,
-        location: locationName,
-        coll_type: collTypeName,
-        item_code: book.item_code,
-        cover: coverImage,
-
-        // Member Info
-        member_name: member.member_name,
-        member_id: member.member_id,
-        member_type: memberTypeName,
-
-        // Loan Info
-        loan_date: loanDate,
-        due_date: dueDate,
-        loan_periode: loanRule.loan_periode,
-        reborrow_limit: loanRule.reborrow_limit,
-        fine_each_day: loanRule.fine_each_day,
-
-        // Librarian Info
-        librarian_name: req.session.user.realname || req.session.user.id,
-        librarian_uid: librarianUID
+        book_title: book.title || 'N/A', author: book.author || 'N/A', publish_year: book.publish_year || '-',
+        collation_pages: pages || '-', collation_size: size || '-', language: langRows[0]?.language_name || '-',
+        publisher: pubRows[0]?.publisher_name || '-', location: locRows[0]?.location_name || '-',
+        coll_type: collRows[0]?.coll_type_name || '-', item_code: book.item_code, cover: coverImage,
+        member_name: member.member_name, member_id: member.member_id, member_type: mtRows[0]?.member_type_name || '-',
+        loan_date: loanDate, due_date: dueDate, loan_periode: loanRule.loan_periode,
+        reborrow_limit: loanRule.reborrow_limit, fine_each_day: loanRule.fine_each_day,
+        librarian_name: user.realname || user.id, librarian_uid: librarianUID
       }
     });
 
   } catch (err) {
     await connection.rollback();
+    logger(`Server error in borrowBookAPI: ${err.message}`, 'ERROR');
     console.error('❌ Error saat proses peminjaman:', err);
-    return res.status(500).json({
-      success: false,
-      type: 'error',
-      title: 'Kesalahan Server',
-      message: 'Terjadi kesalahan pada server. Silakan coba lagi.'
-    });
+    return res.status(500).json({ success: false, type: 'error', title: 'Kesalahan Server', message: 'Terjadi kesalahan pada server.' });
   } finally {
     connection.release();
+    logger('Database connection released.', 'INFO');
   }
 };
 
@@ -791,29 +504,31 @@ exports.borrowBookAPI = async (req, res) => {
 // Render halaman struk peminjaman
 // =====================================================
 exports.renderStrukPinjam = (req, res) => {
+  const user = req.session.user;
+  const ip = req.ip;
+  logger(`START: renderStrukPinjam for user: ${user ? user.username : 'Guest'} from IP: ${ip}`, 'INFO');
+
   // Validasi session pustakawan
-  if (!req.session.user || req.session.user.role !== 'pustakawan') {
+  if (!user || user.role !== 'pustakawan') {
+    logger(`Unauthorized access to renderStrukPinjam from IP: ${ip}. Redirecting to login.`, 'WARN');
     return res.redirect('/login');
   }
 
   try {
-    // Ambil data receipt dari query string
     const receiptData = req.query.data;
-    
     if (!receiptData) {
+      logger('renderStrukPinjam failed: No receipt data in query string. Redirecting.', 'WARN');
       return res.redirect('/inside/peminjaman');
     }
 
-    // Parse JSON data
     const receipt = JSON.parse(decodeURIComponent(receiptData));
+    logger(`Rendering receipt for item_code: '${receipt.item_code}' and member_id: '${receipt.member_id}'`, 'INFO');
 
-    // Render struk
-    res.render('inside/strukPinjam', {
-      user: req.session.user,
-      receipt: receipt
-    });
+    res.render('inside/strukPinjam', { user: req.session.user, receipt: receipt });
+    logger('Successfully rendered receipt page.', 'INFO');
 
   } catch (err) {
+    logger(`Error rendering receipt: ${err.message}`, 'ERROR');
     console.error('❌ Error saat render struk:', err);
     return res.redirect('/inside/peminjaman');
   }
@@ -834,7 +549,6 @@ function calculateWorkingDaysOverdue(dueDate, currentDate, holidays = []) {
   const due = dayjs(dueDate);
   const current = dayjs(currentDate);
   
-  // Jika belum terlambat, return 0
   if (current.isBefore(due) || current.isSame(due, 'day')) {
     return 0;
   }
@@ -842,13 +556,11 @@ function calculateWorkingDaysOverdue(dueDate, currentDate, holidays = []) {
   const totalDays = current.diff(due, 'day');
   let workingDays = 0;
   
-  // Hitung hari kerja dari due_date + 1 sampai current_date
   for (let i = 1; i <= totalDays; i++) {
     const checkDate = due.add(i, 'day');
     const formatted = checkDate.format('YYYY-MM-DD');
     const dayOfWeek = checkDate.day(); // 0 = Sunday
     
-    // Hitung jika bukan Minggu dan bukan holiday
     if (dayOfWeek !== 0 && !holidays.includes(formatted)) {
       workingDays++;
     }

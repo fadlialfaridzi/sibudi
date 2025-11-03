@@ -7,12 +7,18 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const db = require('../config/db');
+const { createLogger } = require('../utils/logger');
+
+// Inisialisasi logger khusus untuk fitur lupa password
+const logger = createLogger('forget-password.log');
+
 
 // =====================================================
 // Konfigurasi Email Transporter
 // =====================================================
 const createTransporter = () => {
     const emailService = process.env.EMAIL_SERVICE || 'gmail';
+    logger(`Creating email transporter for service: ${emailService}`, 'INFO');
     
     // Konfigurasi untuk Gmail
     if (emailService === 'gmail') {
@@ -43,6 +49,7 @@ const createTransporter = () => {
     }
     
     // Default ke Gmail jika service tidak dikenali
+    logger(`Email service '${emailService}' not recognized, defaulting to gmail.`, 'WARN');
     return nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -56,6 +63,8 @@ const createTransporter = () => {
 // GET /lupa-password - Tampilkan form lupa password
 // =====================================================
 exports.showForgetPassword = (req, res) => {
+    const ip = req.ip;
+    logger(`START: showForgetPassword page rendered for IP: ${ip}`, 'INFO');
     res.render('auth/lupapassword', { popup: null });
 };
 
@@ -63,11 +72,14 @@ exports.showForgetPassword = (req, res) => {
 // POST /lupa-password - Kirim email reset password
 // =====================================================
 exports.sendResetEmail = async (req, res) => {
-    try {
-        const { email } = req.body;
+    const { email } = req.body;
+    const ip = req.ip;
+    logger(`START: sendResetEmail attempt for email: '${email}' from IP: ${ip}`, 'INFO');
 
+    try {
         // Validasi input
         if (!email) {
+            logger(`sendResetEmail failed: Empty email field from IP: ${ip}`, 'WARN');
             return res.status(400).render('auth/lupapassword', {
                 popup: {
                     type: 'warning',
@@ -78,12 +90,14 @@ exports.sendResetEmail = async (req, res) => {
         }
 
         // Cek email di tabel user (pustakawan/admin)
+        logger(`Searching for email '${email}' in user and member tables.`, 'INFO');
         const [userRows] = await db.query('SELECT user_id, username, email FROM user WHERE email = ?', [email]);
 
         // Cek email di tabel member
         const [memberRows] = await db.query('SELECT member_id, member_name, member_email FROM member WHERE member_email = ?', [email]);
 
         if (userRows.length === 0 && memberRows.length === 0) {
+            logger(`sendResetEmail failed: Email '${email}' not found in database.`, 'WARN');
             return res.status(404).render('auth/lupapassword', {
                 popup: {
                     type: 'error',
@@ -96,6 +110,7 @@ exports.sendResetEmail = async (req, res) => {
         // Generate token unik
         const resetToken = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 3600000); // 1 jam dari sekarang
+        logger(`Generated new reset token for email: '${email}'`, 'INFO');
 
         let userId = null;
         let memberId = null;
@@ -106,18 +121,21 @@ exports.sendResetEmail = async (req, res) => {
             userId = userRows[0].user_id;
             userName = userRows[0].username;
             userType = 'user';
+            logger(`Email '${email}' found for user (pustakawan/admin) ID: ${userId}`, 'INFO');
         } else {
             memberId = memberRows[0].member_id;
             userName = memberRows[0].member_name;
             userType = 'member';
+            logger(`Email '${email}' found for member ID: ${memberId}`, 'INFO');
         }
 
         // Simpan token ke database
         await db.query(
             `INSERT INTO password_reset_tokens (user_id, member_id, email, token, user_type, expires_at) 
-             VALUES (?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?)`, 
             [userId, memberId, email, resetToken, userType, expiresAt]
         );
+        logger(`Reset token for '${email}' successfully saved to database.`, 'INFO');
 
         // Kirim email
         const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
@@ -179,6 +197,7 @@ exports.sendResetEmail = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
+        logger(`SUCCESS: Password reset email sent to '${email}'.`, 'INFO');
         console.log(`✅ Email reset password berhasil dikirim ke ${email}`);
 
         return res.render('auth/lupapassword', {
@@ -189,6 +208,7 @@ exports.sendResetEmail = async (req, res) => {
             },
         });
     } catch (err) {
+        logger(`Server error in sendResetEmail for email '${email}': ${err.message}`, 'ERROR');
         console.error('❌ Error saat mengirim email reset password:', err);
         return res.status(500).render('auth/lupapassword', {
             popup: {
@@ -204,9 +224,11 @@ exports.sendResetEmail = async (req, res) => {
 // GET /reset-password/:token - Tampilkan form reset password
 // =====================================================
 exports.showResetPassword = async (req, res) => {
-    try {
-        const { token } = req.params;
+    const { token } = req.params;
+    const ip = req.ip;
+    logger(`START: showResetPassword page accessed with token: '${token}' from IP: ${ip}`, 'INFO');
 
+    try {
         // Validasi token
         const [rows] = await db.query(
             `SELECT * FROM password_reset_tokens 
@@ -215,6 +237,7 @@ exports.showResetPassword = async (req, res) => {
         );
 
         if (rows.length === 0) {
+            logger(`showResetPassword failed: Invalid or expired token '${token}' from IP: ${ip}`, 'WARN');
             return res.render('auth/resetpassword', {
                 popup: {
                     type: 'error',
@@ -225,8 +248,10 @@ exports.showResetPassword = async (req, res) => {
             });
         }
 
+        logger(`Token '${token}' is valid. Rendering reset password page.`, 'INFO');
         res.render('auth/resetpassword', { popup: null, token });
     } catch (err) {
+        logger(`Server error in showResetPassword for token '${token}': ${err.message}`, 'ERROR');
         console.error('❌ Error saat validasi token:', err);
         return res.status(500).render('auth/resetpassword', {
             popup: {
@@ -243,12 +268,15 @@ exports.showResetPassword = async (req, res) => {
 // POST /reset-password/:token - Proses reset password
 // =====================================================
 exports.resetPassword = async (req, res) => {
-    try {
-        const { token } = req.params;
-        const { password, confirmPassword } = req.body;
+    const { token } = req.params;
+    const { password, confirmPassword } = req.body;
+    const ip = req.ip;
+    logger(`START: resetPassword attempt with token: '${token}' from IP: ${ip}`, 'INFO');
 
+    try {
         // Validasi input
         if (!password || !confirmPassword) {
+            logger(`resetPassword failed: Empty password fields for token '${token}'`, 'WARN');
             return res.status(400).render('auth/resetpassword', {
                 popup: {
                     type: 'warning',
@@ -260,6 +288,7 @@ exports.resetPassword = async (req, res) => {
         }
 
         if (password !== confirmPassword) {
+            logger(`resetPassword failed: Passwords do not match for token '${token}'`, 'WARN');
             return res.status(400).render('auth/resetpassword', {
                 popup: {
                     type: 'error',
@@ -271,6 +300,7 @@ exports.resetPassword = async (req, res) => {
         }
 
         if (password.length < 6) {
+            logger(`resetPassword failed: Password too short for token '${token}'`, 'WARN');
             return res.status(400).render('auth/resetpassword', {
                 popup: {
                     type: 'warning',
@@ -289,6 +319,7 @@ exports.resetPassword = async (req, res) => {
         );
 
         if (tokenRows.length === 0) {
+            logger(`resetPassword failed: Invalid or expired token '${token}' during submission.`, 'WARN');
             return res.status(400).render('auth/resetpassword', {
                 popup: {
                     type: 'error',
@@ -301,17 +332,22 @@ exports.resetPassword = async (req, res) => {
 
         const resetData = tokenRows[0];
         const hashedPassword = await bcrypt.hash(password, 10);
+        logger(`Token '${token}' validated for email '${resetData.email}'. Hashing new password.`, 'INFO');
 
         // Update password berdasarkan user_type
         if (resetData.user_type === 'user') {
             await db.query('UPDATE user SET passwd = ? WHERE user_id = ?', [hashedPassword, resetData.user_id]);
+            logger(`Password updated for user ID: ${resetData.user_id}`, 'INFO');
         } else {
             await db.query('UPDATE member SET mpasswd = ? WHERE member_id = ?', [hashedPassword, resetData.member_id]);
+            logger(`Password updated for member ID: ${resetData.member_id}`, 'INFO');
         }
 
         // Tandai token sebagai sudah digunakan
         await db.query('UPDATE password_reset_tokens SET used = 1 WHERE token = ?', [token]);
+        logger(`Token '${token}' has been marked as used.`, 'INFO');
 
+        logger(`SUCCESS: Password reset for email '${resetData.email}'.`, 'INFO');
         console.log(`✅ Password berhasil direset untuk ${resetData.email}`);
 
         return res.render('auth/resetpassword', {
@@ -324,6 +360,7 @@ exports.resetPassword = async (req, res) => {
             token: null,
         });
     } catch (err) {
+        logger(`Server error in resetPassword for token '${token}': ${err.message}`, 'ERROR');
         console.error('❌ Error saat reset password:', err);
         return res.status(500).render('auth/resetpassword', {
             popup: {
