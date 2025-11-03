@@ -96,7 +96,7 @@
                                 Informasi Tetap
                             </h3>
                             
-                            <div class="info-grid">
+                            <div class="info-grid grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="info-item">
                                     <label class="info-label">Nama Lengkap</label>
                                     <input 
@@ -126,6 +126,21 @@
                                         class="info-value w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-600 cursor-not-allowed"
                                     />
                                 </div>
+
+                                <div class="info-item">
+                                    <label class="info-label">Email</label>
+                                    <input 
+                                        type="email" 
+                                        name="member_email" 
+                                        id="member_email"
+                                        value="<%= member.member_email || '' %>"
+                                        placeholder="Contoh: email@gmail.com"
+                                        class="info-value w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-600 cursor-not-allowed"
+                                        readonly
+                                        disabled
+                                    />
+
+                                </div>
                             </div>
                         </div>
 
@@ -152,23 +167,6 @@
                                       placeholder="Contoh: 081234567890"
                                       pattern="[0-9]+"
                                       title="Hanya boleh berisi angka"
-                                      class="w-full border-2 border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
-                                  />
-                              </div>
-                          
-                              <!-- Email -->
-                              <div class="flex flex-col w-full">
-                                  <label class="text-sm font-semibold text-gray-700 mb-2" for="member_email">
-                                      EMAIL
-                                  </label>
-                                  <input 
-                                      type="email" 
-                                      name="member_email" 
-                                      id="member_email"
-                                      value="<%= member.member_email || '' %>"
-                                      placeholder="Contoh: email@gmail.com"
-                                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                      title="Format email tidak valid (contoh: user@gmail.com)"
                                       class="w-full border-2 border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
                                   />
                               </div>
