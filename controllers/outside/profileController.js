@@ -205,7 +205,7 @@ exports.updateProfile = async (req, res) => {
             return res.redirect('/login');
         }
 
-        const { member_phone, member_email, member_address } = req.body;
+        const { member_phone, member_address } = req.body;
 
         // Validasi input
         if (member_phone && !/^[0-9]+$/.test(member_phone)) {
@@ -218,11 +218,7 @@ exports.updateProfile = async (req, res) => {
             req.flash('error', 'Nomor telepon harus antara 10-15 digit!');
             return res.redirect('/outside/editProfile');
         }
-        if (member_email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(member_email)) {
-            logProfile(`Gagal memperbarui profil untuk ID anggota: ${member.id}: Format email tidak valid. IP: ${ip}`, 'WARN');
-            req.flash('error', 'Format email tidak valid!');
-            return res.redirect('/outside/editProfile');
-        }
+
 
         // Ambil data lama
         const [oldData] = await db.query('SELECT member_image FROM member WHERE member_id = ?', [member.id]);
@@ -246,13 +242,12 @@ exports.updateProfile = async (req, res) => {
             `
             UPDATE member 
             SET member_phone = ?, 
-                member_email = ?, 
                 member_address = ?, 
                 member_image = ?, 
                 last_update = NOW() 
             WHERE member_id = ?
         `,
-            [member_phone, member_email, member_address, memberImage, member.id]
+            [member_phone, member_address, memberImage, member.id]
         );
 
         logProfile(`Profil berhasil diperbarui untuk ID anggota: ${member.id}. IP: ${ip}`, 'INFO');
@@ -260,7 +255,7 @@ exports.updateProfile = async (req, res) => {
         // 🔄 Refresh data terbaru dari DB untuk session
         const [updatedRows] = await db.query(
             `
-            SELECT member_id, member_name, member_email, member_phone, member_image 
+            SELECT member_id, member_name, member_phone, member_image 
             FROM member WHERE member_id = ?
         `,
             [member.id]
@@ -281,7 +276,6 @@ exports.updateProfile = async (req, res) => {
             req.session.user = {
                 ...req.session.user,
                 member_name: updatedRows[0].member_name,
-                member_email: updatedRows[0].member_email,
                 member_phone: updatedRows[0].member_phone,
                 member_image: updatedRows[0].member_image,
                 profile_image_url: memberImagePath, // Tambahkan URL lengkap
