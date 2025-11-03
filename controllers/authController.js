@@ -129,15 +129,33 @@ exports.login = async (req, res) => {
             });
         }
 
+        // Siapkan profile image URL
+        const fs = require('fs');
+        const path = require('path');
+        let memberImagePath = '/images/profile-avatar.png'; // Default
+
+        if (member.member_image) {
+            const imagePath = path.join(__dirname, '../public/uploads/profiles/', member.member_image);
+            if (fs.existsSync(imagePath)) {
+                memberImagePath = `/uploads/profiles/${member.member_image}`;
+            } else {
+                logAuth(`Warning: Profile image not found for member ${member.member_id}: ${imagePath}`, 'WARN');
+            }
+        }
+
         //  Login berhasil → set session member
         req.session.user = {
             id: member.member_id,
             member_id: member.member_id,
+            member_name: member.member_name,
             name: member.member_name,
             role: 'member',
             email: member.member_email,
             memberType: member.member_type_name || '-',
             member_type_id: member.member_type_id,
+            member_image: member.member_image || null,
+            profile_image_url: memberImagePath, // Tambahkan URL lengkap
+            member_phone: member.member_phone || null,
         };
 
         logAuth(`Login successful: Member '${member.member_name}' (${nim}) logged in from IP: ${ip}`, 'INFO');

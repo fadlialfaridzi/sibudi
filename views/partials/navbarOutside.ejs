@@ -4,8 +4,9 @@
 ========================================================= %>
 
 <%
-    const profileImageUrl = user && user.member_image
-        ? `/uploads/profiles/${user.member_image}`
+    // Gunakan profile_image_url dari session yang sudah divalidasi
+    const profileImageUrl = user && user.profile_image_url
+        ? user.profile_image_url
         : '/images/profile-avatar.png';
 %>
 
@@ -38,6 +39,7 @@
                         alt="Profile" 
                         class="w-8 h-8 rounded-full object-cover border-2 border-[#2F7A33]"
                         onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
+                        loading="lazy"
                     />
                     <span class="text-sm font-medium"><%= user.member_name || user.name %></span>
                     <i class="fa-solid fa-chevron-down text-xs"></i>
