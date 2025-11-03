@@ -9,12 +9,12 @@ const logProfile = createLogger('profile.log', { defaultPrefix: '👤' });
 exports.renderProfile = async (req, res) => {
     const memberId = req.session.user ? req.session.user.id : 'guest';
     const ip = req.ip;
-    logProfile(`Attempting to render profile for member ID: ${memberId} from IP: ${ip}`, 'INFO');
+    logProfile(`Mencoba me-render profil untuk ID anggota: ${memberId} dari IP: ${ip}`, 'INFO');
 
     try {
         const member = req.session.user;
         if (!member) {
-            logProfile(`Profile render failed: No user in session. Redirecting to login. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal me-render profil: Tidak ada pengguna di sesi. Mengalihkan ke login. IP: ${ip}`, 'WARN');
             return res.redirect('/login');
         }
 
@@ -54,7 +54,7 @@ exports.renderProfile = async (req, res) => {
         );
 
         if (rows.length === 0) {
-            logProfile(`Profile render failed: Member data not found in DB for ID: ${member.id}. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal me-render profil: Data anggota tidak ditemukan di Database untuk ID: ${member.id}. IP: ${ip}`, 'WARN');
             return res.render('outside/profile', {
                 title: 'Profil Member',
                 member: memberData,
@@ -78,7 +78,7 @@ exports.renderProfile = async (req, res) => {
             if (fs.existsSync(imagePath)) {
                 memberImagePath = `/uploads/profiles/${memberData.member_image}`;
             } else {
-                logProfile(`Image not found on server: ${imagePath}, using default for member ID: ${member.id}`, 'WARN');
+                logProfile(`Gambar tidak ditemukan di server: ${imagePath}, menggunakan gambar default untuk ID anggota: ${member.id}`, 'WARN');
             }
         }
 
@@ -90,7 +90,7 @@ exports.renderProfile = async (req, res) => {
         memberData.register_date_formatted = memberData.register_date ? formatDateIndonesia(memberData.register_date) : '-';
         memberData.expire_date_formatted = memberData.expire_date ? formatDateIndonesia(memberData.expire_date) : '-';
 
-        logProfile(`Successfully rendered profile for member: ${memberData.member_name} (${member.id}). IP: ${ip}`, 'INFO');
+        logProfile(`Berhasil me-render profil untuk anggota: ${memberData.member_name} (${member.id}). IP: ${ip}`, 'INFO');
         res.render('outside/profile', {
             title: 'Profil Member',
             member: memberData,
@@ -98,7 +98,7 @@ exports.renderProfile = async (req, res) => {
             user: req.session.user,
         });
     } catch (err) {
-        logProfile(`Server error while rendering profile for member ID: ${memberId}: ${err.message}`, 'ERROR');
+        logProfile(`Kesalahan server saat me-render profil untuk ID anggota: ${memberId}: ${err.message}`, 'ERROR');
         console.error('❌ Error renderProfile:', err);
         res.status(500).render('outside/profile', {
             title: 'Profil Member',
@@ -130,12 +130,12 @@ function formatDateIndonesia(dateString) {
 exports.renderEditProfile = async (req, res) => {
     const memberId = req.session.user ? req.session.user.id : 'guest';
     const ip = req.ip;
-    logProfile(`Attempting to render edit profile page for member ID: ${memberId} from IP: ${ip}`, 'INFO');
+    logProfile(`Mencoba me-render halaman edit profil untuk ID anggota: ${memberId} dari IP: ${ip}`, 'INFO');
 
     try {
         const member = req.session.user;
         if (!member) {
-            logProfile(`Edit profile page render failed: No user in session. Redirecting to login. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal me-render halaman edit profil: Tidak ada pengguna di sesi. Mengalihkan ke login. IP: ${ip}`, 'WARN');
             return res.redirect('/login');
         }
 
@@ -155,7 +155,7 @@ exports.renderEditProfile = async (req, res) => {
         );
 
         if (rows.length === 0) {
-            logProfile(`Edit profile page render failed: Member data not found in DB for ID: ${member.id}. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal me-render halaman edit profil: Data anggota tidak ditemukan di DB untuk ID: ${member.id}. IP: ${ip}`, 'WARN');
             return res.redirect('/outside/profile');
         }
 
@@ -175,7 +175,7 @@ exports.renderEditProfile = async (req, res) => {
         // Format tanggal lahir
         memberData.birth_date_formatted = memberData.birth_date ? formatDateIndonesia(memberData.birth_date) : '-';
 
-        logProfile(`Successfully rendered edit profile page for member: ${memberData.member_name} (${member.id}). IP: ${ip}`, 'INFO');
+        logProfile(`Berhasil me-render halaman edit profil untuk anggota: ${memberData.member_name} (${member.id}). IP: ${ip}`, 'INFO');
         res.render('outside/editProfile', {
             title: 'Edit Profil Member',
             member: memberData,
@@ -185,7 +185,7 @@ exports.renderEditProfile = async (req, res) => {
             success: req.flash('success'),
         });
     } catch (err) {
-        logProfile(`Server error while rendering edit profile page for member ID: ${memberId}: ${err.message}`, 'ERROR');
+        logProfile(`Kesalahan server saat me-render halaman edit profil untuk ID anggota: ${memberId}: ${err.message}`, 'ERROR');
         console.error('❌ Error renderEditProfile:', err);
         res.status(500).send('Terjadi kesalahan saat memuat halaman edit profil.');
     }
@@ -196,12 +196,12 @@ exports.renderEditProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     const memberId = req.session.user ? req.session.user.id : 'guest';
     const ip = req.ip;
-    logProfile(`Attempting to update profile for member ID: ${memberId} from IP: ${ip}`, 'INFO');
+    logProfile(`Mencoba memperbarui profil untuk ID anggota: ${memberId} dari IP: ${ip}`, 'INFO');
 
     try {
         const member = req.session.user;
         if (!member) {
-            logProfile(`Profile update failed: No user in session. Redirecting to login. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal memperbarui profil: Tidak ada pengguna di sesi. Mengalihkan ke login. IP: ${ip}`, 'WARN');
             return res.redirect('/login');
         }
 
@@ -209,17 +209,17 @@ exports.updateProfile = async (req, res) => {
 
         // Validasi input
         if (member_phone && !/^[0-9]+$/.test(member_phone)) {
-            logProfile(`Profile update failed for member ID: ${member.id}: Invalid phone number format. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal memperbarui profil untuk ID anggota: ${member.id}: Format nomor telepon tidak valid. IP: ${ip}`, 'WARN');
             req.flash('error', 'Nomor telepon hanya boleh berisi angka!');
             return res.redirect('/outside/editProfile');
         }
         if (member_phone && (member_phone.length < 10 || member_phone.length > 15)) {
-            logProfile(`Profile update failed for member ID: ${member.id}: Invalid phone number length. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal memperbarui profil untuk ID anggota: ${member.id}: Panjang nomor telepon tidak valid. IP: ${ip}`, 'WARN');
             req.flash('error', 'Nomor telepon harus antara 10-15 digit!');
             return res.redirect('/outside/editProfile');
         }
         if (member_email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(member_email)) {
-            logProfile(`Profile update failed for member ID: ${member.id}: Invalid email format. IP: ${ip}`, 'WARN');
+            logProfile(`Gagal memperbarui profil untuk ID anggota: ${member.id}: Format email tidak valid. IP: ${ip}`, 'WARN');
             req.flash('error', 'Format email tidak valid!');
             return res.redirect('/outside/editProfile');
         }
@@ -234,11 +234,11 @@ exports.updateProfile = async (req, res) => {
                 const oldPath = path.join(__dirname, '../../public/uploads/profiles/', oldData[0].member_image);
                 if (fs.existsSync(oldPath)) {
                     fs.unlinkSync(oldPath);
-                    logProfile(`Old profile image deleted for member ID: ${member.id}: ${oldPath}`, 'INFO');
+                    logProfile(`Gambar profil lama dihapus untuk ID anggota: ${member.id}: ${oldPath}`, 'INFO');
                 }
             }
             memberImage = req.file.filename;
-            logProfile(`New profile image uploaded for member ID: ${member.id}: ${memberImage}`, 'INFO');
+            logProfile(`Gambar profil baru diunggah untuk ID anggota: ${member.id}: ${memberImage}`, 'INFO');
         }
 
         // Update DB
@@ -255,7 +255,7 @@ exports.updateProfile = async (req, res) => {
             [member_phone, member_email, member_address, memberImage, member.id]
         );
 
-        logProfile(`Profile updated successfully for member ID: ${member.id}. IP: ${ip}`, 'INFO');
+        logProfile(`Profil berhasil diperbarui untuk ID anggota: ${member.id}. IP: ${ip}`, 'INFO');
 
         // 🔄 Refresh data terbaru dari DB untuk session
         const [updatedRows] = await db.query(
@@ -274,7 +274,7 @@ exports.updateProfile = async (req, res) => {
                 if (fs.existsSync(imagePath)) {
                     memberImagePath = `/uploads/profiles/${updatedRows[0].member_image}`;
                 } else {
-                    logProfile(`Warning: New profile image not found: ${imagePath}`, 'WARN');
+                    logProfile(`Peringatan: Gambar profil baru tidak ditemukan: ${imagePath}`, 'WARN');
                 }
             }
 
@@ -286,13 +286,13 @@ exports.updateProfile = async (req, res) => {
                 member_image: updatedRows[0].member_image,
                 profile_image_url: memberImagePath, // Tambahkan URL lengkap
             };
-            logProfile(`Session updated with new profile image: ${memberImagePath} for member ID: ${member.id}.`, 'INFO');
+            logProfile(`Sesi diperbarui dengan gambar profil baru: ${memberImagePath} untuk ID anggota: ${member.id}.`, 'INFO');
         }
 
         req.flash('success', 'Profil berhasil diperbarui!');
         res.redirect('/outside/profile');
     } catch (err) {
-        logProfile(`Server error during profile update for member ID: ${memberId}: ${err.message}`, 'ERROR');
+        logProfile(`Kesalahan server saat pembaruan profil untuk ID anggota: ${memberId}: ${err.message}`, 'ERROR');
         console.error('❌ Error updateProfile:', err);
         req.flash('error', 'Terjadi kesalahan saat memperbarui profil.');
         res.redirect('/outside/editProfile');

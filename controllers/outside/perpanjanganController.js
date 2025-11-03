@@ -23,16 +23,16 @@ const { calculateDueDate, calculateWorkingDaysOverdue, loadHolidays } = require(
 exports.renderPerpanjangan = async (req, res) => {
   const memberId = req.session.user ? req.session.user.member_id : 'Guest';
   const ip = req.ip;
-  logger(`START: renderPerpanjangan for memberId: ${memberId} from IP: ${ip}`, 'INFO');
+  logger(`MULAI: renderPerpanjangan untuk memberId: ${memberId} dari IP: ${ip}`, 'INFO');
 
   try {
     // Pastikan user login & role = member
     if (!req.session.user || req.session.user.role !== 'member') {
-      logger(`Unauthorized access attempt to renderPerpanjangan page from IP: ${ip}`, 'WARN');
+      logger(`Upaya akses tidak sah ke halaman renderPerpanjangan dari IP: ${ip}`, 'WARN');
       return res.redirect('/login');
     }
 
-    logger(`Fetching active loan data for memberId: ${memberId}`, 'INFO');
+    logger(`Mengambil data pinjaman aktif untuk memberId: ${memberId}`, 'INFO');
     
     const [loanRows] = await db.query(
       `SELECT 
@@ -49,7 +49,7 @@ exports.renderPerpanjangan = async (req, res) => {
       [memberId]
     );
 
-    logger(`Found ${loanRows.length} active loans for memberId: ${memberId}`, 'INFO');
+    logger(`Ditemukan ${loanRows.length} pinjaman aktif untuk memberId: ${memberId}`, 'INFO');
     
     const connection = await db.getConnection();
     const holidays = await loadHolidays(connection);
@@ -105,20 +105,20 @@ exports.renderPerpanjangan = async (req, res) => {
     });
 
     const loans = await Promise.all(loansPromises);
-    logger(`Successfully processed ${loans.length} loans for rendering for memberId: ${memberId}`, 'INFO');
+    logger(`Berhasil memproses ${loans.length} pinjaman untuk dirender bagi memberId: ${memberId}`, 'INFO');
 
     const [fineRows] = await db.query(`SELECT COALESCE(SUM(debet), 0) - COALESCE(SUM(credit), 0) AS total_due FROM fines WHERE member_id = ?`, [memberId]);
     const totalDenda = fineRows[0]?.total_due || 0;
-    logger(`Total active fine for memberId: ${memberId} is Rp ${totalDenda}`, 'INFO');
+    logger(`Total denda aktif untuk memberId: ${memberId} adalah Rp ${totalDenda}`, 'INFO');
 
     res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman', loans, fineRules: [], finesData: allFinesRows || [],
       totalDenda, popup: null, activeNav: 'DetailPinjam', user: req.session.user
     });
-    logger(`Successfully rendered perpanjangan page for memberId: ${memberId}`, 'INFO');
+    logger(`Berhasil merender halaman perpanjangan untuk memberId: ${memberId}`, 'INFO');
 
   } catch (err) {
-    logger(`Server error in renderPerpanjangan for memberId: ${memberId}. Error: ${err.message}`, 'ERROR');
+    logger(`Kesalahan server di renderPerpanjangan untuk memberId: ${memberId}. Kesalahan: ${err.message}`, 'ERROR');
     console.error('❌ Error di renderPerpanjangan:', err);
     res.render('outside/detailPinjam', {
       title: 'Detail & Perpanjangan Peminjaman', loans: [], fineRules: [], finesData: [], totalDenda: 0,
@@ -135,11 +135,11 @@ exports.extendLoan = async (req, res) => {
   const memberId = req.session.user ? req.session.user.member_id : 'Guest';
   const { loan_id } = req.body;
   const ip = req.ip;
-  logger(`START: extendLoan for loan_id: ${loan_id} by memberId: ${memberId} from IP: ${ip}`, 'INFO');
+  logger(`MULAI: Memperpanjang peminjaman untuk loan_id: ${loan_id} oleh memberId: ${memberId} dari IP: ${ip}`, 'INFO');
 
   try {
     if (!req.session.user || req.session.user.role !== 'member') {
-      logger(`Unauthorized extendLoan attempt from IP: ${ip}`, 'WARN');
+      logger(`Upaya perpanjangan pinjaman tidak sah dari IP: ${ip}`, 'WARN');
       return res.status(403).render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman', loans: [], fineRules: [], finesData: [], totalDenda: 0,
         popup: { type: 'error', title: 'Akses Ditolak', message: 'Hanya anggota yang dapat memperpanjang buku.', redirect: '/login' },
@@ -148,7 +148,7 @@ exports.extendLoan = async (req, res) => {
     }
 
     if (!loan_id) {
-      logger(`extendLoan failed: Missing loan_id for memberId: ${memberId}`, 'WARN');
+      logger(`Perpanjangan pinjaman gagal: loan_id tidak ada untuk memberId: ${memberId}`, 'WARN');
       const loans = await reloadLoans(memberId, ip);
       return res.status(400).render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman', loans, fineRules: [], finesData: [], totalDenda: 0,
@@ -165,7 +165,7 @@ exports.extendLoan = async (req, res) => {
     );
 
     if (loanRows.length === 0) {
-      logger(`extendLoan failed: Loan not found for loan_id: ${loan_id}, memberId: ${memberId}`, 'WARN');
+      logger(`Perpanjangan pinjaman gagal: Pinjaman tidak ditemukan untuk loan_id: ${loan_id}, memberId: ${memberId}`, 'WARN');
       const loans = await reloadLoans(memberId, ip);
       return res.status(404).render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman', loans, fineRules: [], finesData: [], totalDenda: 0,
@@ -179,7 +179,7 @@ exports.extendLoan = async (req, res) => {
     const totalDue = fineRows[0].total_due || 0;
 
     if (totalDue > 0) {
-      logger(`extendLoan failed: Member ${memberId} has outstanding fine of Rp ${totalDue}`, 'WARN');
+      logger(`Perpanjangan pinjaman gagal: Anggota ${memberId} memiliki denda sebesar Rp ${totalDue}`, 'WARN');
       const loans = await reloadLoans(memberId, ip);
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman', loans, fineRules: [], finesData: [], totalDenda: totalDue,
@@ -189,7 +189,7 @@ exports.extendLoan = async (req, res) => {
     }
 
     if (loan.reborrow_limit === 0) {
-      logger(`extendLoan failed: Collection with loan_id ${loan_id} cannot be re-borrowed (limit is 0) for memberId: ${memberId}`, 'INFO');
+      logger(`Perpanjangan pinjaman gagal: Koleksi dengan loan_id ${loan_id} tidak dapat dipinjam ulang (batas adalah 0) untuk memberId: ${memberId}`, 'INFO');
       const loans = await reloadLoans(memberId, ip);
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman', loans, fineRules: [], finesData: [], totalDenda: 0,
@@ -199,7 +199,7 @@ exports.extendLoan = async (req, res) => {
     }
 
     if (loan.renewed >= loan.reborrow_limit) {
-      logger(`extendLoan failed: Re-borrow limit reached for loan_id: ${loan_id} (${loan.renewed}/${loan.reborrow_limit}) for memberId: ${memberId}`, 'INFO');
+      logger(`Perpanjangan pinjaman gagal: Batas peminjaman ulang tercapai untuk loan_id: ${loan_id} (${loan.renewed}/${loan.reborrow_limit}) untuk memberId: ${memberId}`, 'INFO');
       const loans = await reloadLoans(memberId, ip);
       return res.render('outside/detailPinjam', {
         title: 'Detail & Perpanjangan Peminjaman', loans, fineRules: [], finesData: [], totalDenda: 0,
@@ -211,10 +211,10 @@ exports.extendLoan = async (req, res) => {
     const holidays = await loadHolidays(db);
     const currentDueDate = dayjs(loan.due_date).format('YYYY-MM-DD');
     const newDueDate = calculateDueDate(currentDueDate, loan.loan_periode, holidays);
-    logger(`Calculating new due date for loan_id: ${loan_id}. Current: ${currentDueDate}, New: ${newDueDate}`, 'INFO');
+    logger(`Menghitung tanggal jatuh tempo baru untuk loan_id: ${loan_id}. Current: ${currentDueDate}, New: ${newDueDate}`, 'INFO');
 
     await db.query('UPDATE loan SET due_date = ?, renewed = renewed + 1, last_update = NOW() WHERE loan_id = ?', [newDueDate, loan.loan_id]);
-    logger(`SUCCESS: extendLoan for loan_id: ${loan_id} by memberId: ${memberId}. New due date: ${newDueDate}`, 'INFO');
+    logger(`BERHASIL: Perpanjangan pinjaman berhasil untuk loan_id: ${loan_id} oleh memberId: ${memberId}. Tanggal jatuh tempo baru: ${newDueDate}`, 'INFO');
 
     const loans = await reloadLoans(memberId, ip);
     return res.render('outside/detailPinjam', {
@@ -224,7 +224,7 @@ exports.extendLoan = async (req, res) => {
     });
 
   } catch (err) {
-    logger(`Server error in extendLoan for memberId: ${memberId}, loan_id: ${loan_id}. Error: ${err.message}`, 'ERROR');
+    logger(`Kesalahan server di extendLoan untuk memberId: ${memberId}, loan_id: ${loan_id}. Kesalahan: ${err.message}`, 'ERROR');
     console.error('❌ Error di extendLoan:', err);
     const loans = memberId !== 'Guest' ? await reloadLoans(memberId, ip) : [];
     return res.render('outside/detailPinjam', {
@@ -239,7 +239,7 @@ exports.extendLoan = async (req, res) => {
 // HELPER: Reload Loans Data
 // =====================================================
 async function reloadLoans(memberId, ip = 'N/A') {
-  logger(`Reloading loans data for memberId: ${memberId}, IP: ${ip}`, 'INFO');
+  logger(`Memuat ulang data pinjaman untuk memberId: ${memberId}, IP: ${ip}`, 'INFO');
   try {
     const [loanRows] = await db.query(
       `SELECT 
@@ -306,10 +306,10 @@ async function reloadLoans(memberId, ip = 'N/A') {
     });
 
     const result = await Promise.all(loansPromises);
-    logger(`reloadLoans completed: ${result.length} loans processed for memberId: ${memberId}`, 'INFO');
+    logger(`Pemuatan ulang data pinjaman selesai: ${result.length} pinjaman diproses untuk memberId: ${memberId}`, 'INFO');
     return result;
   } catch (err) {
-    logger(`Error in reloadLoans for memberId: ${memberId}. Error: ${err.message}`, 'ERROR');
+    logger(`Kesalahan di memuat ulang data peminjaman untuk memberId: ${memberId}. Kesalahan: ${err.message}`, 'ERROR');
     console.error('❌ Error di reloadLoans:', err);
     return []; // Return empty array on error
   }
