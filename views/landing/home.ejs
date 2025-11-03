@@ -1,5 +1,4 @@
 <%- include('partials/header-simple') %>
-
   <body class="bg-gray-50 text-gray-800 font-[Inter]">
     <%- include('partials/navbarHome', { activeNav: 'Home' }) %>
 
@@ -68,7 +67,7 @@
                 </video>
 
                 <!-- Video Fallback jika video tidak ditemukan -->
-                <div id="video-fallback" class="hidden absolute inset-0 flex items-center justify-center bg-gray-900 text-white p-8">
+                <div id="video-fallback" class="hidden absolute inset-0 items-center justify-center bg-gray-900 text-white p-8">
                   <div class="text-center max-w-md">
                     <i class="fas fa-video-slash text-6xl mb-4 text-gray-500"></i>
                     <h3 class="text-xl font-semibold mb-2">Video sedang dalam tahap persiapan</h3>
@@ -218,58 +217,307 @@
 
       <!-- TIM PENGEMBANG -->
       <section class="py-20 bg-[#F8FFF8] border-t border-green-100 scroll-animate" data-animation="zoomIn">
-        <div class="max-w-4xl mx-auto px-6">
-          <div class="text-center mb-8">
+        <div class="max-w-6xl mx-auto px-6">
+          <div class="text-center mb-10">
             <h2 class="text-3xl font-bold text-[#2F7A33] mb-2">Tim Pengembang</h2>
           </div>
 
-          <!-- Team Photo Card -->
-          <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
-            <!-- Team Photo -->
-            <div class="aspect-video relative overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-              <img 
-                src="/images/profile-avatar.png" 
-                alt="Tim Pengembang SIBUDI"
-                class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'450\' viewBox=\'0 0 800 450\'%3E%3Crect fill=\'%23f0fdf4\' width=\'800\' height=\'450\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'48\' fill=\'%232F7A33\'%3ETim Pengembang SIBUDI%3C/text%3E%3C/svg%3E'"
-              />
-              <!-- Overlay gradient untuk readability -->
-              <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-            </div>
+          <% const team=[
+            { nama: "Ridho Dwi Syahputra", peran: "Project Manager", foto: "https://i.pravatar.cc/600?img=11", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Fadli Alfaridzi", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=12", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Muhammad Afiq Jakhel", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=13", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Muhammad Fajri", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=14", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Arrival Rince Putri", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=15", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Farhan Aufa", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=16", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Leilani Nawwira", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=17", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Nala Dewanti", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=18", linkedin: "#", instagram: "#", github: "#" },
+            { nama: "Zakiya Aulia", peran: "Programmer", foto: "https://i.pravatar.cc/600?img=19", linkedin: "#", instagram: "#", github: "#" }
+          ]; %>
 
-            <!-- Team Info Section -->
-            <div class="p-6 md:p-8">
-              <div class="text-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-800 mb-2">Tim Development SIBUDI</h3>
-    
-                <div class="flex flex-wrap justify-center gap-2">
-                  <% const team=[ { nama: "Ridho Dwi Syahputra" , peran: "Project Manager" }, { nama: "Fadli Alfaridzi" ,
-                    peran: "Programmer" }, { nama: "Muhammad Afiq Jakhel" , peran: "Programmer" }, { nama: "Muhammad Fajri"
-                    , peran: "Programmer" }, { nama: "Arrival Rince Putri" , peran: "Programmer" }, { nama: "Farhan Aufa" , peran: "Programmer" },
-                    { nama: "Leilani Nawwira" , peran: "Programmer" }, { nama: "Nala Dewanti" , peran: "Programmer" }, { nama: "Zakiya Aulia" , peran: "Programmer" } ]; %>
-                  <% team.forEach(member=> { %>
-                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-50 text-[#2F7A33] border border-green-200">
-                      <%= member.nama %>
-                    </span>
-                  <% }) %>
+          <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 md:p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <!-- Left: Vertical Carousel Images -->
+              <div class="relative h-[420px] md:h-[480px] overflow-hidden rounded-xl bg-gradient-to-br from-green-50 to-emerald-50" id="team-carousel" aria-roledescription="carousel" data-team='<%- JSON.stringify(team).replace(/'/g, "\\'") %>'>
+                <!-- Overlay previous -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+                  <img id="team-prev" src="/images/profile-avatar.png" alt="Preview sebelumnya" class="w-56 h-56 md:w-64 md:h-64 object-cover rounded-2xl opacity-0 scale-90 blur-[1px] transition-all duration-500" />
+                </div>
+                <!-- Active -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <img id="team-active" src="/images/profile-avatar.png" alt="Anggota aktif" class="w-64 h-64 md:w-72 md:h-72 object-cover rounded-2xl shadow-2xl ring-4 ring-white/60 transition-transform duration-500" />
+                </div>
+                <!-- Overlay next -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+                  <img id="team-next" src="/images/profile-avatar.png" alt="Preview selanjutnya" class="w-56 h-56 md:w-64 md:h-64 object-cover rounded-2xl opacity-0 scale-90 blur-[1px] transition-all duration-500" />
+                </div>
+
+                <!-- Floating Action Buttons (FAB) for controls -->
+                <div class="absolute bottom-4 right-4 flex flex-col gap-3 z-40 pointer-events-auto">
+                  <button type="button" id="team-up" class="w-12 h-12 grid place-items-center rounded-full bg-[#2F7A33] text-white shadow-lg hover:shadow-xl hover:bg-[#256328] focus:outline-none focus:ring-2 focus:ring-white/80 transition" aria-label="Geser ke atas">
+                    <i class="fas fa-chevron-up"></i>
+                  </button>
+                  <button type="button" id="team-down" class="w-12 h-12 grid place-items-center rounded-full bg-[#2F7A33] text-white shadow-lg hover:shadow-xl hover:bg-[#256328] focus:outline-none focus:ring-2 focus:ring-white/80 transition" aria-label="Geser ke bawah">
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                </div>
+
+                <!-- Dots indicator -->
+                <div class="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2 z-10">
+                  <% team.forEach((m, i) => { %>
+                    <span class="inline-block w-2 h-2 rounded-full bg-white/70 border border-white/60" data-team-dot="<%= i %>"></span>
+                  <% }); %>
                 </div>
               </div>
-            </div>
 
-            <!-- Card Footer -->
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 md:px-8 py-4 border-t border-green-100">
-              <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-                
-                <div class="flex items-center space-x-2">
-                  <svg class="w-5 h-5 text-[#2F7A33]" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712v2.942a1 1 0 001 1z"></path>
-                  </svg>
-                  <span class="text-xs md:text-sm text-gray-500">Program Studi</span>
-                  <span class="text-xs md:text-sm font-semibold text-[#2F7A33]">Sistem Informasi</span>
+              <!-- Right: Details -->
+              <div class="w-full text-center">
+                <div class="space-y-2">
+                  <h3 id="team-name" class="text-2xl md:text-3xl font-bold text-gray-800">Tim Development SIBUDI</h3>
+                  <p id="team-role" class="text-[#2F7A33] font-semibold">—</p>
+                </div>
+                <div class="mt-5 flex items-center gap-3 justify-center">
+                  <a id="link-linkedin" href="#" target="_blank" rel="noopener" class="w-10 h-10 grid place-items-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                  </a>
+                  <a id="link-instagram" href="#" target="_blank" rel="noopener" class="w-10 h-10 grid place-items-center rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white hover:opacity-90 transition" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                  <a id="link-github" href="#" target="_blank" rel="noopener" class="w-10 h-10 grid place-items-center rounded-full bg-gray-800 text-white hover:bg-black transition" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
+
+          <script>
+            (function(){
+              const container = document.getElementById('team-carousel');
+              const teamData = JSON.parse(container?.dataset?.team || '[]');
+              const activeImg = document.getElementById('team-active');
+              const prevImg = document.getElementById('team-prev');
+              const nextImg = document.getElementById('team-next');
+              const nameEl = document.getElementById('team-name');
+              const roleEl = document.getElementById('team-role');
+              const dots = Array.from(document.querySelectorAll('[data-team-dot]'));
+              const badges = Array.from(document.querySelectorAll('[data-team-badge]'));
+              const upBtn = document.getElementById('team-up');
+              const downBtn = document.getElementById('team-down');
+
+              let index = 0;
+              let isAnimating = false;
+
+              const DUR = 450;
+              const EASE = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
+              const GAP_Y = 110; // vertical offset for overlays
+              const fallback = '/images/profile-avatar.png';
+
+              function clamp(i){
+                const n = teamData.length;
+                return (i + n) % n;
+              }
+
+              function setSrc(imgEl, src){
+                if (!imgEl) return;
+                imgEl.onerror = () => { imgEl.src = fallback; };
+                imgEl.src = src || fallback;
+              }
+
+              function applyBaseStyles(){
+                [prevImg, activeImg, nextImg].forEach(img => {
+                  img.style.willChange = 'transform, opacity';
+                  img.style.transition = `transform ${DUR}ms ${EASE}, opacity ${DUR}ms ${EASE}`;
+                });
+                activeImg.style.zIndex = '30';
+                prevImg.style.zIndex = '20';
+                nextImg.style.zIndex = '20';
+              }
+
+              function positionStatic(){
+                // Place exactly above/below center without animating
+                [prevImg, activeImg, nextImg].forEach(img => { img.style.transition = 'none'; });
+                prevImg.style.transform = `translate3d(0, -${GAP_Y}px, 0) scale(0.9)`;
+                prevImg.style.opacity = '0.9';
+                activeImg.style.transform = 'translate3d(0, 0, 0) scale(1)';
+                activeImg.style.opacity = '1';
+                nextImg.style.transform = `translate3d(0, ${GAP_Y}px, 0) scale(0.9)`;
+                nextImg.style.opacity = '0.9';
+                // Force reflow to ensure styles apply before re-enabling transitions
+                void activeImg.offsetHeight;
+                [prevImg, activeImg, nextImg].forEach(img => { img.style.transition = `transform ${DUR}ms ${EASE}, opacity ${DUR}ms ${EASE}`; });
+              }
+
+              function updateDotsAndBadges(){
+                dots.forEach((d, i)=>{
+                  if(i === index){
+                    d.classList.add('bg-[#2F7A33]');
+                    d.classList.remove('bg-white/70');
+                  } else {
+                    d.classList.remove('bg-[#2F7A33]');
+                    d.classList.add('bg-white/70');
+                  }
+                });
+                badges.forEach((b, i)=>{
+                  if(i === index){
+                    b.classList.add('bg-green-50','text-[#2F7A33]','border-green-200');
+                    b.classList.remove('bg-white','text-gray-600','border-gray-200');
+                  } else {
+                    b.classList.remove('bg-green-50','text-[#2F7A33]','border-green-200');
+                    b.classList.add('bg-white','text-gray-600','border-gray-200');
+                  }
+                });
+              }
+
+              function renderStatic(){
+                const prevIndex = clamp(index - 1);
+                const nextIndex = clamp(index + 1);
+
+                nameEl.textContent = teamData[index]?.nama || '';
+                roleEl.textContent = teamData[index]?.peran || '';
+
+                setSrc(activeImg, teamData[index]?.foto);
+                setSrc(prevImg, teamData[prevIndex]?.foto);
+                setSrc(nextImg, teamData[nextIndex]?.foto);
+
+                activeImg.alt = `${teamData[index]?.nama || ''} - ${teamData[index]?.peran || ''}`;
+                prevImg.alt = teamData[prevIndex]?.nama || '';
+                nextImg.alt = teamData[nextIndex]?.nama || '';
+
+                // Social links
+                const ll = document.getElementById('link-linkedin');
+                const li = document.getElementById('link-instagram');
+                const lg = document.getElementById('link-github');
+                const member = teamData[index] || {};
+                if (ll) { ll.href = member.linkedin || '#'; ll.style.display = member.linkedin ? '' : 'none'; }
+                if (li) { li.href = member.instagram || '#'; li.style.display = member.instagram ? '' : 'none'; }
+                if (lg) { lg.href = member.github || '#'; lg.style.display = member.github ? '' : 'none'; }
+
+                applyBaseStyles();
+                positionStatic();
+                updateDotsAndBadges();
+              }
+
+              function onTransitionEndOnce(el, cb){
+                const handler = (e)=>{
+                  if (e.target !== el) return;
+                  el.removeEventListener('transitionend', handler);
+                  cb();
+                };
+                el.addEventListener('transitionend', handler);
+              }
+
+              function go(delta){
+                if(isAnimating) return;
+                isAnimating = true;
+
+                const prevIndex = clamp(index - 1);
+                const nextIndex = clamp(index + 1);
+
+                // Preload next sources so swap after animation is instant
+                if (delta > 0) {
+                  // moving to next (top goes to center)
+                  const futureNext = clamp(nextIndex + 1);
+                  setSrc(nextImg, teamData[nextIndex]?.foto); // center target already has correct src
+                  setSrc(prevImg, teamData[prevIndex]?.foto);
+                  setSrc(activeImg, teamData[index]?.foto);
+                  // Animate: prev further up, active to top, next to center
+                  applyBaseStyles();
+                  prevImg.style.transform = `translate3d(0, -${GAP_Y * 2}px, 0) scale(0.85)`;
+                  prevImg.style.opacity = '0';
+                  activeImg.style.transform = `translate3d(0, -${GAP_Y}px, 0) scale(0.9)`;
+                  activeImg.style.opacity = '0.9';
+                  nextImg.style.transform = 'translate3d(0, 0, 0) scale(1)';
+                  nextImg.style.opacity = '1';
+                  onTransitionEndOnce(activeImg, ()=>{
+                    index = nextIndex;
+                    renderStatic();
+                    isAnimating = false;
+                  });
+                } else if (delta < 0) {
+                  // moving to previous (top becomes center)
+                  const futurePrev = clamp(prevIndex - 1);
+                  setSrc(prevImg, teamData[prevIndex]?.foto); // center target already correct
+                  setSrc(nextImg, teamData[nextIndex]?.foto);
+                  setSrc(activeImg, teamData[index]?.foto);
+                  // Animate: next further down, active to bottom, prev to center
+                  applyBaseStyles();
+                  nextImg.style.transform = `translate3d(0, ${GAP_Y * 2}px, 0) scale(0.85)`;
+                  nextImg.style.opacity = '0';
+                  activeImg.style.transform = `translate3d(0, ${GAP_Y}px, 0) scale(0.9)`;
+                  activeImg.style.opacity = '0.9';
+                  prevImg.style.transform = 'translate3d(0, 0, 0) scale(1)';
+                  prevImg.style.opacity = '1';
+                  onTransitionEndOnce(activeImg, ()=>{
+                    index = prevIndex;
+                    renderStatic();
+                    isAnimating = false;
+                  });
+                } else {
+                  isAnimating = false;
+                }
+              }
+
+              // Wheel scroll: downward should bring previous (top) to center
+              container.addEventListener('wheel', (e)=>{
+                e.preventDefault();
+                const dir = e.deltaY > 0 ? -1 : 1;
+                go(dir);
+              }, { passive: false });
+
+              // Touch swipe
+              let startY = 0;
+              let moved = false;
+              container.addEventListener('touchstart', (e)=>{
+                startY = e.touches[0].clientY;
+                moved = false;
+              }, { passive: true });
+              container.addEventListener('touchmove', ()=>{ moved = true; }, { passive: true });
+              container.addEventListener('touchend', (e)=>{
+                if(!moved) return;
+                const endY = e.changedTouches[0].clientY;
+                const delta = startY - endY;
+                if(Math.abs(delta) > 20){
+                  go(delta > 0 ? 1 : -1);
+                }
+              });
+
+              // Buttons
+              upBtn.addEventListener('click', ()=> go(1));
+              downBtn.addEventListener('click', ()=> go(-1));
+
+              // Badges: jump by determining shortest direction; animate step-by-step for smoothness
+              badges.forEach((b)=>{
+                b.addEventListener('click', ()=>{
+                  const target = Number(b.getAttribute('data-team-badge'));
+                  if (target === index || isAnimating) return;
+                  // Determine direction
+                  const forwardSteps = clamp(target - index);
+                  const backwardSteps = clamp(index - target);
+                  const stepDir = forwardSteps <= backwardSteps ? 1 : -1;
+                  const steps = Math.min(forwardSteps, backwardSteps);
+                  let done = 0;
+                  const step = ()=>{
+                    if (done >= steps) return;
+                    go(stepDir);
+                    done++;
+                    // Chain next step after animation completes
+                    const check = ()=>{
+                      if (!isAnimating){
+                        if (done < steps) step();
+                      } else {
+                        requestAnimationFrame(check);
+                      }
+                    };
+                    requestAnimationFrame(check);
+                  };
+                  step();
+                });
+              });
+
+              // Initial render
+              renderStatic();
+            })();
+          </script>
         </div>
       </section>
 
