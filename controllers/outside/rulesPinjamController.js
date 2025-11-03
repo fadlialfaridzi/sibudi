@@ -59,6 +59,7 @@ exports.renderRulesPinjam = async (req, res) => {
             user,
             loanRules,
             popup: req.session.popup || null,
+            activeNav: 'RulesPinjam',
         });
 
         delete req.session.popup;
@@ -77,6 +78,7 @@ exports.renderRulesPinjam = async (req, res) => {
                 title: 'Gagal',
                 message: 'Terjadi kesalahan saat memuat halaman Aturan Peminjaman.',
             },
+            activeNav: 'RulesPinjam',
         });
     }
 };

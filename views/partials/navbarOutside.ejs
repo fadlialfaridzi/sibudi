@@ -4,8 +4,9 @@
 ========================================================= %>
 
 <%
-    const profileImageUrl = user && user.member_image
-        ? `/uploads/profiles/${user.member_image}`
+    // Gunakan profile_image_url dari session yang sudah divalidasi
+    const profileImageUrl = user && user.profile_image_url
+        ? user.profile_image_url
         : '/images/profile-avatar.png';
 %>
 
@@ -38,6 +39,7 @@
                         alt="Profile" 
                         class="w-8 h-8 rounded-full object-cover border-2 border-[#2F7A33]"
                         onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
+                        loading="lazy"
                     />
                     <span class="text-sm font-medium"><%= user.member_name || user.name %></span>
                     <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -61,6 +63,50 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Menu -->
+    <div id="nav-outside-menu" class="fixed top-0 right-0 h-full w-3/4 bg-[#F8FFF8] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="flex flex-col h-full justify-between">
+            <div class="p-6 space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-[#2F7A33]">SIBUDI</h2>
+                    <button id="nav-outside-close" class="text-[#2F7A33] focus:outline-none">
+                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex flex-col space-y-4 mt-8">
+                    <a href="/outside/dashboard" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Dashboard">Dashboard</a>
+                    <a href="/outside/rulesPinjam" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="RulesPinjam">Aturan Peminjaman</a>
+                    <a href="/outside/detailPinjam" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="DetailPinjam">Detail Peminjaman</a>
+                    <a href="/outside/about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">Tentang System</a>
+                </div>
+            </div>
+
+            <div class="p-6 border-t">
+                <% if (user) { %>
+                <div class="flex items-center gap-3 mb-3">
+                    <img 
+                        src="<%= profileImageUrl %>" 
+                        alt="Profile" 
+                        class="w-8 h-8 rounded-full object-cover border-2 border-[#2F7A33]"
+                        onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
+                    />
+                    <a href="/outside/profile" class="text-gray-700">
+                        <strong><%= user.member_name || user.name %></strong>
+                    </a>
+                </div>
+                <a href="/logout" class="block w-full text-center py-2 bg-[#2F7A33] text-white font-bold rounded-lg hover:bg-[#256328] transition">
+                    Logout
+                </a>
+                <% } else { %>
+                <a href="/login" class="block w-full text-center py-2 bg-[#FFD700] text-[#2F7A33] font-bold rounded-lg hover:bg-yellow-400 transition">Login</a>
+                <% } %>
             </div>
         </div>
     </div>

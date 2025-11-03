@@ -267,14 +267,26 @@ exports.updateProfile = async (req, res) => {
         );
 
         if (updatedRows.length > 0) {
+            // Generate profile image URL seperti di authController
+            let memberImagePath = '/images/profile-avatar.png'; // Default
+            if (updatedRows[0].member_image) {
+                const imagePath = path.join(__dirname, '../../public/uploads/profiles/', updatedRows[0].member_image);
+                if (fs.existsSync(imagePath)) {
+                    memberImagePath = `/uploads/profiles/${updatedRows[0].member_image}`;
+                } else {
+                    logProfile(`Warning: New profile image not found: ${imagePath}`, 'WARN');
+                }
+            }
+
             req.session.user = {
                 ...req.session.user,
                 member_name: updatedRows[0].member_name,
                 member_email: updatedRows[0].member_email,
                 member_phone: updatedRows[0].member_phone,
                 member_image: updatedRows[0].member_image,
+                profile_image_url: memberImagePath, // Tambahkan URL lengkap
             };
-            logProfile(`Session updated for member ID: ${member.id}.`, 'INFO');
+            logProfile(`Session updated with new profile image: ${memberImagePath} for member ID: ${member.id}.`, 'INFO');
         }
 
         req.flash('success', 'Profil berhasil diperbarui!');
@@ -285,4 +297,4 @@ exports.updateProfile = async (req, res) => {
         req.flash('error', 'Terjadi kesalahan saat memperbarui profil.');
         res.redirect('/outside/editProfile');
     }
-}
+};
