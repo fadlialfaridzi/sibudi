@@ -7,6 +7,7 @@ require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const flash = require('express-flash');
@@ -18,9 +19,9 @@ const db = require('./config/db'); // koneksi database
 const security = require('./middleware/security'); // helmet + CSP + limiter
 
 // routes sistem inti
-const authRouter = require('./routes/auth');       // login/logout
+const authRouter = require('./routes/auth'); // login/logout
 const landingRouter = require('./routes/landing'); // halaman publik
-const insideRouter = require('./routes/inside');   // pustakawan
+const insideRouter = require('./routes/inside'); // pustakawan
 const outsideRouter = require('./routes/outside'); // peminjam
 
 // 3️⃣ INISIALISASI APP EXPRESS
@@ -35,12 +36,12 @@ security(app); // aktifkan modul keamanan
 // 5️⃣ KONFIGURASI VIEW ENGINE (EJS)
 // =====================================================
 app.set('views', [
-  path.join(__dirname, 'views'),
-  path.join(__dirname, 'views/partials'),
-  path.join(__dirname, 'views/auth'),
-  path.join(__dirname, 'views/landing'),
-  path.join(__dirname, 'views/inside'),
-  path.join(__dirname, 'views/outside'),
+    path.join(__dirname, 'views'),
+    path.join(__dirname, 'views/partials'),
+    path.join(__dirname, 'views/auth'),
+    path.join(__dirname, 'views/landing'),
+    path.join(__dirname, 'views/inside'),
+    path.join(__dirname, 'views/outside'),
 ]);
 app.set('view engine', 'ejs');
 
@@ -48,28 +49,28 @@ app.set('view engine', 'ejs');
 // 6️⃣ MIDDLEWARE SESSION (MySQL Session Store)
 // =====================================================
 const sessionStore = new MySQLStore({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  clearExpired: true,
-  checkExpirationInterval: 900000, // 15 menit
-  expiration: 1000 * 60 * 60 * 8, // 8 jam
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    clearExpired: true,
+    checkExpirationInterval: 900000, // 15 menit
+    expiration: 1000 * 60 * 60 * 8, // 8 jam
 });
 
 app.use(
-  session({
-    key: 'sibudi_session_id',
-    secret: process.env.SESSION_SECRET || 'sibudi_secret',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 8, // 8 jam
-      httpOnly: true,
-      secure: false, // ganti true kalau sudah pakai HTTPS
-    },
-  })
+    session({
+        key: 'sibudi_session_id',
+        secret: process.env.SESSION_SECRET || 'sibudi_secret',
+        store: sessionStore,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 8, // 8 jam
+            httpOnly: true,
+            secure: false, // ganti true kalau sudah pakai HTTPS
+        },
+    })
 );
 
 app.use(flash());
@@ -87,8 +88,33 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 8️⃣ SET GLOBAL VARIABLE UNTUK VIEW
 // =====================================================
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
-  next();
+    const sessionUser = req.session.user || null;
+    if (!sessionUser) {
+        res.locals.user = null;
+        return next();
+    }
+
+    const userForView = { ...sessionUser };
+
+    try {
+        const memberImage = sessionUser.member_image;
+        let profileImageUrl = '/images/profile-avatar.png';
+        if (memberImage) {
+            const imagePath = path.join(__dirname, 'public', 'uploads', 'profiles', memberImage);
+            if (fs.existsSync(imagePath)) {
+                profileImageUrl = `/uploads/profiles/${memberImage}`;
+            } else {
+                profileImageUrl = '/images/profile-avatar.png';
+            }
+        }
+        userForView.profile_image_url = profileImageUrl;
+    } catch (err) {
+        userForView.profile_image_url = '/images/profile-avatar.png';
+        console.error('Error validating profile image path:', err);
+    }
+
+    res.locals.user = userForView;
+    next();
 });
 
 // =====================================================
@@ -107,22 +133,21 @@ app.use('/inside', insideRouter);
 // Rute peminjam (Dashboard Member / Outside)
 app.use('/outside', outsideRouter);
 
-
 // =====================================================
 // 🔟 ERROR HANDLING
 // =====================================================
 
 // Handle 404 - jika route tidak ditemukan
 app.use((req, res, next) => {
-  next(createError(404));
+    next(createError(404));
 });
 
 // Error handler umum
 app.use((err, req, res, next) => {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('error');
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 // =====================================================
@@ -137,16 +162,16 @@ console.log('🛰️  Service liveMonitor.js aktif dan berjalan di background...
 // 🧹 12️⃣ GRACEFUL SHUTDOWN HANDLER (optional tapi penting)
 // =====================================================
 function shutdown(signal) {
-  console.log(`\n⚙️  ${signal} diterima, menghentikan SiBuDi dengan aman...`);
-  try {
-    if (liveMonitor && typeof liveMonitor.stop === 'function') {
-      liveMonitor.stop();
-      console.log('🧹 Live monitor dihentikan dengan bersih.');
+    console.log(`\n⚙️  ${signal} diterima, menghentikan SiBuDi dengan aman...`);
+    try {
+        if (liveMonitor && typeof liveMonitor.stop === 'function') {
+            liveMonitor.stop();
+            console.log('🧹 Live monitor dihentikan dengan bersih.');
+        }
+    } catch (err) {
+        console.error('❌ Error saat menghentikan live monitor:', err);
     }
-  } catch (err) {
-    console.error('❌ Error saat menghentikan live monitor:', err);
-  }
-  process.exit(0);
+    process.exit(0);
 }
 
 // Tangani SIGINT (Ctrl+C) & SIGTERM (PM2 stop / docker stop)

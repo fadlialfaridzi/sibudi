@@ -67,7 +67,8 @@ exports.renderDashboard = async (req, res) => {
       user,
       totalLoans,
       totalFines,
-      popup: req.session.popup || null
+      popup: req.session.popup || null,
+      activeNav: 'Dashboard'
     });
 
     // Clear popup setelah ditampilkan
@@ -88,7 +89,8 @@ exports.renderDashboard = async (req, res) => {
         type: 'error',
         title: 'Terjadi Kesalahan',
         message: 'Gagal memuat data dashboard. Silakan refresh halaman.'
-      }
+      },
+      activeNav: 'Dashboard'
     });
   }
 };
