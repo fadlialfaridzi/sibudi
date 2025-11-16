@@ -137,8 +137,9 @@ exports.sendResetEmail = async (req, res) => {
         );
         logger(`Token reset untuk '${email}' berhasil disimpan ke database.`, 'INFO');
 
-        // Kirim email
-        const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+        // Kirim email - gunakan BASE_URL jika ada, fallback ke req headers
+        const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+        const resetUrl = `${baseUrl}/reset-password/${resetToken}`;
         
         const transporter = createTransporter();
         const mailOptions = {
