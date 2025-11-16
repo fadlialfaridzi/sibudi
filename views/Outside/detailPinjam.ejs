@@ -733,28 +733,35 @@
       </div>
     `;
 
-    // ✅ UPDATE BADGE JUGA (FIX)
+    // ✅ FIX: Sembunyikan atau tampilkan badge berdasarkan noReborrow
     const statusRenewal = document.getElementById('status-renewal-badge');
-    if (statusRenewal && !book.noReborrow) {
-      const statusColor = book.renewed >= book.reborrow_limit ? 'text-red-600' : 'text-green-600';
-      const statusBadge = book.renewed >= book.reborrow_limit 
-        ? '<span class="text-xs font-semibold text-red-600 bg-red-100 px-3 py-1 rounded-full">Maksimal</span>'
-        : '';
-      
-      statusRenewal.innerHTML = `
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center">
-            <i class="fa-solid fa-arrows-rotate text-xl"></i>
+    if (statusRenewal) {
+      if (book.noReborrow) {
+        // SEMBUNYIKAN badge jika tidak bisa diperpanjang
+        statusRenewal.style.display = 'none';
+      } else {
+        // TAMPILKAN dan UPDATE badge
+        statusRenewal.style.display = 'block';
+        const statusColor = book.renewed >= book.reborrow_limit ? 'text-red-600' : 'text-green-600';
+        const statusBadge = book.renewed >= book.reborrow_limit 
+          ? '<span class="text-xs font-semibold text-red-600 bg-red-100 px-3 py-1 rounded-full">Maksimal</span>'
+          : '';
+        
+        statusRenewal.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center">
+              <i class="fa-solid fa-arrows-rotate text-xl"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm text-gray-600 font-semibold">Status Perpanjangan</p>
+              <p class="text-lg font-bold ${statusColor}">
+                ${book.renewed || 0} dari ${book.reborrow_limit || 2} kali
+              </p>
+            </div>
+            ${statusBadge}
           </div>
-          <div class="flex-1">
-            <p class="text-sm text-gray-600 font-semibold">Status Perpanjangan</p>
-            <p class="text-lg font-bold ${statusColor}">
-              ${book.renewed || 0} dari ${book.reborrow_limit || 2} kali
-            </p>
-          </div>
-          ${statusBadge}
-        </div>
-      `;
+        `;
+      }
     }
 
     setTimeout(() => {
