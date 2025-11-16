@@ -461,6 +461,18 @@ exports.borrowBookAPI = async (req, res) => {
     await connection.commit();
     logger('Database transaction committed.', 'INFO');
 
+//     // ✅ Ambil ID terakhir transaksi peminjaman
+// const [lastLoanRows] = await connection.query(
+//   "SELECT loan_id FROM loan WHERE member_id = ? ORDER BY loan_id DESC LIMIT 1",
+//   [member.member_id]
+// );
+// const loanId = lastLoanRows[0]?.loan_id || null;
+
+// // ✅ Simpan loanId ke session agar halaman struk bisa akses
+// req.session.lastLoanId = loanId;
+// logger(`Saved lastLoanId=${loanId} to session`, "INFO");
+
+
     // 🔟 Siapkan data struk
     const [langRows] = await connection.query('SELECT language_name FROM mst_language WHERE language_id = ?', [book.language_id]);
     const [pubRows] = await connection.query('SELECT publisher_name FROM mst_publisher WHERE publisher_id = ?', [book.publisher_id]);
